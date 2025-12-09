@@ -144,8 +144,10 @@ export default function SellPage() {
                         toast.success("Başarılı", {
                             description: "İlanınız onaya gönderildi."
                         });
-                        // Hızlıca yönlendir
-                        router.push(`/profile/${result.username}`);
+                        // Hızlıca yönlendir (1sn bekle ki DB otursun)
+                        setTimeout(() => {
+                            router.push(`/profile/${result.username}`);
+                        }, 1000);
                     }
                 } catch (error: any) {
                     toast.error("Bir hata oluştu: " + (error.message || "Bilinmeyen hata"));

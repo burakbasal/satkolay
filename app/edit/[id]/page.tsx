@@ -64,13 +64,44 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                 <input type="hidden" name="itemId" value={item.id} />
                 <input type="hidden" name="category" value={item.category} />
 
-                {/* Resimler (Sadece Gösterim) */}
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                    {item.image_urls?.map((url: string, idx: number) => (
-                        <div key={idx} className="relative w-24 h-24 shrink-0 rounded-lg overflow-hidden border">
-                            <Image src={url} alt="" fill className="object-cover" />
+                {/* Resim Alanı */}
+                <div className="space-y-4">
+                    <Label>Fotoğraflar</Label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center bg-gray-50 hover:bg-gray-100 transition cursor-pointer relative">
+                        <input
+                            type="file"
+                            name="images"
+                            multiple
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            accept="image/*"
+                            onChange={(e) => {
+                                // Önizleme Mantığı (Sadece görsel, form zaten dosyayı alıyor)
+                                if (e.target.files) {
+                                    const files = Array.from(e.target.files);
+                                    // Not: Gerçek preview state'i karmaşıklaşmasın diye burada basit tutuyoruz.
+                                    // Kullanıcı submit edince gidecek.
+                                    alert(`${files.length} fotoğraf seçildi. (Kaydedince görünecek)`);
+                                }
+                            }}
+                        />
+                        <div className="flex flex-col items-center pointer-events-none">
+                            <span className="text-[#ff3f55] font-bold">+ Yeni Fotoğraf Ekle</span>
                         </div>
-                    ))}
+                    </div>
+
+                    {/* Mevcut Resimler */}
+                    {item.image_urls && item.image_urls.length > 0 && (
+                        <div className="grid grid-cols-4 gap-2">
+                            {item.image_urls.map((url: string, idx: number) => (
+                                <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border group">
+                                    <Image src={url} alt="" fill className="object-cover" />
+                                    {/* Silme butonu (Basit implementasyon: input hidden ile keep_urls'i yönetmek gerek) */}
+                                    {/* Şimdilik sadece gösteriyoruz, silme özelliği complex form gerektirir */}
+                                    <input type="hidden" name="keep_urls" value={url} />
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div>

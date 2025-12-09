@@ -34,6 +34,7 @@ export default async function ItemPage(props: { params: Params }) {
             .from('items')
             .select('*')
             .eq('category', item.category)
+            .eq('status', 'active')
             .neq('id', item.id)
             .order('created_at', { ascending: false })
             .limit(4);

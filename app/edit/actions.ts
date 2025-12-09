@@ -43,6 +43,37 @@ export async function updateListing(formData: FormData) {
         return { error: 'Lütfen tüm alanları doğru doldurunuz.' };
     }
 
+    // 1. Yeni Resimleri Yükle
+    const images = formData.getAll('images') as File[];
+    let newImageUrls: string[] = [];
+
+    if (images && images.length > 0) {
+        const uploadPromises = images
+            .filter(img => img.size > 0 && img.type.startsWith('image/'))
+            .map(async (image) => {
+                const fileExt = image.name.split('.').pop();
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                const filePath = `${user.id}/${fileName}`;
+
+                const { error } = await supabase.storage.from('listing-images').upload(filePath, image);
+                if (error) return null;
+
+                const { data } = supabase.storage.from('listing-images').getPublicUrl(filePath);
+                return data.publicUrl;
+            });
+
+        newImageUrls = (await Promise.all(uploadPromises)).filter(url => url !== null) as string[];
+    }
+
+    // Mevcut Resimler + Yeni Resimler
+    // (Not: Mevcut resimleri client'tan "existing_images" olarak yollaman gerekebilir,
+    // ya da basitlik adına: eski resimleri database'den çekip üzerine ekle.)
+
+    // Basit Yöntem: Client tarafı "keep_urls" array'i yollasın.
+    const keepUrls = formData.getAll('keep_urls') as string[];
+    const finalImageUrls = [...keepUrls, ...newImageUrls];
+
+
     // Veritabanı Güncelleme
     const { error } = await supabase
         .from('items')
@@ -54,7 +85,9 @@ export async function updateListing(formData: FormData) {
             location: `${city}, ${district}`,
             city,
             district,
-            attributes // JSONB güncelleme
+            attributes, // JSONB güncelleme,
+            image_urls: finalImageUrls,
+            status: 'pending' // HER GÜNCELLEMEDE ONAYA DÜŞER
         })
         .eq('id', itemId)
         .eq('seller_id', user.id); // Güvenlik: Sadece sahibi güncelleyebilir

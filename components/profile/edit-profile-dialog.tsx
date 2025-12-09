@@ -44,7 +44,6 @@ export function EditProfileDialog({ profile }: { profile: any }) {
                 username: formData.get('username'),
                 full_name: formData.get('full_name'),
                 bio: formData.get('bio'),
-                updated_at: new Date().toISOString()
             })
             .eq('id', user.id);
 

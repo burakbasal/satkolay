@@ -45,7 +45,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
             .from('items')
             .select('*, profiles!items_user_id_fkey(*)')
             .eq('user_id', profile.id) // KESİNLİKLE PROFILE ID
-            .in('status', isOwner ? ['active', 'pending', 'rejected', 'sold'] : ['active', 'sold']) // FİLTRE
+            .in('status', isOwner ? ['active', 'pending', 'rejected', 'sold'] : ['active']) // FİLTRE: Ziyaretçi sadece ACTIVE görür
             .order('created_at', { ascending: false }),
         // Takip Durumu
         currentUserId ? supabase.from('follows').select('*').eq('follower_id', currentUserId).eq('following_id', profile.id).single() : Promise.resolve({ data: null })

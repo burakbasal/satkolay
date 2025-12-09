@@ -124,7 +124,6 @@ export default function ChatPage() {
     if (!userId) return null;
 
     return (
-    return (
         // FIXED MARKETPLACE LAYOUT
         // Ana Kapsayıcı: Navbar (4rem) hariç tüm ekranı kapla. Scrollbar yok.
         <div className="h-[calc(100vh-4rem)] w-full flex bg-gray-50 overflow-hidden">

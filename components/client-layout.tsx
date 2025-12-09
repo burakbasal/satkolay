@@ -11,7 +11,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return (
         <>
             <Navbar />
-            <main className="min-h-screen pb-16 md:pb-0">{children}</main>
+            <main className="max-w-[1440px] mx-auto px-4 w-full min-h-screen pb-16 md:pb-0">{children}</main>
             <BottomNav />
             <Toaster />
         </>

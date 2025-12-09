@@ -188,7 +188,7 @@ export function Navbar() {
             </div>
 
             {/* --- MASAÜSTÜ HEADER (Aynen Korundu) --- */}
-            <div className="hidden md:block container mx-auto px-4">
+            <div className="hidden md:block max-w-[1440px] mx-auto px-4 w-full">
                 <div className="h-20 flex items-center justify-between">
                     <Link href="/" className="text-3xl font-bold text-[#ff3f55] tracking-tight shrink-0">SatKolay</Link>
                     <Suspense fallback={<div className="h-12 bg-gray-100 rounded-full flex-1 mx-6"></div>}><DesktopSearchBar /></Suspense>

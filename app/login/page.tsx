@@ -34,10 +34,6 @@ export default function AuthPage() {
             provider: 'google',
             options: {
                 redirectTo: `${window.location.origin}/auth/callback`,
-                queryParams: {
-                    access_type: 'offline',
-                    prompt: 'consent',
-                },
             },
         });
         if (error) toast.error(error.message);

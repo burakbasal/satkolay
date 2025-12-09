@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
-import { BottomNav } from "@/components/bottom-nav";
-import { Suspense } from "react"; // <--- BU SATIR EKLENDİ
+import dynamic from 'next/dynamic';
+
+const Navbar = dynamic(() => import('@/components/navbar').then(mod => mod.Navbar), { ssr: false });
+const BottomNav = dynamic(() => import('@/components/bottom-nav').then(mod => mod.BottomNav), { ssr: false });
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,19 +27,13 @@ export default function RootLayout({
     <html lang="tr">
       <body className={inter.className}>
 
-        {/* Navbar'ı Suspense içine aldık (Hata Çözücü) */}
-        <Suspense fallback={<div className="h-16 bg-white border-b" />}>
-          <Navbar />
-        </Suspense>
+        <Navbar />
 
         <main className="min-h-screen pb-16 md:pb-0">
           {children}
         </main>
 
-        {/* BottomNav'ı Suspense içine aldık (Hata Çözücü) */}
-        <Suspense fallback={null}>
-          <BottomNav />
-        </Suspense>
+        <BottomNav />
 
       </body>
     </html>

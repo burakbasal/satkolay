@@ -130,13 +130,19 @@ export default function SellPage() {
 
             <form action={async (formData) => {
                 setLoading(true);
-                const result = await createListing(formData);
-                if (result?.error) {
-                    toast.error(result.error);
+                try {
+                    const result = await createListing(formData);
+                    if (result?.error) {
+                        toast.error(result.error);
+                        setLoading(false);
+                    }
+                    // Başarılıysa zaten redirect olacak
+                } catch (error: any) {
+                    toast.error("Bir hata oluştu: " + (error.message || "Bilinmeyen hata"));
                     setLoading(false);
                 }
-                // Başarılıysa zaten redirect olacak, loading false yapmaya gerek yok
-            }} className="space-y-8">
+            }} className="space-y-8 pb-32">
+                {/* ... existing fields ... */}
                 {/* Gizli Veriler (Backend'e gidecek) */}
                 <input type="hidden" name="category" value={selectedCategory?.title} />
                 <input type="hidden" name="subCategory" value={selectedSubCategory?.title} />
@@ -269,9 +275,11 @@ export default function SellPage() {
 
                 </div>
 
-                <Button type="submit" className="w-full bg-[#ff3f55] hover:bg-[#e63548] h-12 text-lg font-bold shadow-lg" disabled={loading}>
-                    {loading ? <Loader2 className="animate-spin mr-2" /> : 'İlanı Yayınla'}
-                </Button>
+                <div className="fixed bottom-20 left-4 right-4 z-50 md:static md:bottom-auto md:left-auto md:right-auto md:z-auto">
+                    <Button type="submit" className="w-full bg-[#ff3f55] hover:bg-[#e63548] h-14 md:h-12 text-lg font-bold shadow-xl border-2 border-white md:border-0" disabled={loading}>
+                        {loading ? <Loader2 className="animate-spin mr-2" /> : 'İlanı Yayınla'}
+                    </Button>
+                </div>
             </form>
         </div>
     );

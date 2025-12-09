@@ -154,8 +154,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
                                     </div>
                                 ) : (
                                     <div className="space-y-2">
-                                        <Link href="/admin" className="flex items-center justify-center gap-2 w-full bg-gray-900 text-white py-2 rounded-lg text-sm font-medium"><ShieldCheck className="w-4 h-4" /> Admin Paneli</Link>
-                                        <Link href="/settings" className="flex items-center justify-center gap-2 w-full border border-gray-300 py-2 rounded-lg text-sm font-medium hover:bg-gray-50"><Settings className="w-4 h-4" /> Profili Düzenle</Link>
+                                        {profile.is_admin && (
+                                            <Link href="/admin" className="flex items-center justify-center gap-2 w-full bg-gray-900 text-white py-2 rounded-lg text-sm font-medium">
+                                                <ShieldCheck className="w-4 h-4" /> Admin Paneli
+                                            </Link>
+                                        )}
+                                        <Link href="/profile/settings" className="flex items-center justify-center gap-2 w-full border border-gray-300 py-2 rounded-lg text-sm font-medium hover:bg-gray-50"><Settings className="w-4 h-4" /> Profili Düzenle</Link>
                                         <form action="/auth/signout" method="post"><button className="w-full text-red-500 text-xs hover:underline mt-2">Çıkış Yap</button></form>
                                     </div>
                                 )}

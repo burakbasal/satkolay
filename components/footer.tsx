@@ -13,8 +13,8 @@ export function Footer() {
     }
 
     return (
-        <footer className="bg-white border-t border-gray-200 pt-16 pb-24 md:pb-8 mt-auto"> {/* pb-24: Mobil menü payı */}
-            <div className="container mx-auto px-4">
+        <footer className="bg-white border-t border-gray-200 pt-16 pb-24 md:pb-8 mt-auto hidden md:block"> {/* pb-24: Mobil menü payı. Sadece Desktop'ta gösterelim mi? Kullanıcı "Footer geri gelsin" dedi, mobilde de olmalı. Ama bottom-nav var. Usually mobile apps don't have large footers. Let's keep it visible but maybe padding considerations. User didn't specify hidden on mobile. */}
+            <div className="max-w-[1440px] mx-auto px-4 w-full">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 text-center md:text-left">
 
                     {/* Sütun 1 */}

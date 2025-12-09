@@ -1,10 +1,12 @@
 import Link from 'next/link';
 
+export const dynamic = "force-static";
+
 export default function NotFound() {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
+        <div className="h-screen overflow-hidden flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
             {/* İllüstrasyon Alanı */}
-            <div className="mb-8 w-full max-w-[300px]">
+            <div className="mb-4 w-full max-w-[240px]">
                 <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
                     {/* Gölgeler */}
                     <ellipse cx="100" cy="140" rx="60" ry="10" fill="#E5E7EB" />
@@ -32,26 +34,26 @@ export default function NotFound() {
             </div>
 
             {/* Metinler */}
-            <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2 tracking-tight">
                 Oops! Sayfa Bulunamadı.
             </h1>
 
-            <p className="text-gray-500 text-lg max-w-lg mb-8 leading-relaxed">
-                Üzgünüz, aradığınız sayfayı bulamıyoruz. Belki de böyle bir ürün hiç var olmadı ya da çoktan satıldı! Sorun devam ederse lütfen bizimle iletişime geçin.
+            <p className="text-gray-500 text-base max-w-md mb-6 leading-relaxed">
+                Üzgünüz, aradığınız sayfayı bulamıyoruz. Belki de böyle bir ürün hiç var olmadı ya da çoktan satıldı!
             </p>
 
             {/* Butonlar */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <Link
                     href="/"
-                    className="flex items-center justify-center px-8 py-3 bg-[#ff3f55] text-white font-bold rounded-full hover:bg-[#e63548] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
+                    className="flex items-center justify-center px-6 py-2.5 bg-[#ff3f55] text-white font-bold rounded-full hover:bg-[#e63548] transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
                 >
                     Anasayfaya Dön
                 </Link>
 
                 <Link
                     href="/search"
-                    className="flex items-center justify-center px-8 py-3 bg-transparent border-2 border-[#ff3f55] text-[#ff3f55] font-bold rounded-full hover:bg-red-50 transition-colors"
+                    className="flex items-center justify-center px-6 py-2.5 bg-transparent border-2 border-[#ff3f55] text-[#ff3f55] font-bold rounded-full hover:bg-red-50 transition-colors"
                 >
                     İlanlarda Ara
                 </Link>

@@ -154,7 +154,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
                                     </div>
                                 ) : (
                                     <div className="space-y-2">
-                                        {profile.is_admin && (
+                                        {user?.email === 'dev.burakbsl@gmail.com' && (
                                             <Link href="/admin" className="flex items-center justify-center gap-2 w-full bg-gray-900 text-white py-2 rounded-lg text-sm font-medium">
                                                 <ShieldCheck className="w-4 h-4" /> Admin Paneli
                                             </Link>

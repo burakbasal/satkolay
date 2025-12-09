@@ -124,7 +124,7 @@ export default function ChatPage() {
     if (!userId) return null;
 
     return (
-        // LETGO STYLE LAYOUT
+        // FIXED MARKETPLACE LAYOUT
         // Ana Kapsayıcı: Ekranın kalanını kaplar, taşma yapmaz.
         <div className="h-[calc(100vh-65px)] w-full flex bg-gray-50 overflow-hidden">
 

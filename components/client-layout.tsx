@@ -1,15 +1,18 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { Toaster } from "@/components/ui/sonner";
 
-const Navbar = dynamic(() => import('@/components/navbar').then(mod => mod.Navbar), { ssr: false });
-const BottomNav = dynamic(() => import('@/components/bottom-nav').then(mod => mod.BottomNav), { ssr: false });
+const Navbar = dynamic(() => import('@/components/navbar').then(m => m.Navbar), { ssr: false });
+const BottomNav = dynamic(() => import('@/components/bottom-nav').then(m => m.BottomNav), { ssr: false });
 
-export function ClientLayout() {
+export function ClientLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
             <Navbar />
+            <main className="min-h-screen pb-16 md:pb-0">{children}</main>
             <BottomNav />
+            <Toaster />
         </>
     );
 }

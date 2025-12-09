@@ -41,10 +41,9 @@ export function EditProfileDialog({ profile }: { profile: any }) {
         const { error } = await supabase
             .from('profiles')
             .update({
-                username: username,
-                full_name: fullName,
-                bio: bio,
-                // updated_at trigger'ı genelde vardır ama yoksa elle eklenebilir
+                username: formData.get('username'),
+                full_name: formData.get('full_name'),
+                bio: formData.get('bio'),
                 updated_at: new Date().toISOString()
             })
             .eq('id', user.id);

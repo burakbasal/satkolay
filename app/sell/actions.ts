@@ -79,6 +79,11 @@ export async function createListing(formData: FormData) {
         return { error: error.message };
     }
 
-    // Başarılıysa yönlendir (Try-Catch dışında olmalı!)
-    redirect(`/item/${data.id}`);
+    // Başarılıysa OBJE DÖN (Redirect YAPMA)
+    // redirect(`/item/${data.id}`);
+
+    // Username al (Profil yönlendirmesi için)
+    const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
+
+    return { success: true, id: data.id, username: profile?.username || 'user' };
 }

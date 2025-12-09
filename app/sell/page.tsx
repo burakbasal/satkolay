@@ -17,11 +17,13 @@ import { ImagePlus, Loader2, ChevronRight, Check, X } from 'lucide-react';
 import { createListing } from './actions';
 
 export default function SellPage() {
+    const router = useRouter();
     const [step, setStep] = useState(1);
     const [selectedCategory, setSelectedCategory] = useState<any>(null);
     const [selectedSubCategory, setSelectedSubCategory] = useState<any>(null);
     const [selectedDetail, setSelectedDetail] = useState<string>(""); // 3. Seviye (Renault vb.)
     const [loading, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false); // Yeni state
     const [previews, setPreviews] = useState<string[]>([]);
     const [selectedCity, setSelectedCity] = useState<string>("");
     const [selectedDistrict, setSelectedDistrict] = useState<string>("");
@@ -129,17 +131,25 @@ export default function SellPage() {
             <h1 className="text-2xl font-bold mb-6">İlan Detayları</h1>
 
             <form action={async (formData) => {
-                setLoading(true);
+                // setLoading(true); // Artık isSubmitting kullanacağız ama loading'i de set etsek zarar gelmez
+                setIsSubmitting(true);
+
                 try {
-                    const result = await createListing(formData);
+                    const result = await createListing(formData); // createListing artık obje dönüyor
+
                     if (result?.error) {
                         toast.error(result.error);
-                        setLoading(false);
+                        setIsSubmitting(false);
+                    } else if (result?.success) {
+                        toast.success("Başarılı", {
+                            description: "İlanınız onaya gönderildi."
+                        });
+                        // Hızlıca yönlendir
+                        router.push(`/profile/${result.username}`);
                     }
-                    // Başarılıysa zaten redirect olacak
                 } catch (error: any) {
                     toast.error("Bir hata oluştu: " + (error.message || "Bilinmeyen hata"));
-                    setLoading(false);
+                    setIsSubmitting(false);
                 }
             }} className="space-y-8 pb-32">
                 {/* ... existing fields ... */}
@@ -276,8 +286,8 @@ export default function SellPage() {
                 </div>
 
                 <div className="fixed bottom-20 left-4 right-4 z-50 md:static md:bottom-auto md:left-auto md:right-auto md:z-auto">
-                    <Button type="submit" className="w-full bg-[#ff3f55] hover:bg-[#e63548] h-14 md:h-12 text-lg font-bold shadow-xl border-2 border-white md:border-0" disabled={loading}>
-                        {loading ? <Loader2 className="animate-spin mr-2" /> : 'İlanı Yayınla'}
+                    <Button type="submit" className="w-full bg-[#ff3f55] hover:bg-[#e63548] h-14 md:h-12 text-lg font-bold shadow-xl border-2 border-white md:border-0" disabled={isSubmitting}>
+                        {isSubmitting ? <><Loader2 className="animate-spin mr-2" /> Yükleniyor...</> : 'İlanı Yayınla'}
                     </Button>
                 </div>
             </form>

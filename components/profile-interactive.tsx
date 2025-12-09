@@ -9,8 +9,15 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
 // --- AVATAR LIGHTBOX ---
+import { createPortal } from 'react-dom';
+
 export function ProfileAvatar({ src, alt }: { src?: string, alt: string }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     return (
         <>
@@ -20,7 +27,7 @@ export function ProfileAvatar({ src, alt }: { src?: string, alt: string }) {
                     <AvatarFallback className="text-4xl">{alt[0]}</AvatarFallback>
                 </Avatar>
             </div>
-            {isOpen && (
+            {mounted && isOpen && createPortal(
                 <div
                     className="fixed inset-0 z-[99999] bg-black/95 flex items-center justify-center p-4 animate-in fade-in"
                     onClick={() => setIsOpen(false)}
@@ -32,7 +39,7 @@ export function ProfileAvatar({ src, alt }: { src?: string, alt: string }) {
                     {/* PC Optimized Container */}
                     <div
                         className="relative w-full max-w-2xl aspect-square max-h-[85vh] flex items-center justify-center pointer-events-none"
-                        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the container area (optional but good UX)
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <img
                             src={src}
@@ -40,7 +47,8 @@ export function ProfileAvatar({ src, alt }: { src?: string, alt: string }) {
                             className="w-full h-full object-contain rounded-lg pointer-events-auto"
                         />
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </>
     );

@@ -71,10 +71,30 @@ export default function SettingsPage() {
     // --- FONKSİYONLAR ---
     const handleSaveProfile = async () => {
         setLoading(true);
-        const { error } = await supabase.from('profiles').update({ full_name: fullName, username, bio, avatar_url: avatarUrl }).eq('id', user.id);
-        if (error) toast.error("Hata: " + error.message);
-        else { toast.success("Profil güncellendi ✅"); router.refresh(); }
-        setLoading(false);
+
+        const updates = {
+            id: user.id, // Güvenlik için ID'yi de ekle
+            full_name: fullName,
+            username: username, // Yeni kullanıcı adı
+            bio: bio,
+            avatar_url: avatarUrl,
+            updated_at: new Date().toISOString()
+        };
+
+        const { error } = await supabase.from('profiles').upsert(updates);
+
+        if (error) {
+            toast.error("Hata: " + error.message);
+            setLoading(false);
+        } else {
+            toast.success("Profil güncellendi ✅");
+
+            // Eğer kullanıcı adı değiştiyse yeni URL'ye yönlendir
+            // Eski username'i user metadata'dan veya ilk yüklemeden biliyoruz ama 
+            // basitçe: işlem başarılıysa yeni username sayfasına git.
+            window.location.href = `/profile/${username}`;
+            // Not: Refresh yerine redirect, çünkü URL değişmiş olabilir.
+        }
     };
 
     const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

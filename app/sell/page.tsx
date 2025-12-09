@@ -288,7 +288,11 @@ export default function SellPage() {
                 </div>
 
                 <div className="fixed bottom-20 left-4 right-4 z-50 md:static md:bottom-auto md:left-auto md:right-auto md:z-auto">
-                    <Button type="submit" className="w-full bg-[#ff3f55] hover:bg-[#e63548] h-14 md:h-12 text-lg font-bold shadow-xl border-2 border-white md:border-0" disabled={isSubmitting}>
+                    <Button
+                        type="submit"
+                        className="w-full bg-[#ff3f55] hover:bg-[#e63548] h-14 md:h-12 text-lg font-bold shadow-xl border-2 border-white md:border-0"
+                        disabled={isSubmitting} // BUTON KESİNLİKLE DISABLED OLACAK
+                    >
                         {isSubmitting ? <><Loader2 className="animate-spin mr-2" /> Yükleniyor...</> : 'İlanı Yayınla'}
                     </Button>
                 </div>

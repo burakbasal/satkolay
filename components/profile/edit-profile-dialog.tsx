@@ -30,25 +30,35 @@ export function EditProfileDialog({ profile }: { profile: any }) {
         const fullName = formData.get('full_name') as string;
         const bio = formData.get('bio') as string;
 
+        // AUTH KONTROLÜ
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            window.location.href = '/login';
+            return;
+        }
+
+        // UPDATE
         const { error } = await supabase
             .from('profiles')
             .update({
-                username,
+                username: username,
                 full_name: fullName,
-                bio,
+                bio: bio,
+                // updated_at trigger'ı genelde vardır ama yoksa elle eklenebilir
                 updated_at: new Date().toISOString()
             })
-            .eq('id', profile.id);
+            .eq('id', user.id);
 
         if (error) {
-            toast.error(error.message);
+            toast.error("Hata: " + error.message);
             setLoading(false);
         } else {
             toast.success("Profil güncellendi");
             setLoading(false);
             setOpen(false);
 
-            // Eğer kullanıcı adı değiştiyse yönlendir
+            // KRİTİK: YÖNLENDİRME
+            // Kullanıcı adı değiştiyse yeni linke, değişmediyse sayfayı yenile
             if (username !== profile.username) {
                 window.location.href = `/profile/${username}`;
             } else {
@@ -60,7 +70,7 @@ export function EditProfileDialog({ profile }: { profile: any }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="w-full gap-2">
+                <Button variant="outline" className="w-full gap-2 border-gray-300 hover:bg-gray-50">
                     <Settings className="w-4 h-4" /> Profili Düzenle
                 </Button>
             </DialogTrigger>
@@ -71,17 +81,18 @@ export function EditProfileDialog({ profile }: { profile: any }) {
                 <form onSubmit={handleSubmit} className="grid gap-4 py-4">
                     <div className="grid gap-2">
                         <Label htmlFor="full_name">Ad Soyad</Label>
-                        <Input id="full_name" name="full_name" defaultValue={profile.full_name} required />
+                        <Input id="full_name" name="full_name" defaultValue={profile.full_name || ''} required />
                     </div>
+                    {/* USERNAME INPUT (ZORUNLU) */}
                     <div className="grid gap-2">
                         <Label htmlFor="username">Kullanıcı Adı</Label>
-                        <Input id="username" name="username" defaultValue={profile.username} required />
+                        <Input id="username" name="username" defaultValue={profile.username || ''} required />
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="bio">Biyografi</Label>
-                        <Textarea id="bio" name="bio" defaultValue={profile.bio} />
+                        <Textarea id="bio" name="bio" defaultValue={profile.bio || ''} placeholder="Kendinden bahset..." />
                     </div>
-                    <Button type="submit" disabled={loading} className="bg-[#ff3f55] hover:bg-[#e63548]">
+                    <Button type="submit" disabled={loading} className="bg-[#ff3f55] hover:bg-[#e63548] text-white font-bold">
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Kaydet"}
                     </Button>
                 </form>

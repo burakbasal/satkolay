@@ -125,11 +125,12 @@ export default function ChatPage() {
 
     return (
         // SPA Layout: Navbar altında kalan alanı kapla
-        <div className="h-[calc(100vh-64px)] w-full flex bg-gray-50 overflow-hidden">
+        // h-[calc(100dvh-64px)] -> 100dvh (dynamic viewport height) - navbar height
+        <div className="h-[calc(100dvh-64px)] w-full flex bg-gray-50 overflow-hidden">
 
             <div className="container mx-auto max-w-6xl h-full flex bg-white shadow-lg rounded-xl overflow-hidden my-0 md:my-4 border">
 
-                {/* --- SOL LİSTE --- */}
+                {/* --- SOL LİSTE (SIDEBAR) --- */}
                 <div className={`w-full md:w-[320px] lg:w-[380px] flex flex-col border-r bg-white ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
                     <div className="h-16 flex items-center justify-between px-4 border-b shrink-0 bg-gray-50/50">
                         <span className="font-bold text-lg text-gray-800">Mesajlar</span>
@@ -167,11 +168,11 @@ export default function ChatPage() {
                     </div>
                 </div>
 
-                {/* --- SAĞ EKRAN --- */}
+                {/* --- SAĞ EKRAN (CHAT WINDOW) --- */}
                 <div className={`flex-1 flex flex-col h-full bg-slate-50 relative ${!selectedChat ? 'hidden md:flex' : 'flex'}`}>
                     {selectedChat ? (
-                        <>
-                            {/* HEADER */}
+                        <div className="flex flex-col h-full overflow-hidden">
+                            {/* 1. HEADER - SABİT */}
                             <div className="h-16 border-b flex items-center justify-between px-4 bg-white shrink-0 shadow-sm z-10">
                                 <div className="flex items-center gap-3">
                                     <button onClick={() => setSelectedChat(null)} className="md:hidden p-1.5 -ml-2 rounded-full hover:bg-gray-100"><ChevronLeft className="w-6 h-6 text-gray-600" /></button>
@@ -180,9 +181,17 @@ export default function ChatPage() {
                                             <Avatar className="w-10 h-10 border border-gray-200"><AvatarImage src={getOther(selectedChat).avatar_url} /><AvatarFallback>U</AvatarFallback></Avatar>
                                             <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
                                         </div>
-                                        <div className="flex flex-col">
-                                            <span className="font-bold text-sm text-gray-900 group-hover:underline">{getOther(selectedChat).full_name}</span>
-                                            <span className="text-xs text-gray-500">Çevrimiçi</span>
+                                        <div className="flex flex-col justify-center">
+                                            <span className="font-bold text-sm text-gray-900 group-hover:underline">
+                                                {getOther(selectedChat).full_name || getOther(selectedChat).username || 'Kullanıcı'}
+                                            </span>
+                                            {selectedChat.item ? (
+                                                <span className="text-xs text-gray-500 truncate max-w-[150px] md:max-w-[250px]">
+                                                    {selectedChat.item.title} • Sohbeti
+                                                </span>
+                                            ) : (
+                                                <span className="text-xs text-gray-500">Çevrimiçi</span>
+                                            )}
                                         </div>
                                     </Link>
                                 </div>
@@ -191,21 +200,21 @@ export default function ChatPage() {
                                 </Button>
                             </div>
 
-                            {/* İLAN BAĞLAMI */}
+                            {/* 2. İLAN BAĞLAMI - OPSİYONEL SABİT */}
                             {selectedChat.item && (
-                                <div className="bg-white px-4 py-3 flex items-center gap-4 border-b shrink-0 shadow-sm">
+                                <div className="bg-white px-4 py-3 flex items-center gap-4 border-b shrink-0 shadow-sm whitespace-nowrap overflow-x-auto scrollbar-hide">
                                     <div className="w-12 h-12 relative rounded-md border bg-gray-100 shrink-0 overflow-hidden">
                                         <Image src={selectedChat.item.image_urls?.[0] || '/placeholder.png'} alt="" fill className="object-cover" />
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <Link href={`/item/${selectedChat.item.id}`} className="font-bold text-sm text-gray-800 truncate hover:text-[#ff3f55] transition-colors block">
+                                    <div className="flex-1">
+                                        <Link href={`/item/${selectedChat.item.id}`} className="font-bold text-sm text-gray-800 hover:text-[#ff3f55] transition-colors block truncate w-full">
                                             {selectedChat.item.title}
                                         </Link>
                                         <div className="text-[#ff3f55] font-black text-sm">{selectedChat.item.price?.toLocaleString('tr-TR')} TL</div>
                                     </div>
                                     <Button
                                         size="sm"
-                                        className="h-9 px-4 bg-[#ff3f55] hover:bg-[#e63548] text-white font-bold"
+                                        className="h-9 px-4 bg-[#ff3f55] hover:bg-[#e63548] text-white font-bold shrink-0"
                                         onClick={() => setNewMessage(`Teklifim: ${selectedChat.item!.price} TL`)}
                                     >
                                         Teklif Ver
@@ -213,16 +222,16 @@ export default function ChatPage() {
                                 </div>
                             )}
 
-                            {/* MESAJLAR */}
-                            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 min-h-0">
+                            {/* 3. MESAJ LİSTESİ - KAYAN KISIM */}
+                            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 min-h-0 scrollbar-hide">
                                 <div className="text-center text-xs text-gray-400 py-4">Sohbet Başladı • {new Date(selectedChat.updated_at).toLocaleDateString('tr-TR')}</div>
                                 {messages.map(msg => {
                                     const isMe = msg.sender_id === userId;
                                     return (
                                         <div key={msg.id} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}>
                                             <div className={`max-w-[80%] md:max-w-[70%] px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed ${isMe
-                                                    ? 'bg-[#ff3f55] text-white rounded-tr-none'
-                                                    : 'bg-white text-gray-900 border rounded-tl-none'
+                                                ? 'bg-[#ff3f55] text-white rounded-tr-none'
+                                                : 'bg-white text-gray-900 border rounded-tl-none'
                                                 }`}>
                                                 {msg.content}
                                             </div>
@@ -232,16 +241,16 @@ export default function ChatPage() {
                                 <div ref={scrollRef} className="h-2" />
                             </div>
 
-                            {/* INPUT */}
+                            {/* 4. INPUT ALANI - SABİT */}
                             <div className="p-4 bg-white border-t shrink-0">
-                                {/* Hızlı Yanıtlar */}
-                                {!newMessage && messages.length > 0 && messages[messages.length - 1].sender_id !== userId && (
+                                {/* Hızlı Yanıtlar - Always show if not empty */}
+                                {!newMessage && (
                                     <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">
                                         {QUICK_REPLIES.map((reply, idx) => (
                                             <button
                                                 key={idx}
                                                 onClick={() => setNewMessage(reply)}
-                                                className="whitespace-nowrap px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-xs font-semibold hover:bg-gray-200 transition-colors"
+                                                className="whitespace-nowrap px-4 py-2 bg-gray-50 text-gray-700 rounded-full text-xs font-semibold hover:bg-gray-100 transition-colors border border-gray-200"
                                             >
                                                 {reply}
                                             </button>
@@ -266,7 +275,7 @@ export default function ChatPage() {
                                     </button>
                                 </form>
                             </div>
-                        </>
+                        </div>
                     ) : (
                         <div className="flex-1 flex flex-col items-center justify-center text-gray-400 p-8 text-center bg-gray-50/50">
                             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">

@@ -1,21 +1,20 @@
 {
     "name": "SatKolay",
     "short_name": "SatKolay",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
     "icons": [
         {
-            "src": "/icon-192x192.png",
+            "src": "/icon.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/icon-512x512.png",
+            "src": "/icon.png",
             "sizes": "512x512",
             "type": "image/png"
         }
-    ],
-    "theme_color": "#ff3f55",
-    "background_color": "#ffffff",
-    "start_url": "/",
-    "display": "standalone",
-    "orientation": "portrait"
+    ]
 }

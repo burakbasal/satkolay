@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -8,7 +8,6 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogFooter
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,143 +16,52 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createClient } from '@/utils/supabase/client';
 import { toast } from "sonner";
 import { Settings, Loader2, Camera, User, ZoomIn, ZoomOut, Check, X } from 'lucide-react';
-import { Slider } from "@/components/ui/slider"; // Assuming you have a slider component or I will use standard input range if not
+import Cropper from 'react-easy-crop';
+import { Slider } from "@/components/ui/slider";
 
-// --- CROPPER COMPONENT (DEPENDENCY FREE) ---
-function ImageCropper({ src, onCrop, onCancel }: { src: string, onCrop: (blob: Blob) => void, onCancel: () => void }) {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [scale, setScale] = useState(1);
-    const [offset, setOffset] = useState({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
-    const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-    const imageRef = useRef<HTMLImageElement | null>(null);
+// --- HELPER FUNCTION FOR CROPPING ---
+const createImage = (url: string): Promise<HTMLImageElement> =>
+    new Promise((resolve, reject) => {
+        const image = new Image();
+        image.addEventListener('load', () => resolve(image));
+        image.addEventListener('error', (error) => reject(error));
+        image.setAttribute('crossOrigin', 'anonymous');
+        image.src = url;
+    });
 
-    useEffect(() => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => { imageRef.current = img; draw(); };
-    }, [src]);
+async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<Blob> {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
 
-    useEffect(() => { draw(); }, [scale, offset]);
+    if (!ctx) {
+        throw new Error('No 2d context');
+    }
 
-    const draw = () => {
-        const canvas = canvasRef.current;
-        const img = imageRef.current;
-        if (!canvas || !img) return;
+    canvas.width = pixelCrop.width;
+    canvas.height = pixelCrop.height;
 
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        // Clear
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Background (Dark)
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Draw Image Transformed
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-
-        ctx.save();
-        ctx.translate(centerX + offset.x, centerY + offset.y);
-        ctx.scale(scale, scale);
-        // Draw centered
-        ctx.drawImage(img, -img.width / 2, -img.height / 2);
-        ctx.restore();
-    };
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        setIsDragging(true);
-        setStartPos({ x: e.clientX - offset.x, y: e.clientY - offset.y });
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDragging) return;
-        setOffset({ x: e.clientX - startPos.x, y: e.clientY - startPos.y });
-    };
-
-    const handleMouseUp = () => setIsDragging(false);
-
-    const handleCrop = () => {
-        const canvas = canvasRef.current;
-        const img = imageRef.current;
-        if (!canvas || !img) return;
-
-        // Create a temporary canvas for the final cropped image (High Res)
-        const outputSize = 300; // 300x300 Output
-        const outputCanvas = document.createElement('canvas');
-        outputCanvas.width = outputSize;
-        outputCanvas.height = outputSize;
-        const ctx = outputCanvas.getContext('2d');
-        if (!ctx) return;
-
-        // Calculate source rectangle
-        // The visible area in the display canvas corresponds to the center of the image.
-        // Reverse transform coordinates.
-        // Simpler approach: Draw exactly what is seen on the 300x300 canvas
-
-        // Since our display canvas is also 300x300 (or similar), we can basically repeat the draw command on the output canvas
-        // BUT we must ensure high quality.
-
-        // Let's rely on the visual canvas state for WYSIWYG
-        const sourceCanvas = canvasRef.current;
-
-        // Draw the same transformation onto the output canvas
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, outputSize, outputSize);
-
-        const centerX = outputSize / 2;
-        const centerY = outputSize / 2;
-
-        ctx.save();
-        ctx.translate(centerX + offset.x, centerY + offset.y);
-        ctx.scale(scale, scale);
-        ctx.drawImage(img, -img.width / 2, -img.height / 2);
-        ctx.restore();
-
-        outputCanvas.toBlob((blob) => {
-            if (blob) onCrop(blob);
-        }, 'image/jpeg', 0.9);
-    };
-
-    return (
-        <div className="flex flex-col gap-4 items-center animate-in fade-in zoom-in duration-200">
-            <div className="relative w-[300px] h-[300px] bg-black rounded-lg overflow-hidden border-2 border-dashed border-gray-600 shadow-xl cursor-move group">
-                <canvas
-                    ref={canvasRef}
-                    width={300}
-                    height={300}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseUp}
-                    className="w-full h-full"
-                />
-                <div className="absolute inset-0 border-2 border-[#ff3f55] opacity-50 pointer-events-none rounded-lg"></div>
-                <div className="absolute bottom-2 right-2 text-xs text-white/50 bg-black/50 px-2 rounded pointer-events-none">Sürükle & Yakınlaştır</div>
-            </div>
-
-            <div className="w-full max-w-[300px] flex items-center gap-4">
-                <ZoomOut className="w-4 h-4 text-gray-500" />
-                <input
-                    type="range"
-                    min="0.5"
-                    max="3"
-                    step="0.1"
-                    value={scale}
-                    onChange={(e) => setScale(parseFloat(e.target.value))}
-                    className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#ff3f55]"
-                />
-                <ZoomIn className="w-4 h-4 text-gray-500" />
-            </div>
-
-            <div className="flex gap-2 w-full justify-center">
-                <Button variant="outline" onClick={onCancel} className="gap-2"><X className="w-4 h-4" /> İptal</Button>
-                <Button onClick={handleCrop} className="bg-[#ff3f55] hover:bg-[#e63548] text-white gap-2"><Check className="w-4 h-4" /> Onayla</Button>
-            </div>
-        </div>
+    ctx.drawImage(
+        image,
+        pixelCrop.x,
+        pixelCrop.y,
+        pixelCrop.width,
+        pixelCrop.height,
+        0,
+        0,
+        pixelCrop.width,
+        pixelCrop.height
     );
+
+    return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                reject(new Error('Canvas is empty'));
+                return;
+            }
+            resolve(blob);
+        }, 'image/jpeg', 0.95);
+    });
 }
 
 // --- MAIN DIALOG ---
@@ -164,11 +72,18 @@ export function EditProfileDialog({ profile }: { profile: any }) {
     // Crop State
     const [cropMode, setCropMode] = useState(false);
     const [selectedImageSrc, setSelectedImageSrc] = useState<string | null>(null);
-    const [avatarBlob, setAvatarBlob] = useState<Blob | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(profile.avatar_url);
-
     const fileInputRef = useRef<HTMLInputElement>(null);
     const supabase = createClient();
+
+    // Easy Crop State
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
+    const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
+        setCroppedAreaPixels(croppedAreaPixels);
+    }, []);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -176,22 +91,61 @@ export function EditProfileDialog({ profile }: { profile: any }) {
             const reader = new FileReader();
             reader.onload = () => {
                 setSelectedImageSrc(reader.result as string);
-                setCropMode(true); // Switch to crop mode
+                setCropMode(true);
+                setZoom(1); // Reset zoom
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const handleCropComplete = (blob: Blob) => {
-        setAvatarBlob(blob);
-        setPreviewUrl(URL.createObjectURL(blob));
-        setCropMode(false); // Back to form
+    const handleSaveCrop = async () => {
+        if (!selectedImageSrc || !croppedAreaPixels) return;
+        try {
+            const blob = await getCroppedImg(selectedImageSrc, croppedAreaPixels);
+
+            // Upload immediately or save blob to upload on form submit?
+            // Prompt implied upload logic happens on form submit OR confirm crop then upload.
+            // Following previous logic: Confirm Crop -> Set Blob -> Upload on "Save" (Form Submit).
+
+            // Update Preview
+            const blobUrl = URL.createObjectURL(blob);
+            setPreviewUrl(blobUrl);
+
+            // Should I store the blob in state to upload later? Yes.
+            // But React state for Blob is fine.
+            // Let's attach it to a ref or state.
+            // Using a hidden way to pass it to submit handler or just modify the state structure.
+            // I'll add a `avatarBlob` state.
+            (window as any).avatarBlob = blob; // Quick hack or use state? Use state properly.
+
+            setCropMode(false);
+        } catch (e) {
+            console.error(e);
+            toast.error("Kırpma hatası");
+        }
+    };
+
+    // Store blob in a ref to avoid re-renders or complex passing
+    const blobRef = useRef<Blob | null>(null);
+
+    // Re-implement handleSaveCrop to use ref
+    const executeCrop = async () => {
+        if (!selectedImageSrc || !croppedAreaPixels) return;
+        try {
+            const blob = await getCroppedImg(selectedImageSrc, croppedAreaPixels);
+            blobRef.current = blob;
+            setPreviewUrl(URL.createObjectURL(blob));
+            setCropMode(false);
+        } catch (e) {
+            console.error(e);
+            toast.error("Kırpma sırasında hata oluştu");
+        }
     };
 
     const handleCropCancel = () => {
         setCropMode(false);
         setSelectedImageSrc(null);
-        if (fileInputRef.current) fileInputRef.current.value = ''; // Reset input
+        if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -204,12 +158,12 @@ export function EditProfileDialog({ profile }: { profile: any }) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) { window.location.href = '/login'; return; }
 
-        // 1. UPLOAD CROPPED IMAGE
-        if (avatarBlob) {
+        // 1. UPLOAD CROPPED IMAGE (If exists)
+        if (blobRef.current) {
             const fileName = `${user.id}-${Date.now()}.jpg`;
             const { error: uploadError } = await supabase.storage
                 .from('avatars')
-                .upload(fileName, avatarBlob, { upsert: true, contentType: 'image/jpeg' });
+                .upload(fileName, blobRef.current, { upsert: true, contentType: 'image/jpeg' });
 
             if (uploadError) {
                 toast.error("Resim yüklenemedi: " + uploadError.message);
@@ -222,10 +176,11 @@ export function EditProfileDialog({ profile }: { profile: any }) {
         }
 
         // 2. UPDATE PROFILE
+        const username = formData.get('username') as string;
         const { error } = await supabase
             .from('profiles')
             .update({
-                username: formData.get('username'),
+                username: username,
                 full_name: formData.get('full_name'),
                 bio: formData.get('bio'),
                 avatar_url: avatarUrl
@@ -240,8 +195,7 @@ export function EditProfileDialog({ profile }: { profile: any }) {
             setLoading(false);
             setOpen(false);
 
-            const newUsername = formData.get('username') as string;
-            if (newUsername !== profile.username) window.location.href = `/profile/${newUsername}`;
+            if (username !== profile.username) window.location.href = `/profile/${username}`;
             else window.location.reload();
         }
     };
@@ -249,7 +203,12 @@ export function EditProfileDialog({ profile }: { profile: any }) {
     return (
         <Dialog open={open} onOpenChange={(val) => {
             setOpen(val);
-            if (!val) setTimeout(() => { setCropMode(false); setAvatarBlob(null); setPreviewUrl(profile.avatar_url); }, 300);
+            if (!val) setTimeout(() => {
+                setCropMode(false);
+                blobRef.current = null;
+                setPreviewUrl(profile.avatar_url);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+            }, 300);
         }}>
             <DialogTrigger asChild>
                 <Button variant="outline" className="w-full gap-2 border-gray-300 hover:bg-gray-50">
@@ -262,11 +221,40 @@ export function EditProfileDialog({ profile }: { profile: any }) {
                 </DialogHeader>
 
                 {cropMode && selectedImageSrc ? (
-                    <ImageCropper
-                        src={selectedImageSrc}
-                        onCrop={handleCropComplete}
-                        onCancel={handleCropCancel}
-                    />
+                    <div className="flex flex-col h-[400px]">
+                        <div className="relative flex-1 bg-black rounded-lg overflow-hidden mb-4">
+                            <Cropper
+                                image={selectedImageSrc}
+                                crop={crop}
+                                zoom={zoom}
+                                aspect={1}
+                                cropShape="round"
+                                showGrid={false}
+                                onCropChange={setCrop}
+                                onCropComplete={onCropComplete}
+                                onZoomChange={setZoom}
+                                objectFit="contain" // As requested
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-4 px-2 mb-4">
+                            <ZoomOut className="w-4 h-4 text-gray-500" />
+                            <Slider
+                                value={[zoom]}
+                                min={1}
+                                max={3}
+                                step={0.1}
+                                onValueChange={(val) => setZoom(val[0])}
+                                className="flex-1"
+                            />
+                            <ZoomIn className="w-4 h-4 text-gray-500" />
+                        </div>
+
+                        <div className="flex gap-2 w-full">
+                            <Button variant="outline" onClick={handleCropCancel} className="flex-1">İptal</Button>
+                            <Button onClick={executeCrop} className="flex-1 bg-[#ff3f55] hover:bg-[#e63548] text-white">Kaydet</Button>
+                        </div>
+                    </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="grid gap-4 py-4">
                         {/* AVATAR UI */}

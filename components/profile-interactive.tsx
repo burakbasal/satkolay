@@ -21,9 +21,25 @@ export function ProfileAvatar({ src, alt }: { src?: string, alt: string }) {
                 </Avatar>
             </div>
             {isOpen && (
-                <div className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 animate-in fade-in" onClick={() => setIsOpen(false)}>
-                    <button className="absolute top-4 right-4 text-white p-2"><X className="w-8 h-8" /></button>
-                    <img src={src} alt={alt} className="max-w-full max-h-[90vh] object-contain rounded-lg" />
+                <div
+                    className="fixed inset-0 z-[99999] bg-black/95 flex items-center justify-center p-4 animate-in fade-in"
+                    onClick={() => setIsOpen(false)}
+                >
+                    <button className="absolute top-4 right-4 text-white p-2 hover:bg-white/10 rounded-full transition">
+                        <X className="w-8 h-8" />
+                    </button>
+
+                    {/* PC Optimized Container */}
+                    <div
+                        className="relative w-full max-w-2xl aspect-square max-h-[85vh] flex items-center justify-center pointer-events-none"
+                        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the container area (optional but good UX)
+                    >
+                        <img
+                            src={src}
+                            alt={alt}
+                            className="w-full h-full object-contain rounded-lg pointer-events-auto"
+                        />
+                    </div>
                 </div>
             )}
         </>

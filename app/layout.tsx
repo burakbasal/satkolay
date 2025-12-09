@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { BottomNav } from "@/components/bottom-nav";
-import { Toaster } from "@/components/ui/toaster";
 import { Suspense } from "react"; // <--- BU SATIR EKLENDİ
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,7 +35,6 @@ export default function RootLayout({
           <BottomNav />
         </Suspense>
 
-        <Toaster />
       </body>
     </html>
   );

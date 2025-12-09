@@ -19,9 +19,6 @@ type Conversation = {
     updated_at: string;
 };
 
-
-
-
 type Message = { id: string; content: string; sender_id: string; created_at: string };
 
 const QUICK_REPLIES = [
@@ -43,8 +40,9 @@ export default function ChatPage() {
     const [newMessage, setNewMessage] = useState("");
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    const contextItemId = searchParams.get('itemId');
-    const contextSellerId = searchParams.get('sellerId');
+    // URL Params
+    const contextConvId = searchParams.get('id');
+    const offerPrice = searchParams.get('offerPrice');
 
     // 1. INIT
     useEffect(() => {
@@ -74,14 +72,16 @@ export default function ChatPage() {
             if (data) {
                 setConversations(data as any);
 
-                // Eğer URL'den satıcı ve ürünle gelindiyse, o sohbeti bul veya oluştur
-                if (contextSellerId && contextItemId) {
-                    const exist = data.find((c: any) =>
-                        (c.user1.id === contextSellerId || c.user2.id === contextSellerId) &&
-                        c.item_id === contextItemId
-                    );
-                    if (exist) setSelectedChat(exist as any);
-                    else createNewConversation(contextSellerId, contextItemId);
+                // DEEP LINKING: ID ile gelindiyse seç
+                if (contextConvId) {
+                    const exist = data.find((c: any) => c.id === contextConvId);
+                    if (exist) {
+                        setSelectedChat(exist as any);
+                        // Teklif varsa mesaj kutusuna yaz
+                        if (offerPrice) {
+                            setNewMessage(`Teklifim: ${Number(offerPrice).toLocaleString('tr-TR')} TL`);
+                        }
+                    }
                 }
             }
         };
@@ -89,20 +89,7 @@ export default function ChatPage() {
 
         const ch = supabase.channel('public:conversations').on('postgres_changes', { event: '*', schema: 'public', table: 'conversations' }, fetchConvs).subscribe();
         return () => { supabase.removeChannel(ch); };
-    }, [userId, contextSellerId, contextItemId]);
-
-    const createNewConversation = async (sellerId: string, itemId: string) => {
-        const { data } = await supabase
-            .from('conversations')
-            .insert({ user1_id: userId, user2_id: sellerId, item_id: itemId })
-            .select(`*, user1:profiles!user1_id(*), user2:profiles!user2_id(*), item:items(id, title, price, image_urls)`)
-            .single();
-
-        if (data) {
-            setConversations(p => [data as any, ...p]);
-            setSelectedChat(data as any);
-        }
-    };
+    }, [userId, contextConvId, offerPrice]);
 
     // 3. FETCH MESSAGES
     useEffect(() => {
@@ -126,6 +113,8 @@ export default function ChatPage() {
         if (!newMessage.trim() || !selectedChat || !userId) return;
         const msg = newMessage;
         setNewMessage("");
+
+        // Optimistic UI update could go here, but we rely on subscription for now
         await supabase.from('direct_messages').insert({ conversation_id: selectedChat.id, sender_id: userId, content: msg });
         await supabase.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', selectedChat.id);
     };
@@ -135,127 +124,159 @@ export default function ChatPage() {
     if (!userId) return null;
 
     return (
-        <div className="fixed inset-0 z-[9999] bg-white flex h-[100dvh] w-full overflow-hidden">
+        // SPA Layout: Navbar altında kalan alanı kapla
+        <div className="h-[calc(100vh-64px)] w-full flex bg-gray-50 overflow-hidden">
 
-            {/* --- SOL LİSTE --- */}
-            <div className={`w-full md:w-[350px] flex flex-col border-r bg-white ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
-                <div className="h-16 flex items-center justify-between px-4 border-b shrink-0 bg-white">
-                    <span className="font-bold text-lg">Mesajlar</span>
-                    <button onClick={() => router.push('/')} className="md:hidden text-sm text-red-500 font-medium">Kapat</button>
-                </div>
-                <div className="flex-1 overflow-y-auto custom-scrollbar">
-                    {conversations.map(conv => (
-                        <div key={conv.id} onClick={() => setSelectedChat(conv)} className={`flex items-center gap-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 ${selectedChat?.id === conv.id ? 'bg-red-50' : ''}`}>
-                            <Avatar><AvatarImage src={getOther(conv).avatar_url} /><AvatarFallback>{getOther(conv).username?.[0]}</AvatarFallback></Avatar>
-                            <div className="truncate flex-1 min-w-0">
-                                <div className="flex justify-between items-center">
-                                    <span className="font-semibold text-sm text-gray-900">{getOther(conv).full_name || 'Kullanıcı'}</span>
-                                    <span className="text-[10px] text-gray-400">{new Date(conv.updated_at).toLocaleDateString('tr-TR', { month: 'short', day: 'numeric' })}</span>
-                                </div>
-                                {/* ÜRÜN ADI LİSTEDE DE GÖRÜNÜR */}
-                                {conv.item && <div className="text-xs text-[#ff3f55] font-medium truncate">{conv.item.title}</div>}
-                                <div className="text-xs text-gray-500 truncate">Sohbeti aç</div>
-                            </div>
-                            {/* ÜRÜN RESMİ */}
-                            {conv.item?.image_urls?.[0] && (
-                                <div className="w-10 h-10 rounded overflow-hidden border shrink-0 relative">
-                                    <Image src={conv.item.image_urls[0]} alt="" fill className="object-cover" sizes="40px" />
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-                <div className="hidden md:block p-4 border-t">
-                    <Button variant="outline" className="w-full" onClick={() => router.push('/')}>Siteye Dön</Button>
-                </div>
-            </div>
+            <div className="container mx-auto max-w-6xl h-full flex bg-white shadow-lg rounded-xl overflow-hidden my-0 md:my-4 border">
 
-            {/* --- SAĞ EKRAN --- */}
-            <div className={`flex-1 flex flex-col h-full relative bg-white w-full ${!selectedChat ? 'hidden md:flex' : 'flex'}`}>
-                {selectedChat ? (
-                    <>
-                        {/* 1. HEADER (KULLANICI) */}
-                        <div className="h-16 border-b flex items-center justify-between px-4 bg-white shrink-0 z-20 shadow-sm">
-                            <div className="flex items-center gap-2">
-                                <button onClick={() => setSelectedChat(null)} className="md:hidden p-2 -ml-2"><ChevronLeft className="w-6 h-6 text-gray-800" /></button>
-                                <Link href={`/profile/${getOther(selectedChat).username}`} className="flex items-center gap-2 hover:opacity-80">
-                                    <Avatar className="w-9 h-9 border"><AvatarImage src={getOther(selectedChat).avatar_url} /><AvatarFallback>U</AvatarFallback></Avatar>
-                                    <div className="flex flex-col">
-                                        <span className="font-bold text-sm md:text-base truncate leading-none">{getOther(selectedChat).full_name}</span>
-                                        <span className="text-xs text-gray-500">@{getOther(selectedChat).username}</span>
-                                    </div>
-                                </Link>
-                            </div>
-                            <Info className="w-6 h-6 text-gray-400" />
-                        </div>
-
-                        {/* 2. İLAN BAĞLAMI (Varsa, Sabit) */}
-                        {selectedChat.item && (
-                            <div className="bg-gray-50 p-3 flex items-center gap-3 border-b shrink-0 z-10 relative">
-                                <div className="w-12 h-12 relative rounded border bg-white shrink-0 overflow-hidden">
-                                    <Image src={selectedChat.item.image_urls?.[0] || '/placeholder.png'} alt="" fill className="object-cover" sizes="48px" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <Link href={`/item/${selectedChat.item.id}`} className="font-bold text-sm truncate hover:underline block">{selectedChat.item.title}</Link>
-                                    <div className="text-[#ff3f55] font-bold text-xs">{selectedChat.item.price?.toLocaleString('tr-TR')} TL</div>
-                                </div>
-                                <Button size="sm" variant="outline" onClick={() => setNewMessage(`Teklifim: ${selectedChat.item!.price} TL`)} className="h-7 text-xs border-red-200 text-red-500 hover:bg-red-50">
-                                    Teklif Ver
-                                </Button>
+                {/* --- SOL LİSTE --- */}
+                <div className={`w-full md:w-[320px] lg:w-[380px] flex flex-col border-r bg-white ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
+                    <div className="h-16 flex items-center justify-between px-4 border-b shrink-0 bg-gray-50/50">
+                        <span className="font-bold text-lg text-gray-800">Mesajlar</span>
+                    </div>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                        {conversations.length === 0 && (
+                            <div className="p-8 text-center text-gray-400 text-sm">
+                                Henüz hiç mesajınız yok.
                             </div>
                         )}
-
-                        {/* 3. MESAJ LİSTESİ */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-white min-h-0 scroll-smooth">
-                            {messages.map(msg => {
-                                const isMe = msg.sender_id === userId;
-                                return (
-                                    <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`px-4 py-2 rounded-2xl text-sm max-w-[85%] break-words shadow-sm ${isMe ? 'bg-[#ff3f55] text-white rounded-br-none' : 'bg-gray-100 text-gray-900 rounded-bl-none border'}`}>
-                                            {msg.content}
-                                        </div>
+                        {conversations.map(conv => (
+                            <div key={conv.id} onClick={() => setSelectedChat(conv)} className={`flex items-center gap-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 transition-colors ${selectedChat?.id === conv.id ? 'bg-[#fff0f2] border-l-4 border-l-[#ff3f55]' : 'border-l-4 border-l-transparent'}`}>
+                                <Avatar className="w-12 h-12 border"><AvatarImage src={getOther(conv).avatar_url} /><AvatarFallback>{getOther(conv).username?.[0]}</AvatarFallback></Avatar>
+                                <div className="truncate flex-1 min-w-0">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <span className="font-semibold text-sm text-gray-900">{getOther(conv).full_name || 'Kullanıcı'}</span>
+                                        <span className="text-[10px] text-gray-400">{new Date(conv.updated_at).toLocaleDateString('tr-TR', { month: 'short', day: 'numeric' })}</span>
                                     </div>
-                                )
-                            })}
-                            <div ref={scrollRef} className="h-1" />
-                        </div>
 
-                        {/* 4. INPUT ALANI */}
-                        <div className="p-3 bg-white border-t shrink-0 pb-safe w-full">
-                            {/* Quick Replies - Horizontal Scroll */}
-                            <div className="flex gap-2 overflow-x-auto pb-2 mb-1 scrollbar-hide">
-                                {messages.length === 0 && QUICK_REPLIES.map((reply, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => setNewMessage(reply)}
-                                        className="whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-xs font-medium hover:bg-gray-200 transition-colors border border-gray-200"
-                                    >
-                                        {reply}
-                                    </button>
-                                ))}
+                                    {conv.item && (
+                                        <div className="flex items-center gap-1 text-xs font-medium text-gray-700 mb-0.5">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-[#ff3f55]"></span>
+                                            <span className="truncate">{conv.item.title}</span>
+                                        </div>
+                                    )}
+                                    <div className="text-xs text-gray-500 truncate">Sohbeti görüntüle</div>
+                                </div>
+                                {conv.item?.image_urls?.[0] && (
+                                    <div className="w-12 h-12 rounded-lg overflow-hidden border shrink-0 bg-gray-100">
+                                        <Image src={conv.item.image_urls[0]} alt="" width={48} height={48} className="w-full h-full object-cover" />
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* --- SAĞ EKRAN --- */}
+                <div className={`flex-1 flex flex-col h-full bg-slate-50 relative ${!selectedChat ? 'hidden md:flex' : 'flex'}`}>
+                    {selectedChat ? (
+                        <>
+                            {/* HEADER */}
+                            <div className="h-16 border-b flex items-center justify-between px-4 bg-white shrink-0 shadow-sm z-10">
+                                <div className="flex items-center gap-3">
+                                    <button onClick={() => setSelectedChat(null)} className="md:hidden p-1.5 -ml-2 rounded-full hover:bg-gray-100"><ChevronLeft className="w-6 h-6 text-gray-600" /></button>
+                                    <Link href={`/profile/${getOther(selectedChat).username}`} className="flex items-center gap-3 group">
+                                        <div className="relative">
+                                            <Avatar className="w-10 h-10 border border-gray-200"><AvatarImage src={getOther(selectedChat).avatar_url} /><AvatarFallback>U</AvatarFallback></Avatar>
+                                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-sm text-gray-900 group-hover:underline">{getOther(selectedChat).full_name}</span>
+                                            <span className="text-xs text-gray-500">Çevrimiçi</span>
+                                        </div>
+                                    </Link>
+                                </div>
+                                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-600">
+                                    <Info className="w-5 h-5" />
+                                </Button>
                             </div>
 
-                            <form onSubmit={sendMessage} className="flex items-center gap-2 w-full">
-                                <div className="flex-1 relative">
+                            {/* İLAN BAĞLAMI */}
+                            {selectedChat.item && (
+                                <div className="bg-white px-4 py-3 flex items-center gap-4 border-b shrink-0 shadow-sm">
+                                    <div className="w-12 h-12 relative rounded-md border bg-gray-100 shrink-0 overflow-hidden">
+                                        <Image src={selectedChat.item.image_urls?.[0] || '/placeholder.png'} alt="" fill className="object-cover" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <Link href={`/item/${selectedChat.item.id}`} className="font-bold text-sm text-gray-800 truncate hover:text-[#ff3f55] transition-colors block">
+                                            {selectedChat.item.title}
+                                        </Link>
+                                        <div className="text-[#ff3f55] font-black text-sm">{selectedChat.item.price?.toLocaleString('tr-TR')} TL</div>
+                                    </div>
+                                    <Button
+                                        size="sm"
+                                        className="h-9 px-4 bg-[#ff3f55] hover:bg-[#e63548] text-white font-bold"
+                                        onClick={() => setNewMessage(`Teklifim: ${selectedChat.item!.price} TL`)}
+                                    >
+                                        Teklif Ver
+                                    </Button>
+                                </div>
+                            )}
+
+                            {/* MESAJLAR */}
+                            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 min-h-0">
+                                <div className="text-center text-xs text-gray-400 py-4">Sohbet Başladı • {new Date(selectedChat.updated_at).toLocaleDateString('tr-TR')}</div>
+                                {messages.map(msg => {
+                                    const isMe = msg.sender_id === userId;
+                                    return (
+                                        <div key={msg.id} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}>
+                                            <div className={`max-w-[80%] md:max-w-[70%] px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed ${isMe
+                                                    ? 'bg-[#ff3f55] text-white rounded-tr-none'
+                                                    : 'bg-white text-gray-900 border rounded-tl-none'
+                                                }`}>
+                                                {msg.content}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                                <div ref={scrollRef} className="h-2" />
+                            </div>
+
+                            {/* INPUT */}
+                            <div className="p-4 bg-white border-t shrink-0">
+                                {/* Hızlı Yanıtlar */}
+                                {!newMessage && messages.length > 0 && messages[messages.length - 1].sender_id !== userId && (
+                                    <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">
+                                        {QUICK_REPLIES.map((reply, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => setNewMessage(reply)}
+                                                className="whitespace-nowrap px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-xs font-semibold hover:bg-gray-200 transition-colors"
+                                            >
+                                                {reply}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <form onSubmit={sendMessage} className="flex items-center gap-3">
                                     <input
-                                        className="w-full bg-gray-100 rounded-full py-3 pl-5 pr-4 text-sm outline-none focus:ring-2 focus:ring-red-200 transition-all"
-                                        placeholder="Mesaj yaz..."
+                                        className="flex-1 bg-gray-100 rounded-full py-3.5 px-6 text-sm outline-none focus:ring-2 focus:ring-red-100 focus:bg-white transition-all border border-transparent focus:border-red-200"
+                                        placeholder="Bir mesaj yazın..."
                                         value={newMessage}
                                         onChange={e => setNewMessage(e.target.value)}
                                         autoComplete="off"
                                     />
-                                </div>
-                                <button type="submit" disabled={!newMessage.trim()} className="p-3 bg-[#ff3f55] text-white rounded-full disabled:opacity-50 hover:bg-red-600 transition shrink-0 shadow-sm flex items-center justify-center">
-                                    <Send className="w-5 h-5" />
-                                </button>
-                            </form>
+                                    <button
+                                        type="submit"
+                                        disabled={!newMessage.trim()}
+                                        className="w-12 h-12 flex items-center justify-center bg-[#ff3f55] text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#e63548] transition-all shadow-md active:scale-95"
+                                    >
+                                        <Send className="w-5 h-5 ml-0.5" />
+                                    </button>
+                                </form>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center text-gray-400 p-8 text-center bg-gray-50/50">
+                            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                <Send className="w-10 h-10 text-gray-300" />
+                            </div>
+                            <h3 className="text-gray-900 font-bold text-lg mb-2">Henüz bir sohbet seçmediniz</h3>
+                            <p className="max-w-xs mx-auto text-sm">Soldaki listeden bir konuşma seçin veya ilanlardan satıcılara mesaj atın.</p>
                         </div>
-                    </>
-                ) : (
-                    <div className="flex-1 flex items-center justify-center text-gray-400 text-sm flex-col gap-3">
-                        <p>Sohbet seçiniz</p>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </div>
     );

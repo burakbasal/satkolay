@@ -108,8 +108,18 @@ export function Navbar() {
     }, []);
 
     useEffect(() => {
-        const getUser = async () => { const { data: { user } } = await supabase.auth.getUser(); setUser(user); };
-        getUser();
+        // İlk yüklemede kullanıcıyı çek
+        supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+        // Değişiklikleri dinle (Giriş/Çıkış anında tetiklenir)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            setUser(session?.user ?? null);
+            if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+                router.refresh(); // Sunucu bileşenlerini de tazelemek için
+            }
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
     const handleSignOut = async () => { await supabase.auth.signOut(); router.refresh(); setUser(null); };

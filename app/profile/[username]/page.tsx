@@ -30,8 +30,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
 
     let itemsQuery = supabase
         .from('items')
-        .select('*, profiles!items_user_id_fkey(*)')
-        .eq('user_id', profile.id)
+        .select('*')
+        .eq('seller_id', profile.id)
         .order('created_at', { ascending: false });
 
     // Ziyaretçi ise sadece active olanları görsün. Sahibi ise her şeyi (filtre yok).

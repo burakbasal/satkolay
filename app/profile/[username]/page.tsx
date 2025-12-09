@@ -21,23 +21,23 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
 
     if (!profile) return notFound();
 
-    // 2. OTURUM KONTROLÜ (Giriş yapan kim?)
+    // 2. OTURUM KONTROLÜ
     const { data: { user } } = await supabase.auth.getUser();
     const isOwner = user?.id === profile.id;
     const currentUserId = user?.id;
 
     // 3. İLANLARI ÇEK (KESİNLİKLE PROFILE.ID İLE)
-    // Filtre mantığı: Sahibi ise her şeyi görsün, başkası sadece yayındakileri.
+    // Eğer user.id !== profile.id ise sadece active ilanları göster.
     const statusFilter = isOwner ? ['active', 'pending', 'rejected', 'sold'] : ['active'];
 
     const { data: items } = await supabase
         .from('items')
         .select('*, profiles!items_user_id_fkey(*)')
-        .eq('user_id', profile.id)
+        .eq('user_id', profile.id) // KESİNLİKLE PROFILE ID
         .in('status', statusFilter)
         .order('created_at', { ascending: false });
 
-    // 4. DİĞER BİLGİLER
+    // 4. DİĞER VERİLER
     const [followersRes, followingRes, reviewsRes, isFollowingRes] = await Promise.all([
         supabase.from('follows').select('*, follower:profiles!follows_follower_id_fkey(*)').eq('following_id', profile.id),
         supabase.from('follows').select('*, following:profiles!follows_following_id_fkey(*)').eq('follower_id', profile.id),
@@ -103,7 +103,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
                     </div>
                 </aside>
 
-                {/* SAĞ PANEL (İLANLAR) */}
+                {/* SAĞ PANEL */}
                 <main className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-2xl font-bold text-gray-900">İlanlar</h2>

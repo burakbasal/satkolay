@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { Home, LayoutGrid, Camera, MessageCircle, User } from 'lucide-react';
 
 export function BottomNav() {
@@ -13,6 +14,14 @@ export function BottomNav() {
         if (path === '/profile' && pathname.startsWith('/profile')) return 'text-[#ff3f55]';
         return pathname === path ? 'text-[#ff3f55]' : 'text-gray-500';
     };
+
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) return null;
 
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 pb-safe flex justify-between items-center z-50 md:hidden h-16">

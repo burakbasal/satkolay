@@ -6,13 +6,8 @@ import { ClientLayout } from "@/components/client-layout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SatKolay - İkinci Elin En Kolay Hali",
-  description: "Türkiye'nin en hızlı büyüyen ikinci el pazar yeri.",
-  icons: {
-    icon: '/icon.png',
-    shortcut: '/icon.png',
-    apple: '/icon.png',
-  }
+  title: "SatKolay",
+  description: "İkinci elin adresi"
 };
 
 export default function RootLayout({

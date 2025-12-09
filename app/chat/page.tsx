@@ -124,24 +124,24 @@ export default function ChatPage() {
     if (!userId) return null;
 
     return (
+    return (
         // FIXED MARKETPLACE LAYOUT
-        // Ana Kapsayıcı: Ekranın kalanını kaplar, taşma yapmaz.
-        <div className="h-[calc(100vh-65px)] w-full flex bg-gray-50 overflow-hidden">
+        // Ana Kapsayıcı: Navbar (4rem) hariç tüm ekranı kapla. Scrollbar yok.
+        <div className="h-[calc(100vh-4rem)] w-full flex bg-gray-50 overflow-hidden">
 
             {/* --- SOL LİSTE (SIDEBAR) --- */}
-            {/* Mobilde varsayılan, Seçili sohbet varsa gizli. PC'de hep 1/3 genişlikte */}
             <div className={`
-                w-full md:w-1/3 
-                h-full flex flex-col 
-                bg-white border-r border-gray-200 
+                hidden md:flex w-80 
+                flex-col border-r h-full overflow-y-auto 
+                bg-white border-gray-200
                 ${selectedChat ? 'hidden md:flex' : 'flex'}
             `}>
-                {/* Sidebar Header - Sabit */}
+                {/* Sidebar Header */}
                 <div className="h-16 flex items-center justify-between px-4 border-b shrink-0 bg-white">
                     <span className="font-bold text-lg text-gray-900">Mesajlar</span>
                 </div>
 
-                {/* Sidebar List - Kayan */}
+                {/* Sidebar List */}
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
                     {conversations.length === 0 && (
                         <div className="p-8 text-center text-gray-400 text-sm">
@@ -179,16 +179,15 @@ export default function ChatPage() {
             </div>
 
             {/* --- SAĞ EKRAN (CHAT PENCERESİ) --- */}
-            {/* PC'de flex-1 (kalan yer), Mobilde seçili sohbet varsa tam ekran */}
             <div className={`
                 flex-1 flex flex-col 
-                h-full bg-[#f8f9fa] 
+                h-full relative bg-[#f8f9fa]
                 ${!selectedChat ? 'hidden md:flex' : 'flex'}
             `}>
                 {selectedChat ? (
                     <>
                         {/* 1. HEADER - SABİT */}
-                        <div className="h-16 bg-white border-b flex items-center justify-between px-4 shrink-0 shadow-sm z-10">
+                        <div className="h-16 flex-none bg-white border-b flex items-center justify-between px-4 z-10 shadow-sm">
                             <div className="flex items-center gap-3">
                                 <button onClick={() => setSelectedChat(null)} className="md:hidden p-2 -ml-2 rounded-full hover:bg-gray-100 transition">
                                     <ChevronLeft className="w-6 h-6 text-gray-600" />
@@ -217,9 +216,9 @@ export default function ChatPage() {
                             </Button>
                         </div>
 
-                        {/* 2. İLAN BAĞLAMI - SABİT (Eğer varsa) */}
+                        {/* 2. İLAN BAĞLAMI - SABİT */}
                         {selectedChat.item && (
-                            <div className="bg-white px-4 py-3 flex items-center gap-4 border-b shrink-0 shadow-sm whitespace-nowrap overflow-x-auto scrollbar-hide">
+                            <div className="flex-none bg-white px-4 py-3 flex items-center gap-4 border-b shrink-0 shadow-sm whitespace-nowrap overflow-x-auto scrollbar-hide">
                                 <div className="w-12 h-12 relative rounded-md border bg-gray-100 shrink-0 overflow-hidden">
                                     <Image src={selectedChat.item.image_urls?.[0] || '/placeholder.png'} alt="" fill className="object-cover" />
                                 </div>
@@ -239,7 +238,7 @@ export default function ChatPage() {
                             </div>
                         )}
 
-                        {/* 3. MESAJ LİSTESİ - KAYAN KISIM (FLEX-1) */}
+                        {/* 3. MESAJ LİSTESİ - KAYAN KISIM */}
                         <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 bg-[#eef2f5] scrollbar-hide">
                             <div className="text-center text-xs text-gray-400 py-4">Sohbet Başladı • {new Date(selectedChat.updated_at).toLocaleDateString('tr-TR')}</div>
                             {messages.map(msg => {
@@ -258,8 +257,8 @@ export default function ChatPage() {
                             <div ref={scrollRef} className="h-2" />
                         </div>
 
-                        {/* 4. INPUT ALANI - SABİT (STICKY BOTTOM GİBİ) */}
-                        <div className="p-4 bg-white border-t shrink-0">
+                        {/* 4. INPUT ALANI - SABİT */}
+                        <div className="flex-none p-4 border-t bg-white z-10">
                             {/* Hızlı Yanıtlar */}
                             {!newMessage && (
                                 <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">

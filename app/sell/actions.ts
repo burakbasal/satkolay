@@ -59,6 +59,12 @@ export async function createListing(formData: FormData) {
     // Tüm resimlerin yüklenmesini bekle
     const uploadedUrls = (await Promise.all(uploadPromises)).filter(url => url !== null) as string[];
 
+    console.log('[DEBUG] Uploaded Images:', uploadedUrls);
+
+    if (images.length > 0 && uploadedUrls.length === 0) {
+        return { error: 'Görseller yüklenemedi. Lütfen tekrar deneyin.' };
+    }
+
     // 5. Veritabanına Kayıt
     const { data, error } = await supabase.from('items').insert({
         title,

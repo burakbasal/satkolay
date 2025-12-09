@@ -69,6 +69,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
             .from('items')
             .select('*, profiles!items_user_id_fkey(*)') // İlişkiyi garantiye al
             .eq('user_id', profile.id) // KRİTİK NOKTA: profile.id KULLANILACAK
+            .eq('user_id', profile.id) // KRİTİK NOKTA: profile.id KULLANILACAK
+            // Owner ise filtre yok (Hepsini görsün), değilse sadece Active/Sold
             .in('status', isOwner ? ['active', 'pending', 'rejected', 'sold'] : ['active', 'sold'])
             .order('created_at', { ascending: false }),
 

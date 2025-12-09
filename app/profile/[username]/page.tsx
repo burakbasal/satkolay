@@ -27,7 +27,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
     const currentUserId = user?.id;
 
     // 3. İLANLARI ÇEK (KESİNLİKLE PROFILE.ID İLE)
-    // Eğer user.id !== profile.id ise sadece active ilanları göster.
+    // Filtre: Sahibi ise her şeyi görsün, başkası sadece yayındakileri.
     const statusFilter = isOwner ? ['active', 'pending', 'rejected', 'sold'] : ['active'];
 
     const { data: items } = await supabase

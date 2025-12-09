@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
 import { BottomNav } from "@/components/bottom-nav";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
+import { Suspense } from "react"; // <--- BU SATIR EKLENDİ
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,36 +20,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
-      <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50`}>
-        {/* Üst Menü */}
-        <Navbar />
+      <body className={inter.className}>
 
-        {/* Ana İçerik */}
-        <main className="flex-1 pb-20 md:pb-0">
+        {/* Navbar'ı Suspense içine aldık (Hata Çözücü) */}
+        <Suspense fallback={<div className="h-16 bg-white border-b" />}>
+          <Navbar />
+        </Suspense>
+
+        <main className="min-h-screen pb-16 md:pb-0">
           {children}
         </main>
 
-        {/* Alt Menü (Sadece Masaüstü) */}
-        <Footer />
+        {/* BottomNav'ı Suspense içine aldık (Hata Çözücü) */}
+        <Suspense fallback={null}>
+          <BottomNav />
+        </Suspense>
 
-        {/* Mobil Alt Navigasyon (Sadece Mobil) */}
-        <BottomNav />
-
-        {/* Bildirimler */}
-        <Toaster
-          position="top-center"
-          richColors
-          closeButton
-          theme="light"
-          toastOptions={{
-            classNames: {
-              toast: 'bg-white border-border shadow-lg rounded-xl',
-              title: 'text-gray-900 font-bold',
-              description: 'text-gray-500',
-              actionButton: 'bg-red-500 text-white',
-            },
-          }}
-        />
+        <Toaster />
       </body>
     </html>
   );

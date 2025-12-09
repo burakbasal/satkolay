@@ -72,8 +72,8 @@ export default function AuthPage() {
             toast.error("Giriş başarısız: " + error.message);
             setLoading(false);
         } else {
-            router.push('/');
             router.refresh();
+            router.push('/');
         }
     };
 

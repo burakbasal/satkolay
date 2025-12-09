@@ -27,15 +27,19 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
     const currentUserId = user?.id;
 
     // 3. İLANLARI ÇEK (KESİNLİKLE PROFILE.ID İLE)
-    // Filtre: Sahibi ise her şeyi görsün, başkası sadece yayındakileri.
-    const statusFilter = isOwner ? ['active', 'pending', 'rejected', 'sold'] : ['active'];
 
-    const { data: items } = await supabase
+    let itemsQuery = supabase
         .from('items')
         .select('*, profiles!items_user_id_fkey(*)')
-        .eq('user_id', profile.id) // KESİNLİKLE PROFILE ID
-        .in('status', statusFilter)
+        .eq('user_id', profile.id)
         .order('created_at', { ascending: false });
+
+    // Ziyaretçi ise sadece active olanları görsün. Sahibi ise her şeyi (filtre yok).
+    if (!isOwner) {
+        itemsQuery = itemsQuery.eq('status', 'active');
+    }
+
+    const { data: items } = await itemsQuery;
 
     // 4. DİĞER VERİLER
     const [followersRes, followingRes, reviewsRes, isFollowingRes] = await Promise.all([

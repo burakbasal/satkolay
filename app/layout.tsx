@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import dynamic from 'next/dynamic';
-
-const Navbar = dynamic(() => import('@/components/navbar').then(mod => mod.Navbar), { ssr: false });
-const BottomNav = dynamic(() => import('@/components/bottom-nav').then(mod => mod.BottomNav), { ssr: false });
+import { ClientLayout } from "@/components/client-layout";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,15 +24,11 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <body className={inter.className}>
-
-        <Navbar />
-
+        <ClientLayout />
         <main className="min-h-screen pb-16 md:pb-0">
           {children}
         </main>
-
-        <BottomNav />
-
+        <Toaster />
       </body>
     </html>
   );

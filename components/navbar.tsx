@@ -32,8 +32,8 @@ function DesktopSearchBar() {
         <form onSubmit={handleSearch} className="flex-1 relative max-w-3xl mx-6">
             <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Search className="h-5 w-5 text-gray-400" /></div>
-                <input type="text" className="block w-full pl-9 pr-8 py-1.5 bg-gray-100 rounded-full focus:bg-white focus:ring-1 focus:ring-[#ff3f55] outline-none transition-all placeholder:text-[11px] text-xs h-8" placeholder="Ürün, marka, kategori ara..." value={query} onChange={(e) => setQuery(e.target.value)} />
-                {query && <button type="button" onClick={() => { setQuery(""); router.push('/search'); }} className="absolute inset-y-0 right-0 pr-2 flex items-center text-gray-400 hover:text-gray-600"><X className="h-4 w-4" /></button>}
+                <input type="text" className="block w-full pl-11 pr-10 py-2 bg-gray-100 rounded-full focus:bg-white focus:ring-1 focus:ring-[#ff3f55] outline-none transition-all placeholder:text-gray-500 text-base h-11" placeholder="Ürün, marka, kategori ara..." value={query} onChange={(e) => setQuery(e.target.value)} />
+                {query && <button type="button" onClick={() => { setQuery(""); router.push('/search'); }} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"><X className="h-5 w-5" /></button>}
             </div>
         </form>
     );
@@ -62,13 +62,13 @@ function MobileSearchBar() {
 
     return (
         <form onSubmit={handleSearch} className="flex-1 min-w-0 mx-2">
-            <div className="relative flex items-center h-10"> {/* Yükseklik sabitlendi: h-10 */}
+            <div className="relative flex items-center h-11"> {/* Yükseklik h-11 yapıldı */}
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="w-4 h-4 text-gray-400" />
+                    <Search className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                     type="text"
-                    className="w-full h-full bg-gray-100 rounded-full pl-9 pr-8 text-sm focus:bg-white focus:ring-1 focus:ring-[#ff3f55] outline-none transition-all placeholder:text-gray-500"
+                    className="w-full h-full bg-gray-100 rounded-full pl-10 pr-9 text-base focus:bg-white focus:ring-1 focus:ring-[#ff3f55] outline-none transition-all placeholder:text-gray-500"
                     placeholder="Ara..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -80,7 +80,7 @@ function MobileSearchBar() {
                         onClick={clearSearch}
                         className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 active:text-gray-600"
                     >
-                        <X className="w-4 h-4" />
+                        <X className="w-5 h-5" />
                     </button>
                 )}
             </div>
@@ -132,8 +132,7 @@ export function Navbar() {
             <div className="flex md:hidden items-center justify-between px-3 h-16 border-b bg-white sticky top-0 z-50 w-full">
 
                 {/* 0. HAMBURGER MENU (Sadece Desktop'ta göster, Mobilde GİZLE: hidden md:flex) */}
-                {/* 0. HAMBURGER MENU (Sadece Desktop'ta göster, Mobilde GİZLE: hidden md:flex) */}
-                {isMounted ? (
+                {isMounted && (
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon" className="mr-2 shrink-0 hidden md:flex">
@@ -143,7 +142,7 @@ export function Navbar() {
                         <SheetContent side="left" className="p-0 w-80 bg-white">
                             <div className="h-full flex flex-col">
                                 <div className="p-4 border-b">
-                                    <span className="text-xl font-black text-[#ff3f55]">SatKolay</span>
+                                    <span className="text-3xl font-black text-[#ff3f55]">SatKolay</span>
                                 </div>
                                 <div className="flex-1 overflow-y-auto p-4">
                                     <div className="py-4">
@@ -161,27 +160,28 @@ export function Navbar() {
                             </div>
                         </SheetContent>
                     </Sheet>
-                ) : (
+                )}
+                {!isMounted && (
                     <Button variant="ghost" size="icon" className="mr-2 shrink-0 hidden md:flex">
                         <Menu className="w-6 h-6 text-gray-700" />
                     </Button>
                 )}
 
-                {/* 1. LOGO: Flex center ile dikey ortalandı */}
-                <Link href="/" className="flex items-center h-10 shrink-0">
-                    <span className="text-xl font-black text-[#ff3f55] tracking-tighter leading-none">SatKolay</span>
+                {/* 1. LOGO: Flex center ile dikey ortalandı (Daha BÜYÜK) */}
+                <Link href="/" className="flex items-center h-11 shrink-0">
+                    <span className="text-2xl font-black text-[#ff3f55] tracking-tighter leading-none">SatKolay</span>
                 </Link>
 
                 {/* 2. ARAMA: Suspense içine alındı */}
-                <Suspense fallback={<div className="flex-1 h-10 bg-gray-100 rounded-full mx-2" />}>
+                <Suspense fallback={<div className="flex-1 h-11 bg-gray-100 rounded-full mx-2" />}>
                     <MobileSearchBar />
                 </Suspense>
 
                 <div className="shrink-0 mr-1">
                     <LocationPicker />
                 </div>
-                {/* 3. BİLDİRİM: h-10 ile diğerleriyle aynı yüksekliğe getirildi */}
-                <Link href="/notifications" className="flex items-center justify-center h-10 w-10 text-gray-600 shrink-0 relative hover:bg-gray-50 rounded-full">
+                {/* 3. BİLDİRİM: h-11 ile diğerleriyle aynı yüksekliğe getirildi */}
+                <Link href="/notifications" className="flex items-center justify-center h-11 w-11 text-gray-600 shrink-0 relative hover:bg-gray-50 rounded-full">
                     <Bell className="w-6 h-6" />
                     <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
                 </Link>
@@ -189,18 +189,18 @@ export function Navbar() {
 
             {/* --- MASAÜSTÜ HEADER (Aynen Korundu) --- */}
             <div className="hidden md:block w-full">
-                <div className="h-14 flex items-center justify-between">
-                    <Link href="/" className="text-xl font-black text-[#ff3f55] tracking-tighter shrink-0">SatKolay</Link>
-                    <Suspense fallback={<div className="h-8 bg-gray-100 rounded-full flex-1 mx-6"></div>}><DesktopSearchBar /></Suspense>
+                <div className="h-16 flex items-center justify-between">
+                    <Link href="/" className="text-3xl font-black text-[#ff3f55] tracking-tighter shrink-0">SatKolay</Link>
+                    <Suspense fallback={<div className="h-11 bg-gray-100 rounded-full flex-1 mx-6"></div>}><DesktopSearchBar /></Suspense>
                     <div className="flex items-center gap-3 shrink-0">
                         <LocationPicker />
                         {user ? (
                             <div className="flex items-center gap-3">
-                                <Link href="/profile/favorites" className="p-1.5 hover:bg-gray-100 rounded-full text-gray-600"><Heart className="w-5 h-5" /></Link>
-                                <Link href="/chat" className="p-1.5 hover:bg-gray-100 rounded-full text-gray-600"><MessageCircle className="w-5 h-5" /></Link>
-                                <Link href="/notifications" className="p-1.5 hover:bg-gray-100 rounded-full text-gray-600"><Bell className="w-5 h-5" /></Link>
+                                <Link href="/profile/favorites" className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><Heart className="w-6 h-6" /></Link>
+                                <Link href="/chat" className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><MessageCircle className="w-6 h-6" /></Link>
+                                <Link href="/notifications" className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><Bell className="w-6 h-6" /></Link>
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger asChild><Button variant="ghost" className="relative h-8 w-8 rounded-full ml-1"><Avatar className="h-8 w-8 border"><AvatarImage src={user.user_metadata?.avatar_url} /><AvatarFallback><User className="w-4 h-4" /></AvatarFallback></Avatar></Button></DropdownMenuTrigger>
+                                    <DropdownMenuTrigger asChild><Button variant="ghost" className="relative h-11 w-11 rounded-full ml-1"><Avatar className="h-10 w-10 border"><AvatarImage src={user.user_metadata?.avatar_url} /><AvatarFallback><User className="w-5 h-5" /></AvatarFallback></Avatar></Button></DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-64" align="end">
                                         <DropdownMenuLabel>
                                             <div className="flex flex-col space-y-1">
@@ -209,38 +209,38 @@ export function Navbar() {
                                             </div>
                                         </DropdownMenuLabel>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem asChild><Link href="/profile" className="cursor-pointer w-full">Profilim</Link></DropdownMenuItem>
-                                        <DropdownMenuItem asChild><Link href="/profile/listings" className="cursor-pointer w-full">İlanlarım</Link></DropdownMenuItem>
-                                        <DropdownMenuItem asChild><Link href="/profile/favorites" className="cursor-pointer w-full">Favorilerim</Link></DropdownMenuItem>
-                                        <DropdownMenuItem asChild><Link href="/profile/settings" className="cursor-pointer w-full font-medium">Ayarlar</Link></DropdownMenuItem>
+                                        <DropdownMenuItem asChild><Link href="/profile" className="cursor-pointer w-full text-base">Profilim</Link></DropdownMenuItem>
+                                        <DropdownMenuItem asChild><Link href="/profile/listings" className="cursor-pointer w-full text-base">İlanlarım</Link></DropdownMenuItem>
+                                        <DropdownMenuItem asChild><Link href="/profile/favorites" className="cursor-pointer w-full text-base">Favorilerim</Link></DropdownMenuItem>
+                                        <DropdownMenuItem asChild><Link href="/profile/settings" className="cursor-pointer w-full font-medium text-base">Ayarlar</Link></DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer w-full focus:text-red-600 focus:bg-red-50">Çıkış Yap</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer w-full focus:text-red-600 focus:bg-red-50 text-base">Çıkış Yap</DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                                 <PwaInstallButton />
-                                <Link href="/sell" className="ml-2 flex items-center gap-1.5 bg-[#ff3f55] text-white px-4 py-1.5 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-sm text-xs h-8"><Camera className="w-3.5 h-3.5" /> <span>SAT</span></Link>
+                                <Link href="/sell" className="ml-2 flex items-center gap-2 bg-[#ff3f55] text-white px-5 py-2.5 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-sm text-sm h-11"><Camera className="w-5 h-5" /> <span>SAT</span></Link>
                             </div>
                         ) : (
                             <div className="flex items-center gap-4">
-                                <Link href="/login" className="font-bold text-gray-700 hover:text-[#ff3f55] px-2">Giriş</Link>
-                                <Link href="/sell" className="flex items-center gap-2 bg-[#ff3f55] text-white px-6 py-3 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-md"><Camera className="w-5 h-5" /> <span>Sat</span></Link>
+                                <Link href="/login" className="font-bold text-gray-700 hover:text-[#ff3f55] px-3 text-base">Giriş</Link>
+                                <Link href="/sell" className="flex items-center gap-2 bg-[#ff3f55] text-white px-6 py-2.5 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-md h-11 text-sm"><Camera className="w-5 h-5" /> <span>Sat</span></Link>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* Mega Menü */}
-                <div className="h-12 flex items-center gap-6 border-t py-2 relative">
+                <div className="h-14 flex items-center gap-6 border-t py-2 relative">
                     <div className="group h-full flex items-center">
-                        <button className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1 text-[11px] font-bold text-gray-700 hover:bg-gray-200 group-hover:bg-gray-200 transition-colors h-8">
-                            <LayoutGrid className="w-4 h-4" /> <span>Tüm Kategoriler</span> <ChevronDown className="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" />
+                        <button className="flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-200 group-hover:bg-gray-200 transition-colors h-10">
+                            <LayoutGrid className="w-5 h-5" /> <span>Tüm Kategoriler</span> <ChevronDown className="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" />
                         </button>
                         <div className="absolute top-full left-0 right-0 pt-6 -mt-2 hidden group-hover:block z-[999]">
                             <div className="bg-white shadow-xl rounded-b-xl border border-t-0 border-gray-100 overflow-hidden flex min-h-[500px]">
                                 <div className="w-1/4 bg-gray-50 py-3 border-r border-gray-100 max-h-[600px] overflow-y-auto">
                                     {MASTER_DATA.map((cat, idx) => (
                                         <div key={idx} onMouseEnter={() => setActiveCategory(cat.id)} className={`flex items-center justify-between px-6 py-3 cursor-pointer transition-colors ${activeCategory === cat.id ? 'bg-white text-[#ff3f55] font-bold border-l-4 border-[#ff3f55]' : 'text-gray-600 hover:bg-gray-100'}`}>
-                                            <div className="flex items-center gap-3">{cat.icon && <cat.icon className="w-5 h-5" />}<span>{cat.title}</span></div>
+                                            <div className="flex items-center gap-3">{cat.icon && <cat.icon className="w-6 h-6" />}<span className="text-base">{cat.title}</span></div>
                                             {activeCategory === cat.id && <ChevronRight className="w-4 h-4" />}
                                         </div>
                                     ))}
@@ -250,19 +250,19 @@ export function Navbar() {
                                         <div className="grid grid-cols-3 gap-y-10 gap-x-8">
                                             {activeCategoryData.subCategories?.map((sub, idx) => (
                                                 <div key={idx} className="break-inside-avoid">
-                                                    <Link href={sub.href || '#'} className="block font-bold text-[#ff3f55] mb-3 hover:underline text-base">{sub.title}</Link>
+                                                    <Link href={sub.href || '#'} className="block font-bold text-[#ff3f55] mb-3 hover:underline text-lg">{sub.title}</Link>
                                                     <ul className="space-y-2">
                                                         {sub.items?.map((item, i) => (
                                                             <li key={i}>
                                                                 <Link
                                                                     href={`${sub.href}&query=${item}`}
-                                                                    className="text-[13px] text-gray-600 hover:text-black hover:underline block"
+                                                                    className="text-sm text-gray-600 hover:text-black hover:underline block"
                                                                 >
                                                                     {item}
                                                                 </Link>
                                                             </li>
                                                         ))}
-                                                        <li><Link href={sub.href || '#'} className="text-xs font-bold text-gray-900 hover:underline mt-1 inline-block">Tümünü Gör ›</Link></li>
+                                                        <li><Link href={sub.href || '#'} className="text-sm font-bold text-gray-900 hover:underline mt-1 inline-block">Tümünü Gör ›</Link></li>
                                                     </ul>
                                                 </div>
                                             ))}
@@ -273,7 +273,7 @@ export function Navbar() {
                         </div>
                     </div>
                     <div className="flex items-center gap-6 overflow-hidden mask-linear">
-                        {MASTER_DATA.slice(0, 8).map((cat, idx) => <Link key={idx} href={cat.href || '#'} className="text-gray-600 hover:text-[#ff3f55] text-[11px] font-medium whitespace-nowrap">{cat.title}</Link>)}
+                        {MASTER_DATA.slice(0, 8).map((cat, idx) => <Link key={idx} href={cat.href || '#'} className="text-gray-600 hover:text-[#ff3f55] text-sm font-medium whitespace-nowrap">{cat.title}</Link>)}
                     </div>
                 </div>
             </div>

@@ -124,21 +124,20 @@ export default function ChatPage() {
     if (!userId) return null;
 
     return (
-    return (
-        <div className="min-h-screen w-full max-w-[1280px] mx-auto flex flex-col md:flex-row gap-4 py-6 px-4 md:px-0">
+        <div className="h-[calc(100vh-140px)] min-h-[500px] w-full max-w-[1280px] mx-auto flex gap-4">
             {/* --- SOL LİSTE (SIDEBAR) --- */}
             <div className={`
-                w-full md:w-1/3 
-                bg-white rounded-lg border border-gray-200 h-fit
-                ${selectedChat ? 'hidden md:block' : 'block'}
+                w-full md:w-1/3 h-full
+                bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col
+                ${selectedChat ? 'hidden md:flex' : 'flex'}
             `}>
                 {/* Sidebar Header */}
-                <div className="h-16 flex items-center justify-between px-4 border-b bg-white rounded-t-lg">
+                <div className="h-16 flex items-center justify-between px-4 border-b bg-white shrink-0">
                     <span className="font-bold text-lg text-gray-900">Mesajlar</span>
                 </div>
 
                 {/* Sidebar List */}
-                <div className="py-2">
+                <div className="flex-1 overflow-y-auto">
                     {conversations.length === 0 && (
                         <div className="p-8 text-center text-gray-400 text-sm">
                             Henüz hiç mesajınız yok.
@@ -148,7 +147,7 @@ export default function ChatPage() {
                         <div
                             key={conv.id}
                             onClick={() => setSelectedChat(conv)}
-                            className={`flex items-center gap-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors ${selectedChat?.id === conv.id ? 'bg-red-50 border-l-4 border-l-[#ff3f55]' : 'border-l-4 border-l-transparent'}`}
+                            className={`flex items-center gap-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 transition-colors ${selectedChat?.id === conv.id ? 'bg-red-50 border-l-4 border-l-[#ff3f55]' : 'border-l-4 border-l-transparent'}`}
                         >
                             <Avatar className="w-12 h-12 border border-gray-100"><AvatarImage src={getOther(conv).avatar_url} /><AvatarFallback>{getOther(conv).username?.[0]}</AvatarFallback></Avatar>
                             <div className="truncate flex-1 min-w-0">
@@ -176,14 +175,14 @@ export default function ChatPage() {
 
             {/* --- SAĞ EKRAN (CHAT PENCERESİ) --- */}
             <div className={`
-                w-full md:w-2/3 
-                bg-white rounded-lg border border-gray-200 flex flex-col h-fit
+                w-full md:w-2/3 h-full
+                bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col
                 ${!selectedChat ? 'hidden md:flex' : 'flex'}
             `}>
                 {selectedChat ? (
                     <>
                         {/* 1. HEADER */}
-                        <div className="h-16 flex-none bg-white border-b flex items-center justify-between px-4 z-10 shadow-sm rounded-t-lg sticky top-0">
+                        <div className="h-16 flex-none bg-white border-b flex items-center justify-between px-4 z-10 shadow-sm">
                             <div className="flex items-center gap-3">
                                 <button onClick={() => setSelectedChat(null)} className="md:hidden p-2 -ml-2 rounded-full hover:bg-gray-100 transition">
                                     <ChevronLeft className="w-6 h-6 text-gray-600" />
@@ -235,7 +234,7 @@ export default function ChatPage() {
                         )}
 
                         {/* 3. MESAJ LİSTESİ */}
-                        <div className="flex-1 p-4 space-y-4 bg-[#eef2f5]">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#eef2f5] custom-scrollbar">
                             <div className="text-center text-xs text-gray-400 py-4">Sohbet Başladı • {new Date(selectedChat.updated_at).toLocaleDateString('tr-TR')}</div>
                             {messages.map(msg => {
                                 const isMe = msg.sender_id === userId;
@@ -254,7 +253,7 @@ export default function ChatPage() {
                         </div>
 
                         {/* 4. INPUT ALANI */}
-                        <div className="flex-none p-4 border-t bg-white rounded-b-lg sticky bottom-0 z-10">
+                        <div className="flex-none p-4 border-t bg-white z-10">
                             {/* Hızlı Yanıtlar */}
                             {!newMessage && (
                                 <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">

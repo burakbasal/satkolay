@@ -1,9 +1,11 @@
+'use client';
+
 import { usePathname } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Toaster } from "@/components/ui/sonner";
 import { Footer } from '@/components/footer';
 
-// SSR: false yaparak mobil hydration hatasını engelliyoruz
+// SSR: false to prevent hydration mismatch on mobile
 const Navbar = dynamic(() => import('@/components/navbar').then(m => m.Navbar), { ssr: false });
 const BottomNav = dynamic(() => import('@/components/bottom-nav').then(m => m.BottomNav), { ssr: false });
 
@@ -12,12 +14,29 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     const showFooter = !pathname?.startsWith('/chat');
 
     return (
-        <>
-            <Navbar />
-            <main className="max-w-[1440px] mx-auto px-4 w-full min-h-screen pb-16 md:pb-0">{children}</main>
-            {showFooter && <Footer />}
-            <BottomNav />
+        <div className="min-h-screen flex flex-col bg-gray-50">
+            <div className="w-full bg-white shadow-sm sticky top-0 z-50">
+                <div className="max-w-[1440px] mx-auto">
+                    <Navbar />
+                </div>
+            </div>
+
+            <main className="flex-grow w-full max-w-[1440px] mx-auto px-0 md:px-4 pb-16 md:pb-8 pt-4">
+                {children}
+            </main>
+
+            {showFooter && (
+                <div className="w-full bg-white border-t mt-auto">
+                    <div className="max-w-[1440px] mx-auto">
+                        <Footer />
+                    </div>
+                </div>
+            )}
+
+            <div className="md:hidden">
+                <BottomNav />
+            </div>
             <Toaster />
-        </>
+        </div>
     );
 }

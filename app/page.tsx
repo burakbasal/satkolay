@@ -27,9 +27,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
   const { data: items } = await query;
 
   return (
-    <main className="container mx-auto px-4 py-8 pb-24 min-h-screen">
+    <div className="w-full">
       {/* BAŞLIK */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 px-4 md:px-0">
         <h1 className="text-xl font-bold text-gray-800">
           {dbCity ? `${dbCity} İlanları` : 'Vitrin'}
           <span className="ml-2 text-sm font-normal text-gray-500">({items?.length || 0} ilan)</span>
@@ -38,7 +38,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
 
       {/* İLANLAR */}
       {items && items.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 md:gap-4">
           {items.map((item) => (
             <ListingCard key={item.id} item={item} />
           ))}
@@ -49,6 +49,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
           <p className="text-gray-500 mt-2">Bu kriterlerde ilan bulunamadı.</p>
         </div>
       )}
-    </main>
+    </div>
   );
 }

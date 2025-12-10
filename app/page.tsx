@@ -3,9 +3,11 @@ import { ListingCard } from '@/components/listing-card';
 import { normalizeCityInput } from '@/lib/normalization';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   // Cookie üzerinden şehir bilgisini al
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const selectedCityCookie = cookieStore.get('user_city');
   const rawCity = selectedCityCookie?.value;
 

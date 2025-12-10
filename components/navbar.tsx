@@ -126,7 +126,7 @@ export function Navbar() {
     const activeCategoryData = MASTER_DATA.find(c => c.id === activeCategory) || MASTER_DATA[0];
 
     return (
-        <header className="bg-white shadow-sm border-b sticky top-0 z-40 font-sans">
+        <header className="bg-white font-sans">
 
             {/* --- MOBİL HEADER (HİZALAMA FIX) --- */}
             <div className="flex md:hidden items-center justify-between px-3 h-16 border-b bg-white sticky top-0 z-50 w-full">

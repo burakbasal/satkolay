@@ -14,20 +14,20 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     const showFooter = !pathname?.startsWith('/chat');
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-50">
+        <div className="min-h-screen flex flex-col bg-[#F2F4F5]">
             <div className="w-full bg-white shadow-sm sticky top-0 z-50">
-                <div className="max-w-[1440px] mx-auto">
+                <div className="max-w-[1280px] mx-auto">
                     <Navbar />
                 </div>
             </div>
 
-            <main className="flex-grow w-full max-w-[1440px] mx-auto px-0 md:px-4 pb-16 md:pb-8 pt-4">
+            <main className="flex-grow w-full max-w-[1280px] mx-auto px-0 md:px-0 mt-6 pb-16 md:pb-8 pt-4">
                 {children}
             </main>
 
             {showFooter && (
                 <div className="w-full bg-white border-t mt-auto">
-                    <div className="max-w-[1440px] mx-auto">
+                    <div className="max-w-[1280px] mx-auto">
                         <Footer />
                     </div>
                 </div>

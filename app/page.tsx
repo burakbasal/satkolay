@@ -2,7 +2,7 @@ import { createClient } from '@/utils/supabase/server';
 import { ListingCard } from '@/components/listing-card';
 import { normalizeCityInput } from '@/lib/normalization';
 import { cookies } from 'next/headers';
-import { HeroBanner } from '@/components/home/hero-banner';
+import { HeroSlider } from '@/components/home/hero-slider';
 import { TrendCategories } from '@/components/home/trend-categories';
 
 export const dynamic = 'force-dynamic';
@@ -36,8 +36,8 @@ export default async function Home() {
 
   return (
     <div className="w-full">
-      {/* 1. HERO BANNER (Yılbaşı Teması) */}
-      <HeroBanner />
+      {/* 1. HERO SLIDER */}
+      <HeroSlider />
 
       {/* 2. TREND KATEGORİLER */}
       <TrendCategories />

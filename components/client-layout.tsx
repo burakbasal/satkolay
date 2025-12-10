@@ -11,7 +11,12 @@ const BottomNav = dynamic(() => import('@/components/bottom-nav').then(m => m.Bo
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const showFooter = !pathname?.startsWith('/chat');
+    const isChat = pathname?.startsWith('/chat');
+    const showFooter = !isChat;
+
+    const mainClasses = isChat
+        ? "flex-grow w-full max-w-[1280px] mx-auto px-1 mt-1 pb-1 md:pb-1"
+        : "flex-grow w-full max-w-[1280px] mx-auto px-4 mt-6 pb-[65px] md:pb-0";
 
     return (
         <div className="min-h-screen flex flex-col bg-[#F2F4F5]">
@@ -21,7 +26,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 </div>
             </div>
 
-            <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 mt-6 pb-[65px] md:pb-0">
+            <main className={mainClasses}>
                 {children}
             </main>
 

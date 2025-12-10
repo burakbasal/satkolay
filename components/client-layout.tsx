@@ -21,7 +21,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 </div>
             </div>
 
-            <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 mt-6 pb-16 md:pb-8">
+            <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 mt-6 pb-[65px] md:pb-0">
                 {children}
             </main>
 

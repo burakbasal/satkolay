@@ -112,10 +112,31 @@ export default function ChatPage() {
         e.preventDefault();
         if (!newMessage.trim() || !selectedChat || !userId) return;
         const msg = newMessage;
-        setNewMessage("");
 
-        // Optimistic UI update could go here, but we rely on subscription for now
-        await supabase.from('direct_messages').insert({ conversation_id: selectedChat.id, sender_id: userId, content: msg });
+        // 1. OPTIMISTIC UI: Mesajı hemen listeye ekle
+        const tempMessage: Message = {
+            id: Date.now().toString(), // Geçici ID
+            content: msg,
+            sender_id: userId,
+            created_at: new Date().toISOString()
+        };
+
+        setMessages(prev => [...prev, tempMessage]);
+        setNewMessage("");
+        setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+
+        // 2. BACKEND'E GÖNDER
+        const { error } = await supabase.from('direct_messages').insert({
+            conversation_id: selectedChat.id,
+            sender_id: userId,
+            content: msg
+        });
+
+        if (error) {
+            console.error("Mesaj gönderilemedi", error);
+            // Hata olursa mesajı silebilir veya uyarabiliriz (şimdilik log yetiyor)
+        }
+
         await supabase.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', selectedChat.id);
     };
 

@@ -32,17 +32,31 @@ export function ListingCard({ item }: { item: any }) {
                 </div>
             )}
 
+            {/* ÖNE ÇIKAN (FEATURED) ROZETİ */}
+            {item.is_featured && !isSold && !isRejected && !isPending && (
+                <div className="absolute top-2 left-2 z-30 bg-yellow-400 text-black text-[10px] font-black px-2 py-0.5 rounded shadow-sm flex items-center gap-1 uppercase tracking-wider">
+                    ⚡ ÖNE ÇIKAN
+                </div>
+            )}
+
             {/* RESİM ALANI */}
-            <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+            <div className={`relative bg-gray-100 overflow-hidden ${item.listing_type === 'large' ? 'aspect-[2/1]' : 'aspect-[4/3]'}`}>
                 <Link href={`/item/${item.id}`} className="block w-full h-full">
                     <Image
                         src={item.image_urls?.[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500'}
                         alt={item.title || 'İlan'}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw"
+                        sizes={item.listing_type === 'large' ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"}
                     />
                 </Link>
+
+                {/* BÜYÜK İLAN ETİKETİ (Sadece Large ise) */}
+                {item.listing_type === 'large' && (
+                    <div className="absolute bottom-2 left-20 z-20 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                        BÜYÜK FIRSAT
+                    </div>
+                )}
 
                 {/* Fiyat */}
                 <div className={`absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-lg font-bold px-2 py-1 rounded pointer-events-none z-20 ${isSold ? 'line-through opacity-70' : ''}`}>

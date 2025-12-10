@@ -2,6 +2,8 @@ import { createClient } from '@/utils/supabase/server';
 import { ListingCard } from '@/components/listing-card';
 import { normalizeCityInput } from '@/lib/normalization';
 import { cookies } from 'next/headers';
+import { HeroBanner } from '@/components/home/hero-banner';
+import { TrendCategories } from '@/components/home/trend-categories';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +36,13 @@ export default async function Home() {
 
   return (
     <div className="w-full">
-      {/* BAŞLIK */}
+      {/* 1. HERO BANNER (Yılbaşı Teması) */}
+      <HeroBanner />
+
+      {/* 2. TREND KATEGORİLER */}
+      <TrendCategories />
+
+      {/* 3. VİTRİN BAŞLIĞI */}
       <div className="flex items-center justify-between mb-4 px-4 md:px-0">
         <h1 className="text-xl font-bold text-gray-800">
           {dbCity ? `${dbCity} İlanları` : 'Vitrin'}
@@ -44,9 +52,11 @@ export default async function Home() {
 
       {/* İLANLAR */}
       {items && items.length > 0 ? (
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 md:gap-4">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 auto-rows-dense">
           {items.map((item) => (
-            <ListingCard key={item.id} item={item} />
+            <div key={item.id} className={item.listing_type === 'large' ? 'col-span-2' : ''}>
+              <ListingCard item={item} />
+            </div>
           ))}
         </div>
       ) : (

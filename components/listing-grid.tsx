@@ -58,9 +58,11 @@ export async function ListingGrid({ city, district }: { city?: string, district?
     }
 
     return (
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {items.map((item) => (
-                <ListingCard key={item.id} item={item} />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 auto-rows-dense">
+            {items.map((item: any) => (
+                <div key={item.id} className={item.listing_type === 'large' ? 'col-span-2' : ''}>
+                    <ListingCard item={item} />
+                </div>
             ))}
         </div>
     )

@@ -21,33 +21,22 @@ function toEnglishCharacters(str: string) {
 
 export function LocationPicker() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-
-    // URL'den gelen (ingilizce) şehri al
-    const currentUrlCity = searchParams.get('city');
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState('');
+    const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
     // Listeyi `constants/cities.ts` dosyasından alıyoruz (Türkçe İsimler)
     // Türkçe karakterlere göre sıralama (A-Z)
     const cityNames = TURKEY_CITIES.map(c => c.name).sort((a, b) => a.localeCompare(b, 'tr'));
 
-    // PERSISTENCE (HAFIZA)
+    // COOKIE OKUMA (MOUNT EDİLİNCE)
     useEffect(() => {
-        // 1. URL'de şehir varsa, hafızaya kaydet
-        if (currentUrlCity) {
-            localStorage.setItem('selectedCity', currentUrlCity);
+        const match = document.cookie.match(new RegExp('(^| )user_city=([^;]+)'));
+        if (match) {
+            // Cookie'de encoding olabilir, decodeURIComponent ile al
+            setSelectedCity(decodeURIComponent(match[2]));
         }
-        // 2. URL'de yoksa ama hafızada varsa, oraya yönlendir (Sayfa ilk açıldığında)
-        else {
-            const storedCity = localStorage.getItem('selectedCity');
-            if (storedCity) {
-                const params = new URLSearchParams(searchParams.toString());
-                params.set('city', storedCity);
-                router.replace(`/?${params.toString()}`);
-            }
-        }
-    }, [currentUrlCity, searchParams]); // router'ı dependency'e ekleyince loop olabiliyor, dikkat
+    }, []);
 
     // Arama filtresi (Türkçe uyumlu)
     const filteredCities = cityNames.filter(c =>
@@ -55,29 +44,34 @@ export function LocationPicker() {
     );
 
     const handleSelectCity = (city: string) => {
-        const params = new URLSearchParams(searchParams.toString());
-
         if (city === 'all') {
-            localStorage.removeItem('selectedCity'); // Hafızadan sil
-            params.delete('city');
-            params.delete('district');
+            // Çerezi sil (veya boşalt)
+            document.cookie = "user_city=; path=/; max-age=0";
+            setSelectedCity(null);
         } else {
-            // ÖNEMLİ: Seçilen "İzmir" ismini "Izmir" yapıp URL'e koyuyoruz.
-            const urlFriendlyCity = toEnglishCharacters(city);
-            localStorage.setItem('selectedCity', urlFriendlyCity); // Hafızaya kaydet
-            params.set('city', urlFriendlyCity);
-            params.delete('district');
+            // Çerezi kaydet (1 Yıl)
+            const val = toEnglishCharacters(city); // Veya direkt city, ama clean URL istendiği için burada da normalizasyon yapabiliriz. 
+            // Kullanıcı "URL değişmesin" dedi ama filtrenin çalışması için backend'in beklediği formda atmalıyız.
+            // Backend `normalizeCityInput` kullanıyor mu? Backend 'app/page.tsx' -> normalizeCityInput kullanıyor.
+            // app/page.tsx'de `dbCity` normalizasyon yapıyor. O yüzden buraya ham veya normalized atabiliriz.
+            // Plan: "Seçilen 'İzmir' ismini 'Izmir' yapıp" demişti önceki task. 
+            // Burada da tutarlılık için normalized atalım.
+            const cookieValue = toEnglishCharacters(city);
+
+            document.cookie = `user_city=${encodeURIComponent(cookieValue)}; path=/; max-age=31536000`; // 1 yıl
+            setSelectedCity(cookieValue);
         }
 
-        router.push(`/?${params.toString()}`);
         setOpen(false);
         setSearch('');
+
+        // Sayfayı yenile (Server Component cookie'yi okuyup filtrelesin)
+        router.refresh();
     };
 
-    // Buton üzerindeki yazıyı düzelt (URL "Izmir" ise Ekranda "İzmir" görünsün)
-    // Listeden URL'deki "Izmir"e karşılık gelen orijinal Türkçe ismi buluyoruz.
-    const displayCity = currentUrlCity
-        ? cityNames.find(c => toEnglishCharacters(c) === currentUrlCity) || currentUrlCity
+    // Görüntüleme için: Eğer selectedCity varsa, listeden orijinal ismini bul (Geri dönüşüm)
+    const displayCity = selectedCity
+        ? cityNames.find(c => toEnglishCharacters(c) === selectedCity) || selectedCity
         : "Tüm Türkiye";
 
     return (
@@ -119,7 +113,6 @@ export function LocationPicker() {
                             <Button
                                 key={city}
                                 variant="ghost"
-                                // Eğer ekrandaki "İzmir" ile URL'deki "Izmir" denk geliyorsa seçili göster
                                 className={`w-full justify-start font-normal ${displayCity === city ? 'bg-red-50 text-[#ff3f55]' : ''}`}
                                 onClick={() => handleSelectCity(city)}
                             >

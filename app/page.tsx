@@ -1,10 +1,14 @@
 import { createClient } from '@/utils/supabase/server';
 import { ListingCard } from '@/components/listing-card';
 import { normalizeCityInput } from '@/lib/normalization';
+import { cookies } from 'next/headers';
 
-export default async function Home({ searchParams }: { searchParams: Promise<{ city?: string, district?: string }> }) {
-  const params = await searchParams;
-  const rawCity = params?.city;
+export default async function Home() {
+  // Cookie üzerinden şehir bilgisini al
+  const cookieStore = cookies();
+  const selectedCityCookie = cookieStore.get('user_city');
+  const rawCity = selectedCityCookie?.value;
+
   const dbCity = normalizeCityInput(rawCity);
 
   const supabase = await createClient();

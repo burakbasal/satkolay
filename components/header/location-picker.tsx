@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { MapPin, ChevronDown, Search, Check } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -29,8 +29,25 @@ export function LocationPicker() {
     const [search, setSearch] = useState('');
 
     // Listeyi `constants/cities.ts` dosyasından alıyoruz (Türkçe İsimler)
-    // Not: `Object.keys` yerine `map` kullanıyoruz çünkü TURKEY_CITIES bir array.
-    const cityNames = TURKEY_CITIES.map(c => c.name).sort();
+    // Türkçe karakterlere göre sıralama (A-Z)
+    const cityNames = TURKEY_CITIES.map(c => c.name).sort((a, b) => a.localeCompare(b, 'tr'));
+
+    // PERSISTENCE (HAFIZA)
+    useEffect(() => {
+        // 1. URL'de şehir varsa, hafızaya kaydet
+        if (currentUrlCity) {
+            localStorage.setItem('selectedCity', currentUrlCity);
+        }
+        // 2. URL'de yoksa ama hafızada varsa, oraya yönlendir (Sayfa ilk açıldığında)
+        else {
+            const storedCity = localStorage.getItem('selectedCity');
+            if (storedCity) {
+                const params = new URLSearchParams(searchParams.toString());
+                params.set('city', storedCity);
+                router.replace(`/?${params.toString()}`);
+            }
+        }
+    }, [currentUrlCity, searchParams]); // router'ı dependency'e ekleyince loop olabiliyor, dikkat
 
     // Arama filtresi (Türkçe uyumlu)
     const filteredCities = cityNames.filter(c =>
@@ -41,13 +58,14 @@ export function LocationPicker() {
         const params = new URLSearchParams(searchParams.toString());
 
         if (city === 'all') {
+            localStorage.removeItem('selectedCity'); // Hafızadan sil
             params.delete('city');
             params.delete('district');
         } else {
             // ÖNEMLİ: Seçilen "İzmir" ismini "Izmir" yapıp URL'e koyuyoruz.
             const urlFriendlyCity = toEnglishCharacters(city);
+            localStorage.setItem('selectedCity', urlFriendlyCity); // Hafızaya kaydet
             params.set('city', urlFriendlyCity);
-
             params.delete('district');
         }
 

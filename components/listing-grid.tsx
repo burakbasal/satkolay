@@ -58,7 +58,7 @@ export async function ListingGrid({ city, district }: { city?: string, district?
     }
 
     return (
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-5 md:gap-4">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
             {items.map((item) => (
                 <ListingCard key={item.id} item={item} />
             ))}

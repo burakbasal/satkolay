@@ -14,9 +14,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     const isChat = pathname?.startsWith('/chat');
     const showFooter = !isChat;
 
+    // KULLANICI İSTEĞİ: Alt boşluk tamamen SIFIR olacak.
     const mainClasses = isChat
-        ? "flex-grow w-full max-w-[1280px] mx-auto px-1 mt-1 pb-1 md:pb-1"
-        : "flex-grow w-full max-w-[1280px] mx-auto px-4 mt-6 pb-[65px] md:pb-0";
+        ? "flex-grow w-full max-w-[1280px] mx-auto px-1 mt-1 pb-0"
+        : "flex-grow w-full max-w-[1280px] mx-auto px-4 mt-6 pb-0";
 
     return (
         <div className="min-h-screen flex flex-col bg-[#F2F4F5]">

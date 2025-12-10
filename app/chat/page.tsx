@@ -96,13 +96,22 @@ export default function ChatPage() {
         if (!selectedChat) return;
         const fetchMsgs = async () => {
             const { data } = await supabase.from('direct_messages').select('*').eq('conversation_id', selectedChat.id).order('created_at', { ascending: true });
-            if (data) setMessages(data);
+            if (data) setMessages(data as any);
             setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'auto' }), 50);
         };
         fetchMsgs();
 
         const ch = supabase.channel(`chat:${selectedChat.id}`).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `conversation_id=eq.${selectedChat.id}` }, (payload) => {
-            setMessages(p => [...p, payload.new as Message]);
+            setMessages(currentMessages => {
+                const newMsg = payload.new as Message;
+
+                // 1. Önce listedeki "geçici/optimistic" mesajları temizle (id'si sayı olan veya is_optimistic: true olanlar)
+                // (Note: Backend'den gelen mesajın ID'si uuid (string) olur, bizim geçici ID timestamp (string) ama ayırt edilebilir)
+                // En garantisi is_optimistic flag'i kontrol etmek.
+
+                const cleanList = currentMessages.filter(m => !(m as any).is_optimistic && m.id !== newMsg.id);
+                return [...cleanList, newMsg];
+            });
             setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
         }).subscribe();
         return () => { supabase.removeChannel(ch); };
@@ -114,11 +123,12 @@ export default function ChatPage() {
         const msg = newMessage;
 
         // 1. OPTIMISTIC UI: Mesajı hemen listeye ekle
-        const tempMessage: Message = {
+        const tempMessage: any = {
             id: Date.now().toString(), // Geçici ID
             content: msg,
             sender_id: userId,
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
+            is_optimistic: true // EKRANDA 2 TANE GÖZÜKMESİN DİYE İŞARET
         };
 
         setMessages(prev => [...prev, tempMessage]);

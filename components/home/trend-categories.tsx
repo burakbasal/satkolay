@@ -24,23 +24,23 @@ export function TrendCategories() {
             </div>
 
             <ScrollArea className="w-full whitespace-nowrap">
-                <div className="flex w-max space-x-4 pb-2">
+                <div className="flex w-max space-x-3 pb-2">
                     {categories.map((cat, i) => (
                         <Link
                             key={i}
                             href={cat.href}
-                            className="flex-shrink-0 relative w-32 h-24 bg-[#D91E2B] rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all overflow-hidden group cursor-pointer"
+                            className="flex-shrink-0 relative w-28 h-20 bg-[#D91E2B] rounded-lg shadow-sm hover:shadow-md hover:scale-105 transition-all overflow-hidden group cursor-pointer"
                         >
                             {/* Dekoratif Daire */}
-                            <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/20 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                            <div className="absolute -top-4 -right-4 w-12 h-12 bg-white/20 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
 
                             {/* İkon / Resim Yeri */}
-                            <div className="absolute top-2 right-2 text-white/90">
-                                <cat.icon className="w-10 h-10 drop-shadow-sm" />
+                            <div className="absolute top-1.5 right-1.5 text-white/90">
+                                <cat.icon className="w-8 h-8 drop-shadow-sm" />
                             </div>
 
                             {/* Yazı */}
-                            <div className="absolute bottom-2 left-3 text-white font-semibold text-xs leading-tight max-w-[80px] whitespace-normal">
+                            <div className="absolute bottom-1.5 left-2 text-white font-semibold text-[10px] leading-tight max-w-[70px] whitespace-normal">
                                 {cat.title}
                             </div>
                         </Link>

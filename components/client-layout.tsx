@@ -17,7 +17,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     // KULLANICI İSTEĞİ: Alt boşluk tamamen SIFIR olacak.
     const mainClasses = isChat
         ? "flex-grow w-full max-w-[1280px] mx-auto px-1 mt-1 pb-1"
-        : "flex-grow w-full max-w-[1280px] mx-auto px-4 mt-6 pb-[70px] md:pb-10";
+        : "flex-grow w-full max-w-[1280px] mx-auto px-4 mt-6 pb-[calc(60px+env(safe-area-inset-bottom))] mb-0 min-h-[calc(100dvh-60px)] md:pb-10";
 
     return (
         <div className="min-h-screen flex flex-col bg-[#F2F4F5]">

@@ -40,33 +40,33 @@ export function ListingCard({ item }: { item: any }) {
                         alt={item.title || 'İlan'}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 25vw, 16vw"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw"
                     />
                 </Link>
 
                 {/* Fiyat */}
-                <div className={`absolute bottom-1.5 left-1.5 bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold px-1.5 py-0.5 rounded pointer-events-none z-20 ${isSold ? 'line-through opacity-70' : ''}`}>
+                <div className={`absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-sm font-bold px-2 py-1 rounded pointer-events-none z-20 ${isSold ? 'line-through opacity-70' : ''}`}>
                     {item.price?.toLocaleString('tr-TR')} TL
                 </div>
 
                 {/* Favori Butonu (Bağımsız) */}
-                <div className="absolute top-1.5 right-1.5 z-20 scale-75">
+                <div className="absolute top-2 right-2 z-20">
                     <FavoriteButton itemId={item.id} />
                 </div>
             </div>
 
             {/* BİLGİ ALANI */}
-            <Link href={`/item/${item.id}`} className="p-2 flex flex-col flex-1 justify-between">
+            <Link href={`/item/${item.id}`} className="p-3 flex flex-col flex-1 justify-between">
                 <div>
-                    <h4 className="text-gray-900 font-medium text-[13px] line-clamp-1 mb-0 z-10 group-hover:text-[#ff3f55] transition-colors">
+                    <h4 className="text-gray-900 font-medium text-sm line-clamp-1 mb-1 group-hover:text-[#ff3f55] transition-colors">
                         {item.title}
                     </h4>
-                    <p className="text-[10px] text-gray-500 truncate">{item.city || 'Konum Yok'}</p>
+                    <p className="text-xs text-gray-500 truncate">{item.city || 'Konum Yok'}</p>
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1.5 pt-1.5 border-t border-gray-50">
+                <div className="flex items-center justify-between text-xs text-gray-400 mt-2 pt-2 border-t border-gray-50">
                     <div className="flex items-center gap-1">
-                        <MapPin className="w-2.5 h-2.5" />
-                        <span className="truncate max-w-[80px]">{item.city} {item.district ? `/ ${item.district}` : ''}</span>
+                        <MapPin className="w-3 h-3" />
+                        <span className="truncate max-w-[120px]">{item.city} {item.district ? `/ ${item.district}` : ''}</span>
                     </div>
                     <span>{item.created_at ? new Date(item.created_at).toLocaleDateString('tr-TR') : ''}</span>
                 </div>

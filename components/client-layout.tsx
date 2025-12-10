@@ -16,18 +16,18 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return (
         <div className="min-h-screen flex flex-col bg-[#F2F4F5]">
             <div className="w-full bg-white border-b sticky top-0 z-50">
-                <div className="max-w-[1150px] mx-auto px-4">
+                <div className="max-w-[1280px] mx-auto px-4">
                     <Navbar />
                 </div>
             </div>
 
-            <main className="flex-grow w-full max-w-[1150px] mx-auto px-4 mt-6 pb-16 md:pb-8">
+            <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 mt-6 pb-16 md:pb-8">
                 {children}
             </main>
 
             {showFooter && (
                 <div className="w-full bg-white border-t mt-auto">
-                    <div className="max-w-[1150px] mx-auto px-4">
+                    <div className="max-w-[1280px] mx-auto px-4">
                         <Footer />
                     </div>
                 </div>

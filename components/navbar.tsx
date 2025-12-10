@@ -32,7 +32,7 @@ function DesktopSearchBar() {
         <form onSubmit={handleSearch} className="flex-1 relative max-w-3xl mx-6">
             <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Search className="h-5 w-5 text-gray-400" /></div>
-                <input type="text" className="block w-full pl-11 pr-10 py-3 bg-gray-100 rounded-full focus:bg-white focus:ring-2 focus:ring-[#ff3f55] outline-none transition-all" placeholder="Ürün, marka, kategori ara..." value={query} onChange={(e) => setQuery(e.target.value)} />
+                <input type="text" className="block w-full pl-11 pr-10 py-2 bg-gray-100 rounded-full focus:bg-white focus:ring-2 focus:ring-[#ff3f55] outline-none transition-all placeholder:text-xs" placeholder="Ürün, marka, kategori ara..." value={query} onChange={(e) => setQuery(e.target.value)} />
                 {query && <button type="button" onClick={() => { setQuery(""); router.push('/search'); }} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"><X className="h-5 w-5" /></button>}
             </div>
         </form>
@@ -189,18 +189,18 @@ export function Navbar() {
 
             {/* --- MASAÜSTÜ HEADER (Aynen Korundu) --- */}
             <div className="hidden md:block w-full">
-                <div className="h-20 flex items-center justify-between">
-                    <Link href="/" className="text-3xl font-bold text-[#ff3f55] tracking-tight shrink-0">SatKolay</Link>
-                    <Suspense fallback={<div className="h-12 bg-gray-100 rounded-full flex-1 mx-6"></div>}><DesktopSearchBar /></Suspense>
+                <div className="h-16 flex items-center justify-between">
+                    <Link href="/" className="text-2xl font-bold text-[#ff3f55] tracking-tight shrink-0">SatKolay</Link>
+                    <Suspense fallback={<div className="h-9 bg-gray-100 rounded-full flex-1 mx-6"></div>}><DesktopSearchBar /></Suspense>
                     <div className="flex items-center gap-3 shrink-0">
                         <LocationPicker />
                         {user ? (
                             <div className="flex items-center gap-3">
-                                <Link href="/profile/favorites" className="p-2.5 hover:bg-gray-100 rounded-full text-gray-600"><Heart className="w-6 h-6" /></Link>
-                                <Link href="/chat" className="p-2.5 hover:bg-gray-100 rounded-full text-gray-600"><MessageCircle className="w-6 h-6" /></Link>
-                                <Link href="/notifications" className="p-2.5 hover:bg-gray-100 rounded-full text-gray-600"><Bell className="w-6 h-6" /></Link>
+                                <Link href="/profile/favorites" className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><Heart className="w-5 h-5" /></Link>
+                                <Link href="/chat" className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><MessageCircle className="w-5 h-5" /></Link>
+                                <Link href="/notifications" className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><Bell className="w-5 h-5" /></Link>
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger asChild><Button variant="ghost" className="relative h-10 w-10 rounded-full ml-1"><Avatar className="h-10 w-10 border"><AvatarImage src={user.user_metadata?.avatar_url} /><AvatarFallback><User /></AvatarFallback></Avatar></Button></DropdownMenuTrigger>
+                                    <DropdownMenuTrigger asChild><Button variant="ghost" className="relative h-9 w-9 rounded-full ml-1"><Avatar className="h-9 w-9 border"><AvatarImage src={user.user_metadata?.avatar_url} /><AvatarFallback><User /></AvatarFallback></Avatar></Button></DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-64" align="end">
                                         <DropdownMenuLabel>
                                             <div className="flex flex-col space-y-1">
@@ -218,7 +218,7 @@ export function Navbar() {
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                                 <PwaInstallButton />
-                                <Link href="/sell" className="ml-3 flex items-center gap-2 bg-[#ff3f55] text-white px-6 py-3 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-md"><Camera className="w-5 h-5" /> <span>SAT</span></Link>
+                                <Link href="/sell" className="ml-3 flex items-center gap-2 bg-[#ff3f55] text-white px-5 py-2 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-md text-sm"><Camera className="w-4 h-4" /> <span>SAT</span></Link>
                             </div>
                         ) : (
                             <div className="flex items-center gap-4">
@@ -232,7 +232,7 @@ export function Navbar() {
                 {/* Mega Menü */}
                 <div className="h-12 flex items-center gap-6 border-t py-2 relative">
                     <div className="group h-full flex items-center">
-                        <button className="flex items-center gap-2 bg-gray-100 rounded-full px-5 py-2 text-sm font-bold text-gray-700 hover:bg-gray-200 group-hover:bg-gray-200 transition-colors h-10">
+                        <button className="flex items-center gap-2 bg-gray-100 rounded-full px-4 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-200 group-hover:bg-gray-200 transition-colors h-9">
                             <LayoutGrid className="w-4 h-4" /> <span>Tüm Kategoriler</span> <ChevronDown className="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" />
                         </button>
                         <div className="absolute top-full left-0 right-0 pt-6 -mt-2 hidden group-hover:block z-[999]">

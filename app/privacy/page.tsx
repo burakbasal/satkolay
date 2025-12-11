@@ -40,7 +40,7 @@ export default function PrivacyPage() {
                 <h3>5. İletişim</h3>
                 <p>
                     Gizlilik politikamız veya kişisel verilerinizle ilgili sorularınız için
-                    <a href="mailto:hukuk@satkolay.com" className="text-[#ff3f55] no-underline hover:underline font-bold"> hukuk@satkolay.com</a>
+                    <a href="mailto:hukuk@satkolay.com" className="text-[#001e93] no-underline hover:underline font-bold"> hukuk@satkolay.com</a>
                     adresinden bize ulaşabilirsiniz.
                 </p>
             </div>

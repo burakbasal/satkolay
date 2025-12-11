@@ -141,7 +141,7 @@ export default function SettingsPage() {
                         <button
                             key={item.id}
                             onClick={() => setActiveTab(item.id)}
-                            className={`w-full flex items-center justify-between p-3 rounded-lg text-sm font-medium transition ${activeTab === item.id ? 'bg-red-50 text-[#ff3f55]' : 'text-gray-600 hover:bg-gray-50'}`}
+                            className={`w-full flex items-center justify-between p-3 rounded-lg text-sm font-medium transition ${activeTab === item.id ? 'bg-red-50 text-[#001e93]' : 'text-gray-600 hover:bg-gray-50'}`}
                         >
                             <div className="flex items-center gap-3">
                                 <item.icon className="w-5 h-5" />
@@ -190,7 +190,7 @@ export default function SettingsPage() {
                                 <div><Label>Biyografi</Label><Textarea value={bio} onChange={e => setBio(e.target.value)} className="mt-1.5 h-24 resize-none" placeholder="Kendinden bahset..." /></div>
                             </div>
 
-                            <Button onClick={handleSaveProfile} disabled={loading} className="bg-[#ff3f55] hover:bg-[#e63548] text-white">
+                            <Button onClick={handleSaveProfile} disabled={loading} className="bg-[#001e93] hover:bg-[#e63548] text-white">
                                 {loading ? <Loader2 className="animate-spin mr-2" /> : <><Save className="w-4 h-4 mr-2" /> Kaydet</>}
                             </Button>
                         </div>
@@ -205,7 +205,7 @@ export default function SettingsPage() {
                                 {/* YENİ ADRES EKLEME MODALI */}
                                 <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                                     <DialogTrigger asChild>
-                                        <Button variant="outline" size="sm" className="text-[#ff3f55] border-[#ff3f55] hover:bg-red-50">
+                                        <Button variant="outline" size="sm" className="text-[#001e93] border-[#001e93] hover:bg-red-50">
                                             <Plus className="w-4 h-4 mr-2" /> Yeni Ekle
                                         </Button>
                                     </DialogTrigger>
@@ -245,7 +245,7 @@ export default function SettingsPage() {
                                                 </div>
                                             </div>
                                             <div><Label>Açık Adres</Label><Textarea name="open_address" placeholder="Mahalle, Sokak, Kapı No..." required /></div>
-                                            <Button type="submit" className="w-full bg-[#ff3f55]">Kaydet</Button>
+                                            <Button type="submit" className="w-full bg-[#001e93]">Kaydet</Button>
                                         </form>
                                     </DialogContent>
                                 </Dialog>
@@ -255,7 +255,7 @@ export default function SettingsPage() {
                             {addresses.length > 0 ? (
                                 <div className="grid gap-4">
                                     {addresses.map(addr => (
-                                        <div key={addr.id} className="p-4 border rounded-xl flex items-start gap-4 hover:border-[#ff3f55] transition bg-gray-50 group">
+                                        <div key={addr.id} className="p-4 border rounded-xl flex items-start gap-4 hover:border-[#001e93] transition bg-gray-50 group">
                                             <div className="p-2 bg-white rounded-full border"><Home className="w-5 h-5 text-gray-600" /></div>
                                             <div className="flex-1">
                                                 <div className="font-bold text-sm">{addr.title}</div>
@@ -315,7 +315,7 @@ export default function SettingsPage() {
                                     <span className="text-sm font-medium text-gray-700">{label}</span>
                                     <button
                                         onClick={() => setNotifSettings(p => ({ ...p, [key]: !p[key as keyof typeof p] }))}
-                                        className={`h-6 w-11 rounded-full relative transition-colors ${notifSettings[key as keyof typeof notifSettings] ? 'bg-[#ff3f55]' : 'bg-gray-300'}`}
+                                        className={`h-6 w-11 rounded-full relative transition-colors ${notifSettings[key as keyof typeof notifSettings] ? 'bg-[#001e93]' : 'bg-gray-300'}`}
                                     >
                                         <div className={`absolute top-1 h-4 w-4 bg-white rounded-full shadow-sm transition-all ${notifSettings[key as keyof typeof notifSettings] ? 'left-6' : 'left-1'}`}></div>
                                     </button>

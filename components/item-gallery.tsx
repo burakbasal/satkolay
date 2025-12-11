@@ -70,7 +70,7 @@ export function ItemGallery({ images, title, isFavorite, itemId, isOwner }: Item
                         onClick={handleFavorite}
                         className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:scale-105 transition-transform"
                     >
-                        <Heart className={`w-6 h-6 ${isFav ? 'fill-[#ff3f55] text-[#ff3f55]' : 'text-gray-400'}`} />
+                        <Heart className={`w-6 h-6 ${isFav ? 'fill-[#001e93] text-[#001e93]' : 'text-gray-400'}`} />
                     </button>
                 )}
             </div>
@@ -82,7 +82,7 @@ export function ItemGallery({ images, title, isFavorite, itemId, isOwner }: Item
                         <button
                             key={idx}
                             onClick={() => setSelectedImageIndex(idx)}
-                            className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${selectedImageIndex === idx ? 'border-[#ff3f55] opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                            className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${selectedImageIndex === idx ? 'border-[#001e93] opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
                         >
                             <Image
                                 src={img}

@@ -56,7 +56,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                 {images.length > 1 && (
                     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                         {images.map((src, idx) => (
-                            <button key={idx} onClick={() => scrollTo(idx)} className={cn("relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all", selectedIndex === idx ? "border-[#ff3f55] opacity-100" : "border-transparent opacity-60 hover:opacity-100")}>
+                            <button key={idx} onClick={() => scrollTo(idx)} className={cn("relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all", selectedIndex === idx ? "border-[#001e93] opacity-100" : "border-transparent opacity-60 hover:opacity-100")}>
                                 <Image src={src} alt="" fill className="object-cover" />
                             </button>
                         ))}

@@ -90,14 +90,14 @@ export function ItemActions({ itemId, sellerId, userId, price }: { itemId: strin
             <Button
                 onClick={() => handleAction('chat')}
                 disabled={loading}
-                className="w-full bg-[#ff3f55] hover:bg-[#e63548] text-white font-bold h-12 text-lg"
+                className="w-full bg-[#001e93] hover:bg-[#e63548] text-white font-bold h-12 text-lg"
             >
                 {loading ? <Loader2 className="animate-spin" /> : <><MessageCircle className="mr-2 w-5 h-5" /> Sohbet</>}
             </Button>
             <Button
                 onClick={() => handleAction('offer')}
                 variant="outline"
-                className="w-full border-[#ff3f55] text-[#ff3f55] hover:bg-red-50 font-bold h-12 text-lg"
+                className="w-full border-[#001e93] text-[#001e93] hover:bg-red-50 font-bold h-12 text-lg"
             >
                 <Tag className="mr-2 w-5 h-5" /> Teklif Ver
             </Button>

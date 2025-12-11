@@ -42,7 +42,7 @@ export function PwaInstallButton() {
             variant="outline"
             size="sm"
             onClick={handleInstallClick}
-            className="hidden md:flex items-center gap-2 border-red-200 hover:bg-red-50 text-[#ff3f55]"
+            className="hidden md:flex items-center gap-2 border-red-200 hover:bg-red-50 text-[#001e93]"
         >
             <Download className="w-4 h-4" />
             <span>Uygulamayı Yükle</span>

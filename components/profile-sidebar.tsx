@@ -24,7 +24,7 @@ export function ProfileSidebar({ user, profile }: { user: any, profile: any }) {
                 </div>
                 <h2 className="font-bold text-gray-900 text-lg truncate">{displayName}</h2>
                 <p className="text-sm text-gray-500 truncate mb-4">{displayHandle}</p>
-                <Link href={`/profile/${profile?.username}`} className="text-xs text-[#ff3f55] hover:underline font-medium">Herkese Açık Profili Gör</Link>
+                <Link href={`/profile/${profile?.username}`} className="text-xs text-[#001e93] hover:underline font-medium">Herkese Açık Profili Gör</Link>
             </div>
 
             {/* Menü Linkleri */}

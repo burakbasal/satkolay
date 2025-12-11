@@ -72,7 +72,7 @@ export function ListingCard({ item }: { item: any }) {
             {/* BİLGİ ALANI */}
             <Link href={`/item/${item.id}`} className="p-3 flex flex-col flex-1 justify-between">
                 <div>
-                    <h4 className="text-gray-900 font-medium text-[15px] line-clamp-1 mb-1 group-hover:text-[#ff3f55] transition-colors">
+                    <h4 className="text-gray-900 font-medium text-[15px] line-clamp-1 mb-1 group-hover:text-[#001e93] transition-colors">
                         {item.title}
                     </h4>
                     <p className="text-xs text-gray-500 truncate">{item.city || 'Konum Yok'}</p>

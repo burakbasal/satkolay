@@ -81,7 +81,7 @@ export default function AdminPage() {
         setRejectReason("");
     };
 
-    if (loading) return <div className="flex h-screen items-center justify-center bg-gray-50"><Loader2 className="w-10 h-10 animate-spin text-[#ff3f55]" /></div>;
+    if (loading) return <div className="flex h-screen items-center justify-center bg-gray-50"><Loader2 className="w-10 h-10 animate-spin text-[#001e93]" /></div>;
 
     return (
         <div className="min-h-screen bg-gray-100 p-4 md:p-8 font-sans">
@@ -90,7 +90,7 @@ export default function AdminPage() {
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">Yönetim Paneli</h1>
-                    <p className="text-slate-500">Rolünüz: <span className="font-bold uppercase text-[#ff3f55]">{currentUserRole}</span></p>
+                    <p className="text-slate-500">Rolünüz: <span className="font-bold uppercase text-[#001e93]">{currentUserRole}</span></p>
                 </div>
                 <Link href="/"><Button variant="outline"><ExternalLink className="w-4 h-4 mr-2" /> Siteye Dön</Button></Link>
             </div>

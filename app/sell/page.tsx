@@ -54,9 +54,9 @@ export default function SellPage() {
                         <button
                             key={cat.id}
                             onClick={() => { setSelectedCategory(cat); setStep(2); }}
-                            className="flex flex-col items-center justify-center p-6 border rounded-xl hover:border-[#ff3f55] hover:bg-red-50 transition gap-3 group bg-white shadow-sm"
+                            className="flex flex-col items-center justify-center p-6 border rounded-xl hover:border-[#001e93] hover:bg-red-50 transition gap-3 group bg-white shadow-sm"
                         >
-                            <cat.icon className="w-8 h-8 text-gray-500 group-hover:text-[#ff3f55]" />
+                            <cat.icon className="w-8 h-8 text-gray-500 group-hover:text-[#001e93]" />
                             <span className="font-medium text-gray-900">{cat.title}</span>
                         </button>
                     ))}
@@ -108,7 +108,7 @@ export default function SellPage() {
                             <button
                                 key={idx}
                                 onClick={() => { setSelectedDetail(itemName); setStep(4); }}
-                                className="p-3 border rounded-lg hover:border-[#ff3f55] hover:bg-red-50 text-center text-sm font-medium bg-white"
+                                className="p-3 border rounded-lg hover:border-[#001e93] hover:bg-red-50 text-center text-sm font-medium bg-white"
                             >
                                 {itemName}
                             </button>
@@ -174,7 +174,7 @@ export default function SellPage() {
                     />
                     <div className="flex flex-col items-center pointer-events-none">
                         <div className="bg-white p-3 rounded-full shadow-sm mb-3">
-                            <ImagePlus className="w-8 h-8 text-[#ff3f55]" />
+                            <ImagePlus className="w-8 h-8 text-[#001e93]" />
                         </div>
                         <h3 className="font-bold text-gray-900">Fotoğraf Yükle</h3>
                         <p className="text-sm text-gray-500 mt-1">Sürükle bırak veya seç</p>
@@ -290,7 +290,7 @@ export default function SellPage() {
                 <div className="fixed bottom-20 left-4 right-4 z-50 md:static md:bottom-auto md:left-auto md:right-auto md:z-auto">
                     <Button
                         type="submit"
-                        className="w-full bg-[#ff3f55] hover:bg-[#e63548] h-14 md:h-12 text-lg font-bold shadow-xl border-2 border-white md:border-0"
+                        className="w-full bg-[#001e93] hover:bg-[#e63548] h-14 md:h-12 text-lg font-bold shadow-xl border-2 border-white md:border-0"
                         disabled={isSubmitting} // BUTON KESİNLİKLE DISABLED OLACAK
                     >
                         {isSubmitting ? <><Loader2 className="animate-spin mr-2" /> Yükleniyor...</> : 'İlanı Yayınla'}

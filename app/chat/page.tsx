@@ -178,7 +178,7 @@ export default function ChatPage() {
                         <div
                             key={conv.id}
                             onClick={() => setSelectedChat(conv)}
-                            className={`flex items-center gap-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 transition-colors ${selectedChat?.id === conv.id ? 'bg-red-50 border-l-4 border-l-[#ff3f55]' : 'border-l-4 border-l-transparent'}`}
+                            className={`flex items-center gap-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 transition-colors ${selectedChat?.id === conv.id ? 'bg-red-50 border-l-4 border-l-[#001e93]' : 'border-l-4 border-l-transparent'}`}
                         >
                             <Avatar className="w-12 h-12 border border-gray-100"><AvatarImage src={getOther(conv).avatar_url} /><AvatarFallback>{getOther(conv).username?.[0]}</AvatarFallback></Avatar>
                             <div className="truncate flex-1 min-w-0">
@@ -188,7 +188,7 @@ export default function ChatPage() {
                                 </div>
                                 {conv.item && (
                                     <div className="flex items-center gap-1 text-xs font-medium text-gray-600 mb-0.5">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-[#ff3f55]"></span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#001e93]"></span>
                                         <span className="truncate">{conv.item.title}</span>
                                     </div>
                                 )}
@@ -249,14 +249,14 @@ export default function ChatPage() {
                                     <Image src={selectedChat.item.image_urls?.[0] || '/placeholder.png'} alt="" fill className="object-cover" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <Link href={`/item/${selectedChat.item.id}`} className="font-bold text-sm text-gray-800 hover:text-[#ff3f55] transition-colors block truncate">
+                                    <Link href={`/item/${selectedChat.item.id}`} className="font-bold text-sm text-gray-800 hover:text-[#001e93] transition-colors block truncate">
                                         {selectedChat.item.title}
                                     </Link>
-                                    <div className="text-[#ff3f55] font-black text-sm">{selectedChat.item.price?.toLocaleString('tr-TR')} TL</div>
+                                    <div className="text-[#001e93] font-black text-sm">{selectedChat.item.price?.toLocaleString('tr-TR')} TL</div>
                                 </div>
                                 <Button
                                     size="sm"
-                                    className="h-9 px-4 bg-[#ff3f55] hover:bg-[#e63548] text-white font-bold shrink-0"
+                                    className="h-9 px-4 bg-[#001e93] hover:bg-[#e63548] text-white font-bold shrink-0"
                                     onClick={() => setNewMessage(`Teklifim: ${selectedChat.item!.price} TL`)}
                                 >
                                     Teklif Ver
@@ -272,7 +272,7 @@ export default function ChatPage() {
                                 return (
                                     <div key={msg.id} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[85%] md:max-w-[70%] px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed ${isMe
-                                            ? 'bg-[#ff3f55] text-white rounded-tr-none'
+                                            ? 'bg-[#001e93] text-white rounded-tr-none'
                                             : 'bg-white text-gray-900 border rounded-tl-none'
                                             }`}>
                                             {msg.content}
@@ -311,7 +311,7 @@ export default function ChatPage() {
                                 <button
                                     type="submit"
                                     disabled={!newMessage.trim()}
-                                    className="w-12 h-12 flex items-center justify-center bg-[#ff3f55] text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#e63548] transition-all shadow-md active:scale-95 shrink-0"
+                                    className="w-12 h-12 flex items-center justify-center bg-[#001e93] text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#e63548] transition-all shadow-md active:scale-95 shrink-0"
                                 >
                                     <Send className="w-5 h-5 ml-0.5" />
                                 </button>

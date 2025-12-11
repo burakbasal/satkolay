@@ -32,7 +32,7 @@ function DesktopSearchBar() {
         <form onSubmit={handleSearch} className="flex-1 relative max-w-3xl mx-6">
             <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Search className="h-5 w-5 text-gray-400" /></div>
-                <input type="text" className="block w-full pl-11 pr-10 py-2 bg-gray-100 rounded-full focus:bg-white focus:ring-1 focus:ring-[#ff3f55] outline-none transition-all placeholder:text-gray-500 text-base h-11" placeholder="Ürün, marka, kategori ara..." value={query} onChange={(e) => setQuery(e.target.value)} />
+                <input type="text" className="block w-full pl-11 pr-10 py-2 bg-gray-100 rounded-full focus:bg-white focus:ring-1 focus:ring-[#001e93] outline-none transition-all placeholder:text-gray-500 text-base h-11" placeholder="Ürün, marka, kategori ara..." value={query} onChange={(e) => setQuery(e.target.value)} />
                 {query && <button type="button" onClick={() => { setQuery(""); router.push('/search'); }} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"><X className="h-5 w-5" /></button>}
             </div>
         </form>
@@ -68,7 +68,7 @@ function MobileSearchBar() {
                 </div>
                 <input
                     type="text"
-                    className="w-full h-full bg-gray-100 rounded-full pl-10 pr-9 text-base focus:bg-white focus:ring-1 focus:ring-[#ff3f55] outline-none transition-all placeholder:text-gray-500"
+                    className="w-full h-full bg-gray-100 rounded-full pl-10 pr-9 text-base focus:bg-white focus:ring-1 focus:ring-[#001e93] outline-none transition-all placeholder:text-gray-500"
                     placeholder="Ara..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -142,7 +142,7 @@ export function Navbar() {
                         <SheetContent side="left" className="p-0 w-80 bg-white">
                             <div className="h-full flex flex-col">
                                 <div className="p-4 border-b">
-                                    <span className="text-3xl font-black text-[#ff3f55]">SatKolay</span>
+                                    <span className="text-3xl font-black text-[#001e93]">SatKolay</span>
                                 </div>
                                 <div className="flex-1 overflow-y-auto p-4">
                                     <div className="py-4">
@@ -169,7 +169,7 @@ export function Navbar() {
 
                 {/* 1. LOGO: Flex center ile dikey ortalandı (Daha BÜYÜK) */}
                 <Link href="/" className="flex items-center h-11 shrink-0">
-                    <span className="text-2xl font-black text-[#ff3f55] tracking-tighter leading-none">SatKolay</span>
+                    <span className="text-2xl font-black text-[#001e93] tracking-tighter leading-none">SatKolay</span>
                 </Link>
 
                 {/* 2. ARAMA: Suspense içine alındı */}
@@ -190,7 +190,7 @@ export function Navbar() {
             {/* --- MASAÜSTÜ HEADER (Aynen Korundu) --- */}
             <div className="hidden md:block w-full">
                 <div className="h-16 flex items-center justify-between">
-                    <Link href="/" className="text-3xl font-black text-[#ff3f55] tracking-tighter shrink-0">SatKolay</Link>
+                    <Link href="/" className="text-3xl font-black text-[#001e93] tracking-tighter shrink-0">SatKolay</Link>
                     <Suspense fallback={<div className="h-11 bg-gray-100 rounded-full flex-1 mx-6"></div>}><DesktopSearchBar /></Suspense>
                     <div className="flex items-center gap-3 shrink-0">
                         <LocationPicker />
@@ -218,12 +218,12 @@ export function Navbar() {
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                                 <PwaInstallButton />
-                                <Link href="/sell" className="ml-2 flex items-center gap-2 bg-[#ff3f55] text-white px-5 py-2.5 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-sm text-sm h-11"><Camera className="w-5 h-5" /> <span>SAT</span></Link>
+                                <Link href="/sell" className="ml-2 flex items-center gap-2 bg-[#001e93] text-white px-5 py-2.5 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-sm text-sm h-11"><Camera className="w-5 h-5" /> <span>SAT</span></Link>
                             </div>
                         ) : (
                             <div className="flex items-center gap-4">
-                                <Link href="/login" className="font-bold text-gray-700 hover:text-[#ff3f55] px-3 text-base">Giriş</Link>
-                                <Link href="/sell" className="flex items-center gap-2 bg-[#ff3f55] text-white px-6 py-2.5 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-md h-11 text-sm"><Camera className="w-5 h-5" /> <span>Sat</span></Link>
+                                <Link href="/login" className="font-bold text-gray-700 hover:text-[#001e93] px-3 text-base">Giriş</Link>
+                                <Link href="/sell" className="flex items-center gap-2 bg-[#001e93] text-white px-6 py-2.5 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-md h-11 text-sm"><Camera className="w-5 h-5" /> <span>Sat</span></Link>
                             </div>
                         )}
                     </div>
@@ -239,7 +239,7 @@ export function Navbar() {
                             <div className="bg-white shadow-xl rounded-b-xl border border-t-0 border-gray-100 overflow-hidden flex min-h-[500px]">
                                 <div className="w-1/4 bg-gray-50 py-3 border-r border-gray-100 max-h-[600px] overflow-y-auto">
                                     {MASTER_DATA.map((cat, idx) => (
-                                        <div key={idx} onMouseEnter={() => setActiveCategory(cat.id)} className={`flex items-center justify-between px-6 py-3 cursor-pointer transition-colors ${activeCategory === cat.id ? 'bg-white text-[#ff3f55] font-bold border-l-4 border-[#ff3f55]' : 'text-gray-600 hover:bg-gray-100'}`}>
+                                        <div key={idx} onMouseEnter={() => setActiveCategory(cat.id)} className={`flex items-center justify-between px-6 py-3 cursor-pointer transition-colors ${activeCategory === cat.id ? 'bg-white text-[#001e93] font-bold border-l-4 border-[#001e93]' : 'text-gray-600 hover:bg-gray-100'}`}>
                                             <div className="flex items-center gap-3">{cat.icon && <cat.icon className="w-6 h-6" />}<span className="text-base">{cat.title}</span></div>
                                             {activeCategory === cat.id && <ChevronRight className="w-4 h-4" />}
                                         </div>
@@ -250,7 +250,7 @@ export function Navbar() {
                                         <div className="grid grid-cols-3 gap-y-10 gap-x-8">
                                             {activeCategoryData.subCategories?.map((sub, idx) => (
                                                 <div key={idx} className="break-inside-avoid">
-                                                    <Link href={sub.href || '#'} className="block font-bold text-[#ff3f55] mb-3 hover:underline text-lg">{sub.title}</Link>
+                                                    <Link href={sub.href || '#'} className="block font-bold text-[#001e93] mb-3 hover:underline text-lg">{sub.title}</Link>
                                                     <ul className="space-y-2">
                                                         {sub.items?.map((item, i) => (
                                                             <li key={i}>
@@ -273,7 +273,7 @@ export function Navbar() {
                         </div>
                     </div>
                     <div className="flex items-center gap-6 overflow-hidden mask-linear">
-                        {MASTER_DATA.slice(0, 8).map((cat, idx) => <Link key={idx} href={cat.href || '#'} className="text-gray-600 hover:text-[#ff3f55] text-sm font-medium whitespace-nowrap">{cat.title}</Link>)}
+                        {MASTER_DATA.slice(0, 8).map((cat, idx) => <Link key={idx} href={cat.href || '#'} className="text-gray-600 hover:text-[#001e93] text-sm font-medium whitespace-nowrap">{cat.title}</Link>)}
                     </div>
                 </div>
             </div>

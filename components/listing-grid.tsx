@@ -49,7 +49,7 @@ export async function ListingGrid({ city, district }: { city?: string, district?
                     Şu anda vitrinde hiç ürün yok. İlk ilanı sen ver ve satış yapmaya başla!
                 </p>
                 <Link href="/sell">
-                    <Button className="bg-[#ff3f55] hover:bg-[#e63548] text-white font-bold rounded-full px-8">
+                    <Button className="bg-[#001e93] hover:bg-[#e63548] text-white font-bold rounded-full px-8">
                         Hemen İlan Ver
                     </Button>
                 </Link>

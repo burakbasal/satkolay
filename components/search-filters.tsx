@@ -119,7 +119,7 @@ export function SearchFilters() {
                             <div key={cat.id}>
                                 <Link
                                     href={cat.href}
-                                    className={`flex items-center justify-between py-2 px-2 rounded-md text-sm font-bold transition-colors ${category === cat.title ? 'bg-red-50 text-[#ff3f55]' : 'text-gray-800 hover:bg-gray-50'}`}
+                                    className={`flex items-center justify-between py-2 px-2 rounded-md text-sm font-bold transition-colors ${category === cat.title ? 'bg-red-50 text-[#001e93]' : 'text-gray-800 hover:bg-gray-50'}`}
                                 >
                                     <div className="flex items-center gap-2">
                                         {cat.icon && <cat.icon className="w-4 h-4" />}
@@ -135,7 +135,7 @@ export function SearchFilters() {
                                                 <div key={idx}>
                                                     <Link
                                                         href={sub.href}
-                                                        className={`block text-xs font-bold mb-1 ${category === sub.title ? 'text-[#ff3f55]' : 'text-gray-700 hover:text-[#ff3f55]'}`}
+                                                        className={`block text-xs font-bold mb-1 ${category === sub.title ? 'text-[#001e93]' : 'text-gray-700 hover:text-[#001e93]'}`}
                                                     >
                                                         {sub.title}
                                                     </Link>
@@ -148,7 +148,7 @@ export function SearchFilters() {
                                                                 <Link
                                                                     key={i}
                                                                     href={itemHref}
-                                                                    className={`text-[11px] truncate block py-0.5 pl-2 border-l-2 transition-all ${isSelected ? 'text-[#ff3f55] border-[#ff3f55] font-bold' : 'text-gray-500 border-transparent hover:text-black hover:border-gray-300'}`}
+                                                                    className={`text-[11px] truncate block py-0.5 pl-2 border-l-2 transition-all ${isSelected ? 'text-[#001e93] border-[#001e93] font-bold' : 'text-gray-500 border-transparent hover:text-black hover:border-gray-300'}`}
                                                                 >
                                                                     {itemTitle}
                                                                 </Link>
@@ -176,7 +176,7 @@ export function SearchFilters() {
                         variant="secondary"
                         onClick={handleNearMe}
                         disabled={isLocating}
-                        className="w-full text-[#ff3f55] bg-red-50 hover:bg-red-100 border border-red-100"
+                        className="w-full text-[#001e93] bg-red-50 hover:bg-red-100 border border-red-100"
                     >
                         {isLocating ? 'Konum Alınıyor...' : (
                             <>
@@ -239,7 +239,7 @@ export function SearchFilters() {
 
             {/* BUTTONS */}
             <div className="pt-4 flex flex-col gap-2">
-                <Button onClick={handleFilter} className="w-full bg-[#ff3f55] hover:bg-[#e63548]">Sonuçları Göster</Button>
+                <Button onClick={handleFilter} className="w-full bg-[#001e93] hover:bg-[#e63548]">Sonuçları Göster</Button>
                 <Button variant="outline" onClick={handleClear} className="w-full">Temizle</Button>
             </div>
         </div>

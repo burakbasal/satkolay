@@ -5,7 +5,7 @@ export default function HelpPage() {
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
             {/* Hero Search */}
-            <div className="bg-gradient-to-r from-[#ff3f55] to-[#ff6b7d] py-20 px-4">
+            <div className="bg-gradient-to-r from-[#001e93] to-[#ff6b7d] py-20 px-4">
                 <div className="container mx-auto max-w-3xl text-center">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-8 tracking-tight">
                         Size nasıl yardımcı olabiliriz?
@@ -30,7 +30,7 @@ export default function HelpPage() {
                         { icon: AlertCircle, label: "Şikayet" }
                     ].map((item, i) => (
                         <div key={i} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center cursor-pointer border border-gray-100">
-                            <item.icon className="w-8 h-8 mx-auto mb-3 text-[#ff3f55]" />
+                            <item.icon className="w-8 h-8 mx-auto mb-3 text-[#001e93]" />
                             <div className="font-bold text-gray-700">{item.label}</div>
                         </div>
                     ))}

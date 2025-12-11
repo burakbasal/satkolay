@@ -44,7 +44,7 @@ export default function MyListingsPage() {
                 <div className="text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-300">
                     <h3 className="text-xl font-bold text-gray-900 mb-2">Henüz ilan vermediniz</h3>
                     <p className="text-gray-500 mb-6">Satılacak ürünlerinizi hemen ekleyin.</p>
-                    <Link href="/sell" className="inline-flex items-center gap-2 bg-[#ff3f55] text-white px-6 py-3 rounded-full font-bold hover:bg-[#e63548]">
+                    <Link href="/sell" className="inline-flex items-center gap-2 bg-[#001e93] text-white px-6 py-3 rounded-full font-bold hover:bg-[#e63548]">
                         <Camera className="w-5 h-5" /> Hemen Sat
                     </Link>
                 </div>

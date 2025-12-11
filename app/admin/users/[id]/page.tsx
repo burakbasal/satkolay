@@ -64,7 +64,7 @@ export default function AdminUserDetail() {
         toast.success("Kullanıcı durumu güncellendi.");
     };
 
-    if (loading) return <div className="flex h-screen items-center justify-center bg-gray-100"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#ff3f55]"></div></div>;
+    if (loading) return <div className="flex h-screen items-center justify-center bg-gray-100"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#001e93]"></div></div>;
 
     // Log İkonu Seçici
     const getLogIcon = (type: string) => {

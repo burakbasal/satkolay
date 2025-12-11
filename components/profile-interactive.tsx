@@ -85,7 +85,7 @@ export function FollowButton({ targetId, currentUserId, isFollowingInit }: { tar
             onClick={handleFollow}
             disabled={loading}
             variant={isFollowing ? "outline" : "default"}
-            className={isFollowing ? "border-gray-300 text-gray-700" : "bg-[#ff3f55] hover:bg-[#e63548] text-white"}
+            className={isFollowing ? "border-gray-300 text-gray-700" : "bg-[#001e93] hover:bg-[#e63548] text-white"}
         >
             {isFollowing ? <><UserCheck className="w-4 h-4 mr-2" /> Takip Ediliyor</> : <><UserPlus className="w-4 h-4 mr-2" /> Takip Et</>}
         </Button>

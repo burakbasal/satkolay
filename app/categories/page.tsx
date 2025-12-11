@@ -65,7 +65,7 @@ export default function CategoriesPage() {
                             onClick={() => handleSelect(item)}
                             className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center text-center gap-3 aspect-[4/3] shadow-sm active:scale-95 transition-transform cursor-pointer relative overflow-hidden group"
                         >
-                            {Icon && <Icon className="w-8 h-8 text-[#ff3f55] opacity-90 group-hover:scale-110 transition-transform" />}
+                            {Icon && <Icon className="w-8 h-8 text-[#001e93] opacity-90 group-hover:scale-110 transition-transform" />}
 
                             <span className="text-sm font-bold text-gray-800 line-clamp-2 leading-tight">
                                 {item.label}

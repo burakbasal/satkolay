@@ -78,7 +78,7 @@ export function LocationPicker() {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <button className="flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-2 md:px-4 md:py-2.5 hover:bg-gray-50 text-gray-700 font-medium whitespace-nowrap transition-colors mr-2">
-                    <MapPin className="w-4 h-4 text-[#ff3f55]" />
+                    <MapPin className="w-4 h-4 text-[#001e93]" />
                     {/* Mobilde yazı gizlensin, yer kaplamasın */}
                     <span className="hidden md:block max-w-[100px] lg:max-w-[150px] truncate">{displayCity}</span>
                     <ChevronDown className="w-4 h-4 opacity-50" />
@@ -113,7 +113,7 @@ export function LocationPicker() {
                             <Button
                                 key={city}
                                 variant="ghost"
-                                className={`w-full justify-start font-normal ${displayCity === city ? 'bg-red-50 text-[#ff3f55]' : ''}`}
+                                className={`w-full justify-start font-normal ${displayCity === city ? 'bg-red-50 text-[#001e93]' : ''}`}
                                 onClick={() => handleSelectCity(city)}
                             >
                                 {city}

@@ -11,8 +11,8 @@ export function BottomNav() {
     // Basit aktiflik kontrolü
     const isActive = (path: string) => {
         // Profil için özel durum: URL /profile ile başlıyorsa (örn: /profile/burak) aktif yak.
-        if (path === '/profile' && pathname.startsWith('/profile')) return 'text-[#ff3f55]';
-        return pathname === path ? 'text-[#ff3f55]' : 'text-gray-500';
+        if (path === '/profile' && pathname.startsWith('/profile')) return 'text-[#001e93]';
+        return pathname === path ? 'text-[#001e93]' : 'text-gray-500';
     };
 
     const [isMounted, setIsMounted] = useState(false);
@@ -37,7 +37,7 @@ export function BottomNav() {
             </Link>
 
             <div className="relative -top-5">
-                <Link href="/sell" className="flex items-center justify-center w-14 h-14 bg-[#ff3f55] rounded-full text-white shadow-lg border-4 border-white hover:scale-105 transition-transform">
+                <Link href="/sell" className="flex items-center justify-center w-14 h-14 bg-[#001e93] rounded-full text-white shadow-lg border-4 border-white hover:scale-105 transition-transform">
                     <Camera className="w-7 h-7" />
                 </Link>
             </div>

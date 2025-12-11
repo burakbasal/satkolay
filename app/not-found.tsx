@@ -22,9 +22,9 @@ export default function NotFound() {
 
                     {/* Büyüteç */}
                     <g transform="rotate(-15 130 50)">
-                        <circle cx="130" cy="50" r="25" fill="#fff" stroke="#ff3f55" strokeWidth="3" opacity="0.9" />
+                        <circle cx="130" cy="50" r="25" fill="#fff" stroke="#001e93" strokeWidth="3" opacity="0.9" />
                         <path d="M145 65 L165 85" stroke="#334155" strokeWidth="6" strokeLinecap="round" />
-                        <text x="130" y="58" fontSize="24" textAnchor="middle" fill="#ff3f55" fontFamily="sans-serif" fontWeight="bold">?</text>
+                        <text x="130" y="58" fontSize="24" textAnchor="middle" fill="#001e93" fontFamily="sans-serif" fontWeight="bold">?</text>
                     </g>
 
                     {/* Floating Elements (Soru işaretleri) */}

@@ -85,7 +85,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                             }}
                         />
                         <div className="flex flex-col items-center pointer-events-none">
-                            <span className="text-[#ff3f55] font-bold">+ Yeni Fotoğraf Ekle</span>
+                            <span className="text-[#001e93] font-bold">+ Yeni Fotoğraf Ekle</span>
                         </div>
                     </div>
 
@@ -173,7 +173,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                     </div>
                 )}
 
-                <Button type="submit" className="w-full bg-[#ff3f55] hover:bg-[#e63548] text-white font-bold py-3 mt-4">
+                <Button type="submit" className="w-full bg-[#001e93] hover:bg-[#e63548] text-white font-bold py-3 mt-4">
                     Güncelle
                 </Button>
             </form>

@@ -109,7 +109,7 @@ export default function AuthPage() {
         <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 font-sans">
             <div className="w-full max-w-md space-y-6 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
                 <div className="text-center">
-                    <h2 className="text-3xl font-black text-[#ff3f55] tracking-tighter">SatKolay</h2>
+                    <h2 className="text-3xl font-black text-[#001e93] tracking-tighter">SatKolay</h2>
                     <p className="mt-2 text-sm text-gray-600">Güvenli Alışverişin Adresi</p>
                 </div>
 
@@ -145,7 +145,7 @@ export default function AuthPage() {
                                 <Label>Şifre</Label>
                                 <Input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="h-12" />
                             </div>
-                            <Button type="submit" className="w-full bg-[#ff3f55] hover:bg-[#e63548] h-12 text-lg font-bold" disabled={loading}>
+                            <Button type="submit" className="w-full bg-[#001e93] hover:bg-[#e63548] h-12 text-lg font-bold" disabled={loading}>
                                 {loading ? <Loader2 className="animate-spin" /> : 'Giriş Yap'}
                             </Button>
                         </form>
@@ -179,7 +179,7 @@ export default function AuthPage() {
                                 <Label>Şifre</Label>
                                 <Input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="h-12" />
                             </div>
-                            <Button type="submit" className="w-full bg-[#ff3f55] hover:bg-[#e63548] h-12 text-lg font-bold" disabled={loading || usernameStatus === 'taken'}>
+                            <Button type="submit" className="w-full bg-[#001e93] hover:bg-[#e63548] h-12 text-lg font-bold" disabled={loading || usernameStatus === 'taken'}>
                                 {loading ? <Loader2 className="animate-spin" /> : 'Kayıt Ol'}
                             </Button>
                         </form>

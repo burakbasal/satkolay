@@ -252,7 +252,7 @@ export function EditProfileDialog({ profile }: { profile: any }) {
 
                         <div className="flex gap-2 w-full">
                             <Button variant="outline" onClick={handleCropCancel} className="flex-1">İptal</Button>
-                            <Button onClick={executeCrop} className="flex-1 bg-[#ff3f55] hover:bg-[#e63548] text-white">Kaydet</Button>
+                            <Button onClick={executeCrop} className="flex-1 bg-[#001e93] hover:bg-[#e63548] text-white">Kaydet</Button>
                         </div>
                     </div>
                 ) : (
@@ -290,7 +290,7 @@ export function EditProfileDialog({ profile }: { profile: any }) {
                             <Label htmlFor="bio">Biyografi</Label>
                             <Textarea id="bio" name="bio" defaultValue={profile.bio || ''} placeholder="Kendinden bahset..." />
                         </div>
-                        <Button type="submit" disabled={loading} className="bg-[#ff3f55] hover:bg-[#e63548] text-white font-bold h-11">
+                        <Button type="submit" disabled={loading} className="bg-[#001e93] hover:bg-[#e63548] text-white font-bold h-11">
                             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Kaydet"}
                         </Button>
                     </form>

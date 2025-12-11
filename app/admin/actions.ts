@@ -251,15 +251,24 @@ export async function updateSystemSettings(key: string, value: boolean) {
     await checkAdminAccess();
     const supabase = await createClient();
 
-    // Upsert or Update. Assuming table 'system_settings' with columns 'key' (text, PK) and 'value' (boolean).
-    const { error } = await supabase
-        .from('system_settings')
-        .upsert({ key, value })
-        .select();
+    try {
+        // Upsert logic for system_settings (key is PK)
+        const { error } = await supabase
+            .from('system_settings')
+            .upsert({ key, value }, { onConflict: 'key' })
+            .select();
 
-    if (error) {
+        if (error) throw error;
+    } catch (error) {
         console.error('Error updating settings:', error);
-        throw new Error('Failed to update settings');
+        // Do not throw to prevent 500 Page Crash, just log. 
+        // The client will see no error but also no success if we don't return something, 
+        // but Server Actions void defaults to success.
+        // Ideally we return { success: false, error } but we are using void signatures here.
+        // Throwing a string message is handled by next.js error boundary sometimes, 
+        // but here we want to avoid the "Crash".
+        // Let's rethrow with a safe message or suppress if we trust client toast.
+        throw new Error('Ayarlar güncellenirken bir hata oluştu.');
     }
 
     revalidatePath('/admin/settings');

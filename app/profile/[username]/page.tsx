@@ -83,7 +83,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
                             </div>
 
                             <div className="space-y-2 text-sm text-gray-500 mb-6">
-                                <div className="flex items-center justify-center gap-2"><MapPin className="w-4 h-4" /> İstanbul</div>
+                                <div className="flex items-center justify-center gap-2"><MapPin className="w-4 h-4" /> {profile.city || 'İstanbul'}</div>
                                 <div className="flex items-center justify-center gap-2"><Calendar className="w-4 h-4" /> Üye: {joinedYear}</div>
                             </div>
 

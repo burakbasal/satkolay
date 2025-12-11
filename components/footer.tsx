@@ -20,7 +20,7 @@ export function Footer() {
     );
 
     return (
-        <footer className="w-full bg-white border-t border-gray-100 mt-auto pb-32 md:pb-10">
+        <footer className="w-full bg-white border-t border-gray-100 mt-auto pb-6 md:pb-10">
             {/* 
                CRITICAL MOBILE FIX: pb-32 added above to prevent overlap with Bottom Navigation.
             */}

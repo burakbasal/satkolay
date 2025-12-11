@@ -183,6 +183,7 @@ export function EditProfileDialog({ profile }: { profile: any }) {
                 username: username,
                 full_name: formData.get('full_name'),
                 bio: formData.get('bio'),
+                city: formData.get('city'),
                 avatar_url: avatarUrl
             })
             .eq('id', user.id);
@@ -289,6 +290,20 @@ export function EditProfileDialog({ profile }: { profile: any }) {
                         <div className="grid gap-2">
                             <Label htmlFor="bio">Biyografi</Label>
                             <Textarea id="bio" name="bio" defaultValue={profile.bio || ''} placeholder="Kendinden bahset..." />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="city">Şehir</Label>
+                            <select
+                                id="city"
+                                name="city"
+                                defaultValue={profile.city || 'İstanbul'}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                <option value="">Şehir Seçiniz</option>
+                                {["Adana", "Ankara", "Antalya", "Bursa", "Diyarbakır", "Erzurum", "Eskişehir", "Gaziantep", "İstanbul", "İzmir", "Kayseri", "Kocaeli", "Konya", "Mersin", "Samsun", "Şanlıurfa", "Trabzon", "Van", "Diğer"].map(city => (
+                                    <option key={city} value={city}>{city}</option>
+                                ))}
+                            </select>
                         </div>
                         <Button type="submit" disabled={loading} className="bg-[#001e93] hover:bg-[#e63548] text-white font-bold h-11">
                             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Kaydet"}

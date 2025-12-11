@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Facebook, Instagram, Youtube, ShieldCheck } from 'lucide-react';
+import { Facebook, Instagram, Youtube, ShieldCheck, Linkedin } from 'lucide-react';
 
 export function Footer() {
     const pathname = usePathname();
@@ -74,10 +74,11 @@ export function Footer() {
 
                         <h4 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">Bizi Takip Et</h4>
                         <div className="flex gap-4">
-                            <Link href="#" className="text-gray-400 hover:text-[#001e93] transition-colors transform hover:scale-110"><Facebook className="w-5 h-5" /></Link>
-                            <Link href="#" className="text-gray-400 hover:text-[#001e93] transition-colors transform hover:scale-110"><Instagram className="w-5 h-5" /></Link>
-                            <Link href="#" className="text-gray-400 hover:text-[#001e93] transition-colors transform hover:scale-110"><XIcon className="w-5 h-5" /></Link>
-                            <Link href="#" className="text-gray-400 hover:text-[#001e93] transition-colors transform hover:scale-110"><Youtube className="w-5 h-5" /></Link>
+                            <Link href="#" className="text-gray-400 hover:text-[#1877F2] transition-colors duration-200 transform hover:scale-110"><Facebook className="w-5 h-5" /></Link>
+                            <Link href="#" className="text-gray-400 hover:text-[#E4405F] transition-colors duration-200 transform hover:scale-110"><Instagram className="w-5 h-5" /></Link>
+                            <Link href="#" className="text-gray-400 hover:text-black transition-colors duration-200 transform hover:scale-110"><XIcon className="w-5 h-5" /></Link>
+                            <Link href="#" className="text-gray-400 hover:text-[#FF0000] transition-colors duration-200 transform hover:scale-110"><Youtube className="w-5 h-5" /></Link>
+                            <Link href="https://www.linkedin.com/company/satkolay/about/" className="text-gray-400 hover:text-[#0A66C2] transition-colors duration-200 transform hover:scale-110"><Linkedin className="w-5 h-5" /></Link>
                         </div>
                     </div>
 

@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/icon.png',
-    shortcut: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
   },
   description: 'Türkiye\'nin en hızlı büyüyen ikinci el pazar yeri. Sahibinden araba, telefon, mobilya, elektronik ve giyim ürünlerini ücretsiz ilan vererek kolayca sat veya güvenle al.',
   keywords: [
@@ -34,6 +34,7 @@ export const metadata: Metadata = {
     title: 'SatKolay - İkinci El Alışverişin En Kolay Yolu',
     description: 'Aradığın her şey SatKolay\'da! İkinci el eşyalarını hemen nakite çevir.',
     siteName: 'SatKolay',
+    images: ['/banner.png'],
   },
   robots: {
     index: true,
@@ -59,31 +60,35 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
-              {
-                '@context': 'https://schema.org',
-                '@type': 'WebSite',
-                name: 'SatKolay',
-                url: 'https://www.satkolay.com',
-                potentialAction: {
-                  '@type': 'SearchAction',
-                  target: 'https://www.satkolay.com/search?q={search_term_string}',
-                  'query-input': 'required name=search_term_string',
-                },
-              },
-              {
-                '@context': 'https://schema.org',
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
                 '@type': 'Organization',
-                name: 'SatKolay',
-                url: 'https://www.satkolay.com',
-                logo: 'https://www.satkolay.com/icon.png',
-                sameAs: [
-                  'https://www.instagram.com/satkolay',
-                  'https://twitter.com/satkolay',
-                  'https://www.linkedin.com/company/satkolay'
-                ]
-              }
-            ]),
+        name: 'SatKolay',
+        url: 'https://www.satkolay.com',
+        logo: 'https://www.satkolay.com/satkolay-resmi-logo.jpg',
+        sameAs: ['https://twitter.com/satkolay', 'https://instagram.com/satkolay']
+                },
+        {
+          '@type': 'WebSite',
+        url: 'https://www.satkolay.com',
+        potentialAction: {
+          '@type': 'SearchAction',
+        target: 'https://www.satkolay.com/search?q={search_term_string}',
+        'query-input': 'required name=search_term_string'
+                  }
+                },
+        {
+          '@type': 'ItemList',
+        itemListElement: [
+        {'@type': 'SiteNavigationElement', position: 1, name: 'Araba', url: 'https://www.satkolay.com/search?category=Araba' },
+        {'@type': 'SiteNavigationElement', position: 2, name: 'Telefon', url: 'https://www.satkolay.com/search?category=Telefon' },
+        {'@type': 'SiteNavigationElement', position: 3, name: 'Elektronik', url: 'https://www.satkolay.com/search?category=Elektronik' },
+        {'@type': 'SiteNavigationElement', position: 4, name: 'Ev & Yaşam', url: 'https://www.satkolay.com/search?category=Ev' }
+        ]
+                }
+        ]
+            })
           }}
         />
         <ClientLayout>{children}</ClientLayout>

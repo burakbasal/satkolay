@@ -1,10 +1,17 @@
 import { createClient } from '@/utils/supabase/server';
 import { DataTable, DataTableCell, DataTableRow } from '@/components/admin/data-table';
-import { Shield, Ban, Edit, Trash, Check } from 'lucide-react';
+import { Shield, User as UserIcon } from 'lucide-react';
+import { UserActions } from '@/components/admin/user-actions';
+import { checkAdminAccess } from '@/utils/admin-auth';
 
 export default async function AdminUsersPage() {
+    const { profile: currentAdmin } = await checkAdminAccess();
     const supabase = await createClient();
-    const { data: profiles } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+
+    const { data: profiles } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
 
     return (
         <div className="space-y-6">
@@ -15,7 +22,7 @@ export default async function AdminUsersPage() {
                 </div>
             </div>
 
-            <DataTable headers={['Kullanıcı', 'Rol', 'Tarih', 'ID', 'İşlemler']}>
+            <DataTable headers={['Kullanıcı', 'Rol', 'Katılma Tarihi', 'ID', 'İşlemler']}>
                 {profiles?.map((profile) => (
                     <DataTableRow key={profile.id}>
                         <DataTableCell>
@@ -34,16 +41,19 @@ export default async function AdminUsersPage() {
                                 <span className="inline-flex items-center gap-1 bg-purple-500/10 text-purple-400 px-2.5 py-0.5 rounded-full text-xs font-bold border border-purple-500/20">
                                     <Shield className="w-3 h-3" /> Admin
                                 </span>
-                            ) : profile.role === 'owner' ? (
-                                <span className="inline-flex items-center gap-1 bg-red-500/10 text-red-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-red-500/20">
-                                    OWNER
-                                </span>
-                            ) : profile.role === 'staff' ? (
+                            ) : profile.role === 'moderator' ? (
                                 <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-400 px-2.5 py-0.5 rounded-full text-xs font-bold border border-blue-500/20">
-                                    Personel
+                                    Moderator
                                 </span>
                             ) : (
-                                <span className="text-slate-400 text-xs">Kullanıcı</span>
+                                <span className="inline-flex items-center gap-1 text-slate-400 text-xs">
+                                    User
+                                </span>
+                            )}
+                            {profile.is_banned && (
+                                <span className="ml-2 inline-flex items-center gap-1 bg-red-500/10 text-red-500 px-2 py-0.5 rounded-full text-[10px] font-bold border border-red-500/20">
+                                    BANNED
+                                </span>
                             )}
                         </DataTableCell>
                         <DataTableCell>
@@ -55,15 +65,12 @@ export default async function AdminUsersPage() {
                             </code>
                         </DataTableCell>
                         <DataTableCell>
-                            {/* CLIENT COMPONENT NEEDED FOR INTERACTIVITY - VISUAL ONLY FOR NOW */}
-                            <div className="flex items-center gap-2">
-                                <button className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-colors">
-                                    <Edit className="w-3 h-3" /> Rol Değiştir
-                                </button>
-                                <button className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg text-xs font-bold text-red-500 transition-colors border border-red-500/20">
-                                    <Ban className="w-3 h-3" /> Yasakla
-                                </button>
-                            </div>
+                            <UserActions
+                                userId={profile.id}
+                                currentRole={profile.role}
+                                isBanned={profile.is_banned || false}
+                                currentUserRole={currentAdmin.role}
+                            />
                         </DataTableCell>
                     </DataTableRow>
                 ))}

@@ -1,7 +1,8 @@
 import { createClient } from '@/utils/supabase/server';
 import { DataTable, DataTableCell, DataTableRow } from '@/components/admin/data-table';
-import { Eye, Trash, CheckCircle, XCircle, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import Link from 'next/link';
+import { ItemActions } from '@/components/admin/item-actions';
 
 export default async function AdminItemsPage() {
     const supabase = await createClient();
@@ -34,10 +35,12 @@ export default async function AdminItemsPage() {
                             )}
                         </DataTableCell>
                         <DataTableCell>
-                            <Link href={`/item/${item.id}`} className="font-bold text-white hover:text-blue-400 hover:underline block max-w-[200px] truncate">
-                                {item.title}
-                            </Link>
-                            <span className="text-xs text-slate-500">{item.id.split('-')[0]}</span>
+                            <div className="flex flex-col">
+                                <Link href={`/item/${item.id}`} className="font-bold text-white hover:text-blue-400 hover:underline block max-w-[200px] truncate">
+                                    {item.title}
+                                </Link>
+                                <span className="text-xs text-slate-500 font-mono">{item.id.split('-')[0]}</span>
+                            </div>
                         </DataTableCell>
                         <DataTableCell>
                             <span className="font-mono text-green-400">{item.price} ₺</span>
@@ -61,17 +64,7 @@ export default async function AdminItemsPage() {
                             )}
                         </DataTableCell>
                         <DataTableCell>
-                            <div className="flex items-center gap-2">
-                                <a href={`/item/${item.id}`} target="_blank" rel="noreferrer" className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition-colors" title="Görüntüle">
-                                    <Eye className="w-4 h-4" />
-                                </a>
-                                <button className="p-2 hover:bg-green-500/10 rounded-lg text-slate-400 hover:text-green-500 transition-colors" title="Onayla / Vitrine Al">
-                                    <CheckCircle className="w-4 h-4" />
-                                </button>
-                                <button className="p-2 hover:bg-red-500/10 rounded-lg text-slate-400 hover:text-red-500 transition-colors" title="Reddet / Sil">
-                                    <Trash className="w-4 h-4" />
-                                </button>
-                            </div>
+                            <ItemActions itemId={item.id} isFeatured={item.is_featured} />
                         </DataTableCell>
                     </DataTableRow>
                 ))}

@@ -22,8 +22,9 @@ export async function checkAdminAccess() {
         redirect('/');
     }
 
-    // 3. Rol Kontrolü (Owner, Admin, Staff veya Legacy is_admin)
-    const allowedRoles = ['owner', 'admin', 'staff'];
+    // 3. Rol Kontrolü (Admin = Owner, Moderator = Staff)
+    // DB roles: 'admin', 'moderator'
+    const allowedRoles = ['admin', 'moderator'];
     const hasRole = allowedRoles.includes(profile.role) || profile.is_admin === true;
 
     if (!hasRole) {

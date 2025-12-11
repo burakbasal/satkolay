@@ -12,7 +12,12 @@ const inter = Inter({ subsets: ["latin"], display: 'swap' });
 export const metadata: Metadata = {
   title: {
     default: 'SatKolay | İkinci Elin Güvenli ve Yeni Adresi',
-    template: '%s | SatKolay'
+    template: '%s | SatKolay - İkinci Elin Yeni Adresi'
+  },
+  icons: {
+    icon: '/icon.png',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
   },
   description: 'Türkiye\'nin en hızlı büyüyen ikinci el pazar yeri. Sahibinden araba, telefon, mobilya, elektronik ve giyim ürünlerini ücretsiz ilan vererek kolayca sat veya güvenle al.',
   keywords: [
@@ -54,17 +59,31 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'WebSite',
-              name: 'SatKolay',
-              url: 'https://satkolay.com',
-              potentialAction: {
-                '@type': 'SearchAction',
-                target: 'https://satkolay.com/arama?q={search_term_string}',
-                'query-input': 'required name=search_term_string',
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: 'SatKolay',
+                url: 'https://www.satkolay.com',
+                potentialAction: {
+                  '@type': 'SearchAction',
+                  target: 'https://www.satkolay.com/search?q={search_term_string}',
+                  'query-input': 'required name=search_term_string',
+                },
               },
-            }),
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'SatKolay',
+                url: 'https://www.satkolay.com',
+                logo: 'https://www.satkolay.com/icon.png',
+                sameAs: [
+                  'https://www.instagram.com/satkolay',
+                  'https://twitter.com/satkolay',
+                  'https://www.linkedin.com/company/satkolay'
+                ]
+              }
+            ]),
           }}
         />
         <ClientLayout>{children}</ClientLayout>

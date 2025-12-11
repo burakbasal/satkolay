@@ -1,98 +1,73 @@
 import { createClient } from '@/utils/supabase/server';
-import { Button } from "@/components/ui/button";
-import { Trash2, ExternalLink } from 'lucide-react';
-import { revalidatePath } from 'next/cache';
+import { DataTable, DataTableCell, DataTableRow } from '@/components/admin/data-table';
+import { Eye, Trash, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default async function AdminItemsPage() {
     const supabase = await createClient();
-
-    // Tüm İlanları Çek (Satıcı bilgisiyle beraber)
-    // Not: İlişkisel sorgu için foreign key ayarlı olmalı. Şimdilik düz çekiyoruz.
-    const { data: items } = await supabase
-        .from('items')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-    // Silme İşlemi
-    async function deleteItem(formData: FormData) {
-        'use server';
-        const itemId = formData.get('itemId') as string;
-        const supabase = await createClient();
-        await supabase.from('items').delete().eq('id', itemId);
-        revalidatePath('/admin/items');
-    }
+    const { data: items } = await supabase.from('items').select('*').order('created_at', { ascending: false });
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">İlanlar</h1>
-                <div className="text-sm text-muted-foreground">
-                    Toplam <strong>{items?.length || 0}</strong> ilan yayında
+                <div>
+                    <h2 className="text-2xl font-black text-white tracking-tight">İlan Yönetimi</h2>
+                    <p className="text-slate-400">Toplam {items?.length || 0} ilan.</p>
                 </div>
             </div>
 
-            <div className="border rounded-lg bg-white shadow-sm overflow-hidden">
-                <table className="w-full text-sm text-left">
-                    <thead className="bg-gray-50 text-gray-500 font-medium border-b">
-                        <tr>
-                            <th className="px-6 py-4">Ürün</th>
-                            <th className="px-6 py-4">Fiyat</th>
-                            <th className="px-6 py-4">Kategori</th>
-                            <th className="px-6 py-4">Tarih</th>
-                            <th className="px-6 py-4 text-right">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {items?.map((item) => (
-                            <tr key={item.id} className="hover:bg-gray-50 transition">
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className="h-12 w-12 rounded-md bg-gray-100 relative overflow-hidden shrink-0 border">
-                                            {item.images?.[0] ? (
-                                                <Image src={item.images[0]} alt={item.title} fill className="object-cover" />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">Yok</div>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <div className="font-medium text-gray-900 line-clamp-1">{item.title}</div>
-                                            <div className="text-gray-500 text-xs line-clamp-1">{item.description}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 font-medium text-gray-900">
-                                    ₺{item.price?.toLocaleString()}
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                                        {item.category}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 text-gray-500">
-                                    {new Date(item.created_at).toLocaleDateString('tr-TR')}
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <div className="flex items-center justify-end gap-2">
-                                        <Link href={`/item/${item.id}`} target="_blank">
-                                            <Button variant="ghost" size="icon" className="text-gray-400 hover:text-blue-600">
-                                                <ExternalLink className="w-4 h-4" />
-                                            </Button>
-                                        </Link>
-                                        <form action={deleteItem}>
-                                            <input type="hidden" name="itemId" value={item.id} />
-                                            <Button variant="ghost" size="icon" className="text-gray-400 hover:text-red-600 hover:bg-red-50">
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            <DataTable headers={['Görsel', 'Başlık', 'Fiyat', 'Durum', 'Tarih', 'İşlemler']}>
+                {items?.map((item) => (
+                    <DataTableRow key={item.id}>
+                        <DataTableCell>
+                            {item.image_urls?.[0] ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={item.image_urls[0]}
+                                    alt="item"
+                                    className="w-10 h-10 rounded-lg object-cover bg-slate-800"
+                                />
+                            ) : (
+                                <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-xs text-slate-500">
+                                    No Img
+                                </div>
+                            )}
+                        </DataTableCell>
+                        <DataTableCell>
+                            <Link href={`/item/${item.id}`} className="font-bold text-white hover:text-blue-400 hover:underline">
+                                {item.title}
+                            </Link>
+                        </DataTableCell>
+                        <DataTableCell>
+                            <span className="font-mono text-green-400">{item.price} ₺</span>
+                        </DataTableCell>
+                        <DataTableCell>
+                            {item.is_sold ? (
+                                <span className="inline-flex items-center gap-1 bg-red-500/10 text-red-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-red-500/20">
+                                    Satıldı
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-green-500/20">
+                                    Aktif
+                                </span>
+                            )}
+                        </DataTableCell>
+                        <DataTableCell>
+                            {new Date(item.created_at).toLocaleDateString('tr-TR')}
+                        </DataTableCell>
+                        <DataTableCell>
+                            <div className="flex items-center gap-2">
+                                <a href={`/item/${item.id}`} target="_blank" rel="noreferrer" className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition-colors" title="Görüntüle">
+                                    <Eye className="w-4 h-4" />
+                                </a>
+                                <button className="p-2 hover:bg-red-500/10 rounded-lg text-slate-400 hover:text-red-500 transition-colors" title="Sil">
+                                    <Trash className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </DataTableCell>
+                    </DataTableRow>
+                ))}
+            </DataTable>
         </div>
     );
 }

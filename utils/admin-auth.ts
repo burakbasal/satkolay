@@ -14,21 +14,23 @@ export async function checkAdminAccess() {
     // 2. Profildeki rolü kontrol et
     const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('role, is_admin') // Hem yeni 'role' hem eski 'is_admin' desteği için
+        .select('role, is_admin')
         .eq('id', user.id)
         .single();
 
     if (profileError || !profile) {
-        // Profil yoksa ana sayfaya at
         redirect('/');
     }
 
-    // 3. Admin kontrolü (Hem role='admin' hem de is_admin=true kabul edelim)
-    const isAdmin = profile.role === 'admin' || profile.is_admin === true;
+    // 3. Rol Kontrolü (Owner, Admin, Staff veya Legacy is_admin)
+    const allowedRoles = ['owner', 'admin', 'staff'];
+    const hasRole = allowedRoles.includes(profile.role) || profile.is_admin === true;
 
-    if (!isAdmin) {
+    if (!hasRole) {
+        // Yetkisiz giriş
         redirect('/');
     }
 
-    return user;
+    // Profile objesini ve user'ı döndür ki sayfalarda tekrar çekmek zorunda kalmayalım
+    return { user, profile };
 }

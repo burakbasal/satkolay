@@ -1,6 +1,6 @@
 import { StaticPageLayout } from '@/components/static-page-layout';
 import type { Metadata } from 'next';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,7 +14,7 @@ export default function ContactPage() {
     return (
         <StaticPageLayout title="Bize Ulaşın">
             <p className="lead text-lg text-gray-600 mb-10">
-                Görüşleriniz, önerileriniz ve şikayetleriniz bizim için çok değerli. Aşağıdaki formu doldurarak veya iletişim kanallarımızdan bize ulaşabilirsiniz.
+                Görüşleriniz, önerileriniz ve şikayetleriniz bizim için çok değerli. Aşağıdaki formu doldurarak veya e-posta yoluyla bize ulaşabilirsiniz.
             </p>
 
             <div className="grid md:grid-cols-2 gap-12">
@@ -23,26 +23,17 @@ export default function ContactPage() {
                     <div className="flex items-start gap-4">
                         <div className="bg-blue-50 p-3 rounded-full text-blue-600"><MapPin className="w-6 h-6" /></div>
                         <div>
-                            <h3 className="font-bold text-gray-900">Merkez Ofis</h3>
-                            <p className="text-gray-600">Teknokent Binası, Dicle Üniversitesi Kampüsü<br />Sur, Diyarbakır</p>
+                            <h3 className="font-bold text-gray-900">Ofis</h3>
+                            <p className="text-gray-600">Levent, İstanbul, Türkiye</p>
                         </div>
                     </div>
 
                     <div className="flex items-start gap-4">
                         <div className="bg-blue-50 p-3 rounded-full text-blue-600"><Mail className="w-6 h-6" /></div>
                         <div>
-                            <h3 className="font-bold text-gray-900">E-Posta</h3>
+                            <h3 className="font-bold text-gray-900">E-Posta & Destek</h3>
                             <p className="text-gray-600">destek@satkolay.com</p>
-                            <p className="text-xs text-gray-500 mt-1">Ortalama yanıt süresi: 24 saat</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                        <div className="bg-blue-50 p-3 rounded-full text-blue-600"><Phone className="w-6 h-6" /></div>
-                        <div>
-                            <h3 className="font-bold text-gray-900">Çağrı Merkezi</h3>
-                            <p className="text-gray-600">0850 123 45 67</p>
-                            <p className="text-xs text-gray-500 mt-1">Hafta içi 09:00 - 18:00</p>
+                            <p className="text-xs text-gray-500 mt-1">Şimdilik sadece e-posta üzerinden iletişime geçebilirsiniz. Ortalama yanıt süresi: 24 saat.</p>
                         </div>
                     </div>
                 </div>
@@ -77,6 +68,10 @@ export default function ContactPage() {
                             Gönder
                         </Button>
                     </form>
+
+                    <p className="text-xs text-gray-400 mt-4 text-center">
+                        Bu formu doldurarak <a href="/yasal/gizlilik" className="underline">Gizlilik Politikası</a>'nı kabul etmiş olursunuz.
+                    </p>
                 </div>
             </div>
         </StaticPageLayout>

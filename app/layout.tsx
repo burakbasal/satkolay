@@ -10,16 +10,26 @@ import { CookieConsent } from "@/components/cookie-consent";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://satkolay.com'),
   title: {
-    default: "SatKolay | İkinci Elin Yeni Adresi",
-    template: "%s | SatKolay", // Alt sayfalarda "Hakkımızda | SatKolay" yazar
+    default: 'SatKolay | İkinci Elin Güvenli ve Yeni Adresi',
+    template: '%s | SatKolay'
   },
-  description: "Türkiye'nin en hızlı büyüyen ücretsiz ikinci el ilan platformu. Araba, telefon, bilgisayar ve mobilya satmak SatKolay ile çok basit.",
-  keywords: ["ikinci el", "satılık", "sahibinden", "diyarbakır ikinci el", "ücretsiz ilan", "sat kolay", "hızlı sat"],
-  authors: [{ name: "Burak Basal" }],
-  creator: "Burak Basal",
-  publisher: "SatKolay",
+  description: 'Türkiye\'nin en hızlı büyüyen ikinci el pazar yeri. Sahibinden araba, telefon, mobilya, elektronik ve giyim ürünlerini ücretsiz ilan vererek kolayca sat veya güvenle al.',
+  keywords: [
+    'ikinci el', 'satılık', 'sahibinden', 'ücretsiz ilan', 'letgo benzeri',
+    'dolap uygulaması', 'güvenli alışveriş', 'online pazar yeri',
+    'ikinci el telefon', 'ikinci el araba', 'ikinci el mobilya',
+    'hızlı sat', 'sat kolay', 'türkiye ikinci el'
+  ],
+  authors: [{ name: 'SatKolay Ekibi' }],
+  openGraph: {
+    type: 'website',
+    locale: 'tr_TR',
+    url: 'https://www.satkolay.com',
+    title: 'SatKolay - İkinci El Alışverişin En Kolay Yolu',
+    description: 'Aradığın her şey SatKolay\'da! İkinci el eşyalarını hemen nakite çevir.',
+    siteName: 'SatKolay',
+  },
   robots: {
     index: true,
     follow: true,
@@ -30,22 +40,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  openGraph: {
-    title: "SatKolay | İkinci El Alım Satım",
-    description: "İhtiyacın olmayanı sat, hayalini ucuza al. Komisyonsuz, hızlı ve güvenli alışverişin adresi.",
-    url: 'https://satkolay.com',
-    siteName: 'SatKolay',
-    locale: 'tr_TR',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: "SatKolay",
-    description: "İkinci elin en hızlı hali.",
-  },
-  alternates: {
-    canonical: 'https://satkolay.com',
   },
 };
 

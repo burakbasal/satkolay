@@ -27,8 +27,8 @@ export function Footer() {
 
             <div className="max-w-[1280px] mx-auto px-6 py-12 md:py-16">
 
-                {/* 5-Column Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 text-center md:text-left">
+                {/* 4-Column Grid (Removed Mobil Column) */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-10 lg:gap-8 text-center md:text-left">
 
                     {/* Sütun 1: Kurumsal */}
                     <div className="flex flex-col space-y-4">
@@ -63,7 +63,7 @@ export function Footer() {
                         </ul>
                     </div>
 
-                    {/* Sütun 4: Topluluk & Sosyal */}
+                    {/* Sütun 4: Topluluk & Ekstra (Merged) */}
                     <div className="flex flex-col space-y-4 items-center md:items-start">
                         <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Sosyal Medya</h4>
                         <div className="flex gap-4 mt-1">
@@ -73,27 +73,15 @@ export function Footer() {
                             <Link href="#" className="text-gray-400 hover:text-[#FF0000] transition-colors duration-200 transform hover:scale-110"><Youtube className="w-6 h-6" /></Link>
                             <Link href="#" className="text-gray-400 hover:text-[#0A66C2] transition-colors duration-200 transform hover:scale-110"><Linkedin className="w-6 h-6" /></Link>
                         </div>
-                        <div className="flex items-center gap-2 mt-4 text-green-600 bg-green-50 px-3 py-1.5 rounded-full border border-green-100">
+
+                        <div className="flex flex-col space-y-2 mt-6 text-sm text-gray-600 w-full md:w-auto">
+                            <Link href="/kampanyalar" className="hover:text-[#001e93] transition-colors font-medium">Kampanyalar</Link>
+                            <Link href="/site-haritasi" className="hover:text-[#001e93] transition-colors">Site Haritası</Link>
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-2 text-green-600 bg-green-50 px-3 py-1.5 rounded-full border border-green-100">
                             <ShieldCheck className="w-4 h-4" />
                             <span className="text-xs font-bold">Güvenli Ticaret</span>
-                        </div>
-                    </div>
-
-                    {/* Sütun 5: Mobil & Ekstra */}
-                    <div className="flex flex-col space-y-4 items-center md:items-start">
-                        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Mobil Uygulama</h4>
-                        <div className="flex flex-col gap-2 w-full max-w-[160px]">
-                            {/* Dummy Buttons */}
-                            <button className="bg-black text-white hover:bg-gray-800 rounded-lg px-3 py-2 text-xs font-bold flex items-center justify-center gap-2 transition-colors">
-                                <span></span> App Store
-                            </button>
-                            <button className="bg-black text-white hover:bg-gray-800 rounded-lg px-3 py-2 text-xs font-bold flex items-center justify-center gap-2 transition-colors">
-                                <span>▶</span> Google Play
-                            </button>
-                        </div>
-                        <div className="pt-2 flex flex-col space-y-2 text-sm text-gray-600">
-                            <Link href="/kampanyalar" className="hover:text-[#001e93] transition-colors font-medium">✨ Kampanyalar</Link>
-                            <Link href="/site-haritasi" className="hover:text-[#001e93] transition-colors">Site Haritası</Link>
                         </div>
                     </div>
 

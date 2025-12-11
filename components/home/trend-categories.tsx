@@ -2,20 +2,20 @@
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Link from "next/link";
-import Image from "next/image";
+import { TreePine, Snowflake, Gift, Coffee, Laptop, Gamepad2, Shirt, Dumbbell, Baby, Zap } from 'lucide-react';
 
-// Unsplash Dynamic Image Sources
+// Icon-based Categories
 const categories = [
-    { id: 1, title: 'Yılbaşı Ağacı', href: '/search?q=ağaç', imageSrc: 'https://source.unsplash.com/featured/300x200/?christmas,tree' },
-    { id: 2, title: 'Yılbaşı Süsü', href: '/search?q=süs', imageSrc: 'https://source.unsplash.com/featured/300x200/?christmas,ornament' },
-    { id: 3, title: 'Kar Küresi', href: '/search?q=kar küresi', imageSrc: 'https://source.unsplash.com/featured/300x200/?snowglobe' },
-    { id: 4, title: 'Hediye', href: '/search?q=hediye', imageSrc: 'https://source.unsplash.com/featured/300x200/?gift,box' },
-    { id: 5, title: 'Kış Giyim', href: '/search?category=Giyim', imageSrc: 'https://source.unsplash.com/featured/300x200/?winter,coat' },
-    { id: 6, title: 'Kahve Makinesi', href: '/search?q=kahve', imageSrc: 'https://source.unsplash.com/featured/300x200/?coffee,machine' },
-    { id: 7, title: 'Bilgisayar', href: '/search?category=Elektronik', imageSrc: 'https://source.unsplash.com/featured/300x200/?laptop,computer' },
-    { id: 8, title: 'Oyun Konsolu', href: '/search?category=Elektronik', imageSrc: 'https://source.unsplash.com/featured/300x200/?gaming,console' },
-    { id: 9, title: 'Fitness', href: '/search?category=Spor', imageSrc: 'https://source.unsplash.com/featured/300x200/?fitness,gym' },
-    { id: 10, title: 'Anne & Bebek', href: '/search?category=Bebek', imageSrc: 'https://source.unsplash.com/featured/300x200/?baby,toys' }
+    { id: 1, title: 'Yılbaşı Ağacı', href: '/search?q=ağaç', icon: TreePine },
+    { id: 2, title: 'Yılbaşı Süsü', href: '/search?q=süs', icon: Snowflake },
+    { id: 3, title: 'Kar Küresi', href: '/search?q=kar küresi', icon: Snowflake },
+    { id: 4, title: 'Oyun Konsolu', href: '/search?category=Elektronik', icon: Gamepad2 },
+    { id: 5, title: 'Hediye', href: '/search?q=hediye', icon: Gift },
+    { id: 6, title: 'Kahve Makinesi', href: '/search?q=kahve', icon: Coffee },
+    { id: 7, title: 'Bilgisayar', href: '/search?category=Elektronik', icon: Laptop },
+    { id: 8, title: 'Kış Giyim', href: '/search?category=Giyim', icon: Shirt },
+    { id: 9, title: 'Fitness', href: '/search?category=Spor', icon: Dumbbell },
+    { id: 10, title: 'Anne & Bebek', href: '/search?category=Bebek', icon: Baby }
 ];
 
 export function TrendCategories() {
@@ -31,8 +31,8 @@ export function TrendCategories() {
             </div>
 
             <div className="flex items-center gap-2 mb-3">
-                <span className="text-xl">🔥</span>
-                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Trend Kategoriler</h3>
+                <span className="text-xl">🎄</span>
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Sezonun Trendleri</h3>
             </div>
 
             <ScrollArea className="w-full whitespace-nowrap">
@@ -41,24 +41,22 @@ export function TrendCategories() {
                         <Link
                             key={cat.id}
                             href={cat.href}
-                            className="flex-shrink-0 relative w-36 h-24 bg-[#D91E2B] rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all overflow-hidden cursor-pointer flex flex-col group border border-gray-100/10"
+                            className="flex-shrink-0 relative w-36 h-24 bg-[#D91E2B] rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all overflow-hidden cursor-pointer group"
                         >
-                            {/* Üst Kısım: Görsel Area (%70) */}
-                            <div className="h-[70%] w-full relative bg-white overflow-hidden">
-                                {/* Next Image with Unsplash Source */}
-                                <Image
-                                    src={cat.imageSrc}
-                                    alt={cat.title}
-                                    fill
-                                    sizes="144px"
-                                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                                    unoptimized // Unsplash redirects sometimes cause issues with Next.js Image Optimization
-                                />
+                            {/* Parlaklık Efekti (Gradient Overlay) */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50 pointer-events-none"></div>
+
+                            {/* Dekoratif Yuvarlak (Hafif) */}
+                            <div className="absolute -top-6 -right-6 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
+
+                            {/* İKON: Sağ Üst */}
+                            <div className="absolute top-2 right-2 text-white opacity-90 group-hover:scale-110 transition-transform duration-300">
+                                <cat.icon className="w-10 h-10 stroke-[1.5]" />
                             </div>
 
-                            {/* Alt Kısım: Yazı Alanı (%30) */}
-                            <div className="h-[30%] w-full bg-[#D91E2B] flex items-center justify-center relative z-10">
-                                <span className="text-white text-[10px] sm:text-xs font-medium text-center px-1 truncate w-full drop-shadow-sm">
+                            {/* YAZI: Sol Alt */}
+                            <div className="absolute bottom-2 left-3 pr-2">
+                                <span className="text-white text-xs font-semibold leading-tight block drop-shadow-sm max-w-[85px] whitespace-normal">
                                     {cat.title}
                                 </span>
                             </div>

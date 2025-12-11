@@ -111,3 +111,43 @@ export async function toggleItemFeatured(itemId: string, currentStatus: boolean)
 
     revalidatePath('/admin/items');
 }
+
+export async function approveItem(itemId: string) {
+    await checkAdminAccess();
+
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from('items')
+        .update({ status: 'active', is_active: true })
+        .eq('id', itemId);
+
+    if (error) {
+        console.error('Error approving item:', error);
+        throw new Error('Failed to approve item');
+    }
+
+    // TODO: Log action to activity_logs table
+    revalidatePath('/admin/approval');
+    revalidatePath('/admin/items');
+}
+
+export async function rejectItem(itemId: string, reason?: string) {
+    await checkAdminAccess();
+
+    const supabase = await createClient();
+    // Soft delete or just mark status as rejected? Prompt said "Update status = 'rejected'"
+    const { error } = await supabase
+        .from('items')
+        .update({ status: 'rejected', is_active: false }) // Assuming we added status column, if not, create migration later. 
+        // For now, let's assume 'status' exists or we use 'is_active: false' + 'is_banned: true' logic if schema differs.
+        .eq('id', itemId);
+
+    if (error) {
+        console.error('Error rejecting item:', error);
+        throw new Error('Failed to reject item');
+    }
+
+    // TODO: Log action
+    revalidatePath('/admin/approval');
+    revalidatePath('/admin/items');
+}

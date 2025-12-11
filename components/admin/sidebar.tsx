@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Package, Settings, LogOut, Shield } from "lucide-react";
+import { LayoutDashboard, Users, Package, Settings, LogOut, Shield, MessageSquare, FileText, Star, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
@@ -14,8 +14,13 @@ export function AdminSidebar() {
 
     const menuItems = [
         { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-        { href: "/admin/listings", label: "İlanlar", icon: Package },
+        { href: "/admin/approval", label: "Onay Bekleyenler", icon: Shield },
+        { href: "/admin/items", label: "Tüm İlanlar", icon: Package },
         { href: "/admin/users", label: "Kullanıcılar", icon: Users },
+        { href: "/admin/messages", label: "Mesajlar", icon: MessageSquare },
+        { href: "/admin/logs", label: "Aktivite Logları", icon: FileText }, // Shield'i Approval için kullandık, FileText logs için
+        { href: "/admin/reviews", label: "Değerlendirmeler", icon: Star },
+        { href: "/admin/reports", label: "Şikayetler", icon: AlertTriangle },
         { href: "/admin/settings", label: "Ayarlar", icon: Settings },
     ];
 

@@ -12,6 +12,13 @@ const BottomNav = dynamic(() => import('@/components/bottom-nav').then(m => m.Bo
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isChat = pathname?.startsWith('/chat');
+    const isAdmin = pathname?.startsWith('/admin');
+
+    // ADMIN ROUTE FIX: Return children directly (admin layout handles the shell)
+    if (isAdmin) {
+        return <>{children}<Toaster /></>;
+    }
+
     const showFooter = !isChat;
 
     // KULLANICI İSTEĞİ: Alt boşluk tamamen SIFIR olacak.

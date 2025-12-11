@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import { DataTable, DataTableCell, DataTableRow } from '@/components/admin/data-table';
-import { Eye, Trash, CheckCircle, XCircle } from 'lucide-react';
+import { Eye, Trash, CheckCircle, XCircle, Star } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function AdminItemsPage() {
@@ -12,11 +12,11 @@ export default async function AdminItemsPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-black text-white tracking-tight">İlan Yönetimi</h2>
-                    <p className="text-slate-400">Toplam {items?.length || 0} ilan.</p>
+                    <p className="text-slate-400">Total {items?.length || 0} ilan.</p>
                 </div>
             </div>
 
-            <DataTable headers={['Görsel', 'Başlık', 'Fiyat', 'Durum', 'Tarih', 'İşlemler']}>
+            <DataTable headers={['Görsel', 'Başlık', 'Fiyat', 'Durum', 'Öne Çıkan', 'İşlemler']}>
                 {items?.map((item) => (
                     <DataTableRow key={item.id}>
                         <DataTableCell>
@@ -34,9 +34,10 @@ export default async function AdminItemsPage() {
                             )}
                         </DataTableCell>
                         <DataTableCell>
-                            <Link href={`/item/${item.id}`} className="font-bold text-white hover:text-blue-400 hover:underline">
+                            <Link href={`/item/${item.id}`} className="font-bold text-white hover:text-blue-400 hover:underline block max-w-[200px] truncate">
                                 {item.title}
                             </Link>
+                            <span className="text-xs text-slate-500">{item.id.split('-')[0]}</span>
                         </DataTableCell>
                         <DataTableCell>
                             <span className="font-mono text-green-400">{item.price} ₺</span>
@@ -53,14 +54,21 @@ export default async function AdminItemsPage() {
                             )}
                         </DataTableCell>
                         <DataTableCell>
-                            {new Date(item.created_at).toLocaleDateString('tr-TR')}
+                            {item.is_featured ? (
+                                <span className="text-yellow-500 flex items-center gap-1 text-xs font-bold"><Star className="w-3 h-3 fill-current" /> Vitrinde</span>
+                            ) : (
+                                <span className="text-slate-600 text-xs">-</span>
+                            )}
                         </DataTableCell>
                         <DataTableCell>
                             <div className="flex items-center gap-2">
                                 <a href={`/item/${item.id}`} target="_blank" rel="noreferrer" className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition-colors" title="Görüntüle">
                                     <Eye className="w-4 h-4" />
                                 </a>
-                                <button className="p-2 hover:bg-red-500/10 rounded-lg text-slate-400 hover:text-red-500 transition-colors" title="Sil">
+                                <button className="p-2 hover:bg-green-500/10 rounded-lg text-slate-400 hover:text-green-500 transition-colors" title="Onayla / Vitrine Al">
+                                    <CheckCircle className="w-4 h-4" />
+                                </button>
+                                <button className="p-2 hover:bg-red-500/10 rounded-lg text-slate-400 hover:text-red-500 transition-colors" title="Reddet / Sil">
                                     <Trash className="w-4 h-4" />
                                 </button>
                             </div>

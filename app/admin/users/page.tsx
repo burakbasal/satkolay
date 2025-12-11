@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import { DataTable, DataTableCell, DataTableRow } from '@/components/admin/data-table';
-import { Shield, Ban, Edit, Trash } from 'lucide-react';
+import { Shield, Ban, Edit, Trash, Check } from 'lucide-react';
 
 export default async function AdminUsersPage() {
     const supabase = await createClient();
@@ -11,11 +11,11 @@ export default async function AdminUsersPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-black text-white tracking-tight">Kullanıcı Yönetimi</h2>
-                    <p className="text-slate-400">Toplam {profiles?.length || 0} kullanıcı.</p>
+                    <p className="text-slate-400">Total {profiles?.length || 0} kullanıcı.</p>
                 </div>
             </div>
 
-            <DataTable headers={['Kullanıcı', 'Rol', 'Katılma Tarihi', 'ID', 'İşlemler']}>
+            <DataTable headers={['Kullanıcı', 'Rol', 'Tarih', 'ID', 'İşlemler']}>
                 {profiles?.map((profile) => (
                     <DataTableRow key={profile.id}>
                         <DataTableCell>
@@ -34,12 +34,16 @@ export default async function AdminUsersPage() {
                                 <span className="inline-flex items-center gap-1 bg-purple-500/10 text-purple-400 px-2.5 py-0.5 rounded-full text-xs font-bold border border-purple-500/20">
                                     <Shield className="w-3 h-3" /> Admin
                                 </span>
+                            ) : profile.role === 'owner' ? (
+                                <span className="inline-flex items-center gap-1 bg-red-500/10 text-red-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-red-500/20">
+                                    OWNER
+                                </span>
                             ) : profile.role === 'staff' ? (
                                 <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-400 px-2.5 py-0.5 rounded-full text-xs font-bold border border-blue-500/20">
                                     Personel
                                 </span>
                             ) : (
-                                <span className="text-slate-400">Kullanıcı</span>
+                                <span className="text-slate-400 text-xs">Kullanıcı</span>
                             )}
                         </DataTableCell>
                         <DataTableCell>
@@ -47,16 +51,17 @@ export default async function AdminUsersPage() {
                         </DataTableCell>
                         <DataTableCell>
                             <code className="bg-slate-950 px-2 py-1 rounded text-xs font-mono text-slate-500 select-all">
-                                {profile.id.split('-')[0]}...
+                                {profile.id.split('-')[0]}..
                             </code>
                         </DataTableCell>
                         <DataTableCell>
+                            {/* CLIENT COMPONENT NEEDED FOR INTERACTIVITY - VISUAL ONLY FOR NOW */}
                             <div className="flex items-center gap-2">
-                                <button className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition-colors" title="Düzenle">
-                                    <Edit className="w-4 h-4" />
+                                <button className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-colors">
+                                    <Edit className="w-3 h-3" /> Rol Değiştir
                                 </button>
-                                <button className="p-2 hover:bg-red-500/10 rounded-lg text-slate-400 hover:text-red-500 transition-colors" title="Banla">
-                                    <Ban className="w-4 h-4" />
+                                <button className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg text-xs font-bold text-red-500 transition-colors border border-red-500/20">
+                                    <Ban className="w-3 h-3" /> Yasakla
                                 </button>
                             </div>
                         </DataTableCell>

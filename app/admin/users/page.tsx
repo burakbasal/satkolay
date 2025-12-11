@@ -1,12 +1,9 @@
 import { createClient } from '@/utils/supabase/server';
 import UserRow from '@/components/admin/user-row';
-import { checkAdminAccess } from '@/utils/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
 export default async function UsersPage() {
-    await checkAdminAccess();
-    // Using await createClient() because utility function is likely async as seen in codebase history
     const supabase = await createClient();
     const { data: users, error } = await supabase
         .from('profiles')
@@ -18,12 +15,10 @@ export default async function UsersPage() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="p-6 space-y-6">
             <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-black text-white tracking-tight">Kullanıcı Yönetimi</h2>
-                    <p className="text-slate-400">Toplam {users?.length || 0} kullanıcı.</p>
-                </div>
+                <h1 className="text-2xl font-bold text-white">Kullanıcı Yönetimi</h1>
+                <span className="text-sm text-slate-400">Toplam: {users?.length || 0}</span>
             </div>
 
             <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-sm">

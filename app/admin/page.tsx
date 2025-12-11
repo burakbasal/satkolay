@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
-import { Users, Package, ShoppingCart, TrendingUp } from 'lucide-react';
+import { Users, Package, ShoppingCart, TrendingUp, AlertTriangle } from 'lucide-react';
 
 export const metadata = {
     title: 'Admin Dashboard',
@@ -25,16 +25,25 @@ export default async function AdminDashboard() {
     const supabase = await createClient();
 
     // Fetch Real Data Counts
+    // Fetch Real Data Counts
     const { count: userCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
-    const { count: itemCount } = await supabase.from('items').select('*', { count: 'exact', head: true });
-    const { count: activeItemCount } = await supabase.from('items').select('*', { count: 'exact', head: true }).eq('is_sold', false);
+
+    // Status counts
+    const { count: activeItemCount } = await supabase.from('items').select('*', { count: 'exact', head: true }).eq('status', 'active');
+    const { count: pendingItemCount } = await supabase.from('items').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+
+    // Fallback if status column is empty or we use is_active/is_sold logic
+    const { count: totalItemCount } = await supabase.from('items').select('*', { count: 'exact', head: true });
 
     // Fetch Recent Activity
     const { data: recentUsers } = await supabase.from('profiles').select('*').order('created_at', { ascending: false }).limit(5);
     const { data: recentItems } = await supabase.from('items').select('*').order('created_at', { ascending: false }).limit(5);
 
-    // Revenue simulation
-    const revenue = "0 ₺";
+    // Revenue simulation (Sum of sold items price if available, else 0)
+    // Supabase sum query:
+    const { data: soldItems } = await supabase.from('items').select('price').eq('status', 'sold');
+    const totalRevenue = soldItems?.reduce((acc, item) => acc + (item.price || 0), 0) || 0;
+    const revenueDisplay = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(totalRevenue);
 
     return (
         <div className="space-y-8">
@@ -46,9 +55,9 @@ export default async function AdminDashboard() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatsCard title="Toplam Kullanıcı" value={userCount || 0} icon={Users} color="bg-blue-500 text-blue-500" />
-                <StatsCard title="Toplam İlan" value={itemCount || 0} icon={Package} color="bg-purple-500 text-purple-500" />
+                <StatsCard title="Onay Bekleyen" value={pendingItemCount || 0} icon={AlertTriangle} color="bg-yellow-500 text-yellow-500" />
                 <StatsCard title="Aktif İlanlar" value={activeItemCount || 0} icon={ShoppingCart} color="bg-green-500 text-green-500" />
-                <StatsCard title="Toplam Gelir" value={revenue} icon={TrendingUp} color="bg-yellow-500 text-yellow-500" />
+                <StatsCard title="Toplam Gelir" value={revenueDisplay} icon={TrendingUp} color="bg-emerald-500 text-emerald-500" />
             </div>
 
             {/* Recent Activity */}

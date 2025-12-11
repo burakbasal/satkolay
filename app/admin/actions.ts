@@ -151,3 +151,92 @@ export async function rejectItem(itemId: string, reason?: string) {
     revalidatePath('/admin/approval');
     revalidatePath('/admin/items');
 }
+
+export async function toggleItemBig(itemId: string, currentStatus: boolean) {
+    await checkAdminAccess();
+
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from('items')
+        .update({ is_large: !currentStatus }) // Requires is_large column in DB. If not exists, this will fail.
+        .eq('id', itemId);
+
+    if (error) {
+        console.error('Error toggling big listing:', error);
+        throw new Error('Failed to toggle big listing status');
+    }
+
+    revalidatePath('/admin/items');
+}
+
+export async function updateItemStatus(itemId: string, newStatus: string) {
+    await checkAdminAccess();
+
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from('items')
+        .update({ status: newStatus })
+        .eq('id', itemId);
+
+    if (error) {
+        console.error('Error updating item status:', error);
+        throw new Error('Failed to update status');
+    }
+
+    revalidatePath('/admin/items');
+}
+
+export async function editItemContent(itemId: string, data: { title: string; description: string; price: number }) {
+    await checkAdminAccess();
+
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from('items')
+        .update({
+            title: data.title,
+            description: data.description,
+            price: data.price
+        })
+        .eq('id', itemId);
+
+    if (error) {
+        console.error('Error editing item:', error);
+        throw new Error('Failed to update item content');
+    }
+
+    revalidatePath('/admin/items');
+}
+
+export async function updateUserProfile(userId: string, data: { username: string; full_name: string }) {
+    await checkAdminAccess();
+
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from('profiles')
+        .update({
+            username: data.username,
+            full_name: data.full_name
+        })
+        .eq('id', userId);
+
+    if (error) {
+        console.error('Error updating profile:', error);
+        throw new Error('Failed to update profile');
+    }
+
+    revalidatePath('/admin/users');
+}
+
+export async function deleteMessage(messageId: string) {
+    await checkAdminAccess();
+
+    const supabase = await createClient();
+    const { error } = await supabase.from('messages').delete().eq('id', messageId);
+
+    if (error) {
+        console.error('Error deleting message:', error);
+        throw new Error('Failed to delete message');
+    }
+
+    revalidatePath('/admin/messages');
+}

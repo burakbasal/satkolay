@@ -46,14 +46,17 @@ export default async function AdminItemsPage() {
                             <span className="font-mono text-green-400">{item.price} ₺</span>
                         </DataTableCell>
                         <DataTableCell>
-                            {item.is_sold ? (
-                                <span className="inline-flex items-center gap-1 bg-red-500/10 text-red-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-red-500/20">
-                                    Satıldı
-                                </span>
+                            {/* Status Logic */}
+                            {item.is_sold || item.status === 'sold' ? (
+                                <span className="inline-flex items-center gap-1 bg-slate-500/10 text-slate-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-slate-500/20">Satıldı</span>
+                            ) : item.status === 'active' ? (
+                                <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-green-500/20">Aktif</span>
+                            ) : item.status === 'pending' ? (
+                                <span className="inline-flex items-center gap-1 bg-yellow-500/10 text-yellow-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-yellow-500/20">Bekliyor</span>
+                            ) : item.status === 'rejected' ? (
+                                <span className="inline-flex items-center gap-1 bg-red-500/10 text-red-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-red-500/20">Reddedildi</span>
                             ) : (
-                                <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-500 px-2.5 py-0.5 rounded-full text-xs font-bold border border-green-500/20">
-                                    Aktif
-                                </span>
+                                <span className="inline-flex items-center gap-1 bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded-full text-xs font-bold border border-slate-700">Pasif</span>
                             )}
                         </DataTableCell>
                         <DataTableCell>
@@ -64,7 +67,7 @@ export default async function AdminItemsPage() {
                             )}
                         </DataTableCell>
                         <DataTableCell>
-                            <ItemActions itemId={item.id} isFeatured={item.is_featured} />
+                            <ItemActions item={item} />
                         </DataTableCell>
                     </DataTableRow>
                 ))}

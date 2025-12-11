@@ -66,9 +66,7 @@ export default async function AdminUsersPage() {
                         </DataTableCell>
                         <DataTableCell>
                             <UserActions
-                                userId={profile.id}
-                                currentRole={profile.role}
-                                isBanned={profile.is_banned || false}
+                                user={profile}
                                 currentUserRole={currentAdmin.role}
                             />
                         </DataTableCell>

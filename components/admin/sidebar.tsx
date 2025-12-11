@@ -34,7 +34,7 @@ export function AdminSidebar() {
         <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 left-0 z-50">
             {/* Logo */}
             <div className="h-16 flex items-center px-6 border-b border-slate-800">
-                <Link href="/" className="flex items-center gap-2 font-black text-xl tracking-tight text-white hover:opacity-80 transition-opacity">
+                <Link href="/admin" className="flex items-center gap-2 font-black text-xl tracking-tight text-white hover:opacity-80 transition-opacity">
                     <Shield className="w-6 h-6 text-[#001e93] fill-current" />
                     <span>SatKolay<span className="text-[#001e93]">.Admin</span></span>
                 </Link>

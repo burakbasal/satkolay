@@ -5,16 +5,15 @@ import type { NextConfig } from "next";
 // Prodüksiyonda daha sıkı hale getirilebilir ama şimdilik sitenin patlamaması için bu ayar en dengelisidir.
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://c.bing.com https://vercel.live https://va.vercel-scripts.com;
-    connect-src 'self' https://xnfuuazgbytejbutffnh.supabase.co https://www.google-analytics.com https://www.clarity.ms https://c.bing.com https://vercel.live;
-    img-src 'self' blob: data: https://xnfuuazgbytejbutffnh.supabase.co https://images.unsplash.com;
-    style-src 'self' 'unsafe-inline';
-    font-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://c.bing.com https://vercel.live https://va.vercel-scripts.com https://xnfuuazgbytejbutffnh.supabase.co;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    img-src 'self' blob: data: https://xnfuuazgbytejbutffnh.supabase.co https://images.unsplash.com https://*.supabase.co;
+    font-src 'self' data: https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    frame-src 'self';
+    connect-src 'self' https://xnfuuazgbytejbutffnh.supabase.co https://*.supabase.co https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://c.bing.com https://vercel.live https://va.vercel-scripts.com;
     block-all-mixed-content;
     upgrade-insecure-requests;
 `;

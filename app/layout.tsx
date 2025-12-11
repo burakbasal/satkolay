@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL('https://satkolay.com'),
   title: {
-    default: "SatKolay | İkinci Elin En Hızlı Hali",
+    default: "SatKolay | İkinci Elin Yeni Adresi",
     template: "%s | SatKolay", // Alt sayfalarda "Hakkımızda | SatKolay" yazar
   },
   description: "Türkiye'nin en hızlı büyüyen ücretsiz ikinci el ilan platformu. Araba, telefon, bilgisayar ve mobilya satmak SatKolay ile çok basit.",

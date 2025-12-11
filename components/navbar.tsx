@@ -148,12 +148,12 @@ export function Navbar() {
                                     <div className="py-4">
                                         <h3 className="font-bold text-gray-900 mb-3 px-2">Kategoriler</h3>
                                         <div className="grid grid-cols-2 gap-2">
-                                            <Link href="/search?q=Araba" className="p-2 text-sm bg-gray-50 rounded hover:bg-red-50 hover:text-red-600 transition">🚗 Araba</Link>
-                                            <Link href="/search?q=Telefon" className="p-2 text-sm bg-gray-50 rounded hover:bg-red-50 hover:text-red-600 transition">📱 Telefon</Link>
-                                            <Link href="/search?q=Elektronik" className="p-2 text-sm bg-gray-50 rounded hover:bg-red-50 hover:text-red-600 transition">💻 Elektronik</Link>
-                                            <Link href="/search?q=Ev" className="p-2 text-sm bg-gray-50 rounded hover:bg-red-50 hover:text-red-600 transition">🏠 Ev & Yaşam</Link>
-                                            <Link href="/search?q=Motosiklet" className="p-2 text-sm bg-gray-50 rounded hover:bg-red-50 hover:text-red-600 transition">🏍️ Motosiklet</Link>
-                                            <Link href="/search?q=Giyim" className="p-2 text-sm bg-gray-50 rounded hover:bg-red-50 hover:text-red-600 transition">👕 Giyim</Link>
+                                            <Link href="/search?q=Araba" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">🚗 Araba</Link>
+                                            <Link href="/search?q=Telefon" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">📱 Telefon</Link>
+                                            <Link href="/search?q=Elektronik" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">💻 Elektronik</Link>
+                                            <Link href="/search?q=Ev" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">🏠 Ev & Yaşam</Link>
+                                            <Link href="/search?q=Motosiklet" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">🏍️ Motosiklet</Link>
+                                            <Link href="/search?q=Giyim" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">👕 Giyim</Link>
                                         </div>
                                     </div>
                                 </div>
@@ -218,12 +218,12 @@ export function Navbar() {
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                                 <PwaInstallButton />
-                                <Link href="/sell" className="ml-2 flex items-center gap-2 bg-[#001e93] text-white px-5 py-2.5 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-sm text-sm h-11"><Camera className="w-5 h-5" /> <span>SAT</span></Link>
+                                <Link href="/sell" className="ml-2 flex items-center gap-2 bg-[#001e93] text-white px-5 py-2.5 rounded-full font-bold hover:bg-[#001e93]/90 transition-all shadow-sm text-sm h-11"><Camera className="w-5 h-5" /> <span>SAT</span></Link>
                             </div>
                         ) : (
                             <div className="flex items-center gap-4">
                                 <Link href="/login" className="font-bold text-gray-700 hover:text-[#001e93] px-3 text-base">Giriş</Link>
-                                <Link href="/sell" className="flex items-center gap-2 bg-[#001e93] text-white px-6 py-2.5 rounded-full font-bold hover:bg-[#e63548] transition-all shadow-md h-11 text-sm"><Camera className="w-5 h-5" /> <span>Sat</span></Link>
+                                <Link href="/sell" className="flex items-center gap-2 bg-[#001e93] text-white px-6 py-2.5 rounded-full font-bold hover:bg-[#001e93]/90 transition-all shadow-md h-11 text-sm"><Camera className="w-5 h-5" /> <span>Sat</span></Link>
                             </div>
                         )}
                     </div>

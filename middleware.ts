@@ -10,14 +10,15 @@ export async function middleware(request: NextRequest) {
     // 'unsafe-eval' ve 'unsafe-inline' Next.js için gereklidir.
     const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com;
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https://images.unsplash.com https://source.unsplash.com;
-    font-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://c.bing.com https://vercel.live https://va.vercel-scripts.com https://xnfuuazgbytejbutffnh.supabase.co;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    img-src 'self' blob: data: https://xnfuuazgbytejbutffnh.supabase.co https://images.unsplash.com https://*.supabase.co;
+    font-src 'self' data: https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
+    connect-src 'self' https://xnfuuazgbytejbutffnh.supabase.co https://*.supabase.co https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://c.bing.com https://vercel.live https://va.vercel-scripts.com;
     block-all-mixed-content;
     upgrade-insecure-requests;
     `.replace(/\s{2,}/g, ' ').trim(); // Boşlukları temizle

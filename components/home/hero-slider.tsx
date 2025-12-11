@@ -22,7 +22,7 @@ export function HeroSlider() {
         {
             id: 1,
             bg: "bg-[#D91E2B]",
-            title: "Yılbaşı hazırlığı için ne lazımsa, en uygunu SatKolay'da!",
+            title: "İkinci Elin Yeni Adresi.",
             desc: "Binlerce liran cebinde kalsın.",
             icon: <TreePine className="w-24 h-24 md:w-48 md:h-48 text-white drop-shadow-md" />,
             buttonText: "Fırsatları Gör",

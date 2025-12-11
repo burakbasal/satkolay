@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Facebook, Instagram, Twitter, Youtube, ShieldCheck } from 'lucide-react';
+import { Facebook, Instagram, Youtube, ShieldCheck, X } from 'lucide-react';
 import { Button } from './ui/button';
 
 export function Footer() {
@@ -23,11 +23,11 @@ export function Footer() {
                     <div>
                         <h4 className="text-sm font-bold text-black mb-4 uppercase tracking-wide">Popüler Kategoriler</h4>
                         <ul className="space-y-2">
-                            <li><Link href="/search?category=Elektronik" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">İkinci El Cep Telefonu</Link></li>
-                            <li><Link href="/search?category=Elektronik" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Bilgisayar & Tablet</Link></li>
-                            <li><Link href="/search?category=Araba" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Araba</Link></li>
-                            <li><Link href="/search?category=Motosiklet" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Motosiklet</Link></li>
-                            <li><Link href="/search?category=Ev" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Beyaz Eşya</Link></li>
+                            <li><Link href="/search?category=Elektronik" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">İkinci El Cep Telefonu</Link></li>
+                            <li><Link href="/search?category=Elektronik" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Bilgisayar & Tablet</Link></li>
+                            <li><Link href="/search?category=Araba" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Araba</Link></li>
+                            <li><Link href="/search?category=Motosiklet" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Motosiklet</Link></li>
+                            <li><Link href="/search?category=Ev" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Beyaz Eşya</Link></li>
                         </ul>
                     </div>
 
@@ -35,11 +35,11 @@ export function Footer() {
                     <div>
                         <h4 className="text-sm font-bold text-black mb-4 uppercase tracking-wide">Popüler Sayfalar</h4>
                         <ul className="space-y-2">
-                            <li><Link href="/search?category=Giyim" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Giyim & Aksesuar</Link></li>
-                            <li><Link href="/search?category=Bebek" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Bebek Araç Gereç</Link></li>
-                            <li><Link href="/search?category=Elektronik" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Elektronik</Link></li>
-                            <li><Link href="/search?category=Ev" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Mobilya</Link></li>
-                            <li><Link href="/search" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Tüm İlanlar</Link></li>
+                            <li><Link href="/search?category=Giyim" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Giyim & Aksesuar</Link></li>
+                            <li><Link href="/search?category=Bebek" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Bebek Araç Gereç</Link></li>
+                            <li><Link href="/search?category=Elektronik" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Elektronik</Link></li>
+                            <li><Link href="/search?category=Ev" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Mobilya</Link></li>
+                            <li><Link href="/search" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Tüm İlanlar</Link></li>
                         </ul>
                     </div>
 
@@ -47,11 +47,11 @@ export function Footer() {
                     <div>
                         <h4 className="text-sm font-bold text-black mb-4 uppercase tracking-wide">SatKolay</h4>
                         <ul className="space-y-2">
-                            <li><Link href="/hakkimizda" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Hakkımızda</Link></li>
-                            <li><Link href="/yardim" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Yardım ve Destek</Link></li>
-                            <li><Link href="/sozlesmeler" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Kullanıcı Sözleşmesi</Link></li>
-                            <li><Link href="/gizlilik" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Gizlilik Politikası</Link></li>
-                            <li><Link href="/sozlesmeler" className="text-xs text-gray-500 hover:underline hover:text-[#D91E2B]">Reklam Ver</Link></li>
+                            <li><Link href="/hakkimizda" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Hakkımızda</Link></li>
+                            <li><Link href="/yardim" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Yardım ve Destek</Link></li>
+                            <li><Link href="/sozlesmeler" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Kullanıcı Sözleşmesi</Link></li>
+                            <li><Link href="/gizlilik" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Gizlilik Politikası</Link></li>
+                            <li><Link href="/sozlesmeler" className="text-xs text-gray-500 hover:underline hover:text-[#001e93]">Reklam Ver</Link></li>
                         </ul>
                     </div>
 
@@ -72,7 +72,7 @@ export function Footer() {
                         <div className="flex gap-4 mb-6">
                             <Link href="#" className="p-2 bg-gray-100 rounded-full hover:bg-blue-600 hover:text-white transition-colors"><Facebook className="w-4 h-4" /></Link>
                             <Link href="#" className="p-2 bg-gray-100 rounded-full hover:bg-pink-600 hover:text-white transition-colors"><Instagram className="w-4 h-4" /></Link>
-                            <Link href="#" className="p-2 bg-gray-100 rounded-full hover:bg-blue-400 hover:text-white transition-colors"><Twitter className="w-4 h-4" /></Link>
+                            <Link href="#" className="p-2 bg-gray-100 rounded-full hover:bg-black hover:text-white transition-colors"><X className="w-4 h-4" /></Link>
                             <Link href="#" className="p-2 bg-gray-100 rounded-full hover:bg-red-600 hover:text-white transition-colors"><Youtube className="w-4 h-4" /></Link>
                         </div>
 
@@ -109,11 +109,11 @@ export function Footer() {
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-                        <Link href="/sozlesmeler" className="text-[11px] text-gray-500 hover:text-[#D91E2B] transition-colors">Şartlar ve Koşullar</Link>
-                        <Link href="/gizlilik" className="text-[11px] text-gray-500 hover:text-[#D91E2B] transition-colors">Gizlilik Bildirimi</Link>
-                        <Link href="/sozlesmeler" className="text-[11px] text-gray-500 hover:text-[#D91E2B] transition-colors">Reklam Politikası</Link>
-                        <Link href="/yardim" className="text-[11px] text-gray-500 hover:text-[#D91E2B] transition-colors">Resmi Kurumlar için Kılavuz</Link>
-                        <Link href="/gizlilik" className="text-[11px] text-gray-500 hover:text-[#D91E2B] transition-colors">Çerez Ayarları</Link>
+                        <Link href="/sozlesmeler" className="text-[11px] text-gray-500 hover:text-[#001e93] transition-colors">Şartlar ve Koşullar</Link>
+                        <Link href="/gizlilik" className="text-[11px] text-gray-500 hover:text-[#001e93] transition-colors">Gizlilik Bildirimi</Link>
+                        <Link href="/sozlesmeler" className="text-[11px] text-gray-500 hover:text-[#001e93] transition-colors">Reklam Politikası</Link>
+                        <Link href="/yardim" className="text-[11px] text-gray-500 hover:text-[#001e93] transition-colors">Resmi Kurumlar için Kılavuz</Link>
+                        <Link href="/gizlilik" className="text-[11px] text-gray-500 hover:text-[#001e93] transition-colors">Çerez Ayarları</Link>
                     </div>
                 </div>
             </div>

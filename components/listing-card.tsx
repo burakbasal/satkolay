@@ -8,12 +8,10 @@ import { FavoriteButton } from './favorite-button';
 export function ListingCard({ item }: { item: any }) {
     if (!item || !item.id) return null;
 
-    const isRejected = item.status === 'rejected';
-    const isPending = item.status === 'pending';
-    const isSold = item.status === 'sold';
+    const isLarge = item.is_large === true;
 
     return (
-        <div className={`group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all relative flex flex-col h-full ${isRejected || isSold ? 'grayscale opacity-75' : ''}`}>
+        <div className={`group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all relative flex flex-col h-full ${isLarge ? 'md:col-span-2' : 'col-span-1'} ${isRejected || isSold ? 'grayscale opacity-75' : ''}`}>
 
             {/* DURUM ETİKETLERİ */}
             {isRejected && (
@@ -40,19 +38,20 @@ export function ListingCard({ item }: { item: any }) {
             )}
 
             {/* RESİM ALANI */}
-            <div className={`relative bg-gray-100 overflow-hidden ${item.listing_type === 'large' ? 'aspect-[2/1]' : 'aspect-[4/3]'}`}>
+            <div className={`relative bg-gray-100 overflow-hidden ${isLarge ? 'aspect-[2/1]' : 'aspect-[4/3]'}`}>
                 <Link href={`/item/${item.id}`} className="block w-full h-full">
                     <Image
                         src={item.image_urls?.[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500'}
                         alt={item.title || 'İlan'}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes={item.listing_type === 'large' ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"}
+                        sizes={isLarge ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"}
+                        priority={isLarge}
                     />
                 </Link>
 
                 {/* BÜYÜK İLAN ETİKETİ (Sadece Large ise) */}
-                {item.listing_type === 'large' && (
+                {isLarge && (
                     <div className="absolute bottom-2 left-20 z-20 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
                         BÜYÜK FIRSAT
                     </div>

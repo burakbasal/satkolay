@@ -52,11 +52,9 @@ export default async function Home() {
 
       {/* İLANLAR */}
       {items && items.length > 0 ? (
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 auto-rows-dense">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 grid-flow-dense">
           {items.map((item) => (
-            <div key={item.id} className={item.listing_type === 'large' ? 'col-span-2' : ''}>
-              <ListingCard item={item} />
-            </div>
+            <ListingCard key={item.id} item={item} />
           ))}
         </div>
       ) : (

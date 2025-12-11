@@ -107,7 +107,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                     </div>
 
                     {items && items.length > 0 ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 grid-flow-dense">
                             {items.map(item => (
                                 <ListingCard key={item.id} item={item} />
                             ))}

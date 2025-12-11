@@ -52,9 +52,63 @@ export async function middleware(request: NextRequest) {
         return response;
     }
 
-    // 3. NORMAL İSTEK (Supabase Auth & Response)
+    // 3. BAKIM MODU & AYARLAR KONTROLÜ (API route'larına dokunma)
+    if (!request.nextUrl.pathname.startsWith('/api') && !request.nextUrl.pathname.startsWith('/_next')) {
+        // Supabase client oluştur (Middleware için)
+        // Not: Middleware'de createServerClient from @supabase/ssr kullanımı biraz farklıdır,
+        // ama burada updateSession içinde zaten kullanılıyor. Biz basit bir REST fetch yapabiliriz 
+        // veya updateSession'ı çağırdıktan sonra supabase'i kullanabiliriz.
+        // Performans için REST API fetch (fetch) kullanalım.
+
+        try {
+            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+            const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+            // Fetch settings
+            const settingsRes = await fetch(`${supabaseUrl}/rest/v1/system_settings?select=key,value`, {
+                headers: {
+                    'ApiKey': supabaseKey,
+                    'Authorization': `Bearer ${supabaseKey}`
+                },
+                cache: 'no-store' // Always fresh
+            });
+
+            if (settingsRes.ok) {
+                const settingsData = await settingsRes.json();
+                const maintenanceMode = settingsData.find((s: any) => s.key === 'maintenance_mode')?.value;
+                const registrationClosed = settingsData.find((s: any) => s.key === 'registration_closed')?.value;
+
+                // A. BAKIM MODU KONTROLÜ
+                if (maintenanceMode) {
+                    // İzin verilen yollar: /admin, /auth, /bakimdayiz (döngü olmasın diye)
+                    const isAllowedPath =
+                        request.nextUrl.pathname.startsWith('/admin') ||
+                        request.nextUrl.pathname.startsWith('/auth') ||
+                        request.nextUrl.pathname === '/bakimdayiz';
+
+                    if (!isAllowedPath) {
+                        return NextResponse.redirect(new URL('/bakimdayiz', request.url));
+                    }
+                } else {
+                    // Bakım modu kapalıysa ve /bakimdayiz'a gidiyorsa anasayfaya at
+                    if (request.nextUrl.pathname === '/bakimdayiz') {
+                        return NextResponse.redirect(new URL('/', request.url));
+                    }
+                }
+
+                // B. KAYIT KAPALI KONTROLÜ
+                if (registrationClosed && request.nextUrl.pathname === '/auth/register') {
+                    return NextResponse.redirect(new URL('/auth/login?error=registration_closed', request.url));
+                }
+
+            }
+        } catch (e) {
+            console.error("Middleware settings check failed", e);
+        }
+    }
+
+    // 4. NORMAL İSTEK (Supabase Auth & Response)
     // Supabase session update işlemini çağırıyoruz
-    // updateSession normalde kendi response'unu döner, biz onu alıp header ekleyeceğiz.
     let response = await updateSession(request);
 
     // Eğer updateSession bir response dönmezse (nadiren), standart next() response oluştur.

@@ -156,14 +156,20 @@ export async function toggleItemBig(itemId: string, currentStatus: boolean) {
     await checkAdminAccess();
 
     const supabase = await createClient();
-    const { error } = await supabase
-        .from('items')
-        .update({ is_large: !currentStatus }) // Requires is_large column in DB. If not exists, this will fail.
-        .eq('id', itemId);
+    try {
+        const { error } = await supabase
+            .from('items')
+            .update({ is_large: !currentStatus })
+            .eq('id', itemId);
 
-    if (error) {
+        if (error) throw error;
+    } catch (error) {
         console.error('Error toggling big listing:', error);
-        throw new Error('Failed to toggle big listing status');
+        // We do not throw here to prevent 500 on UI, just log. 
+        // Or re-throw if we want UI to catch it. Let's return success false logic if needed, 
+        // but server actions usually throw. 
+        // Let's rely on toast in client.
+        throw new Error('Failed to toggle big listing status. Column might be missing.');
     }
 
     revalidatePath('/admin/items');
@@ -239,4 +245,22 @@ export async function deleteMessage(messageId: string) {
     }
 
     revalidatePath('/admin/messages');
+}
+
+export async function updateSystemSettings(key: string, value: boolean) {
+    await checkAdminAccess();
+    const supabase = await createClient();
+
+    // Upsert or Update. Assuming table 'system_settings' with columns 'key' (text, PK) and 'value' (boolean).
+    const { error } = await supabase
+        .from('system_settings')
+        .upsert({ key, value })
+        .select();
+
+    if (error) {
+        console.error('Error updating settings:', error);
+        throw new Error('Failed to update settings');
+    }
+
+    revalidatePath('/admin/settings');
 }

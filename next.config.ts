@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 
-// CSP Politikasını tanımla (Okunabilirlik için ayrı string)
+// GÜVENLİK POLİTİKASI (CSP)
+// Not: 'unsafe-inline' ve 'unsafe-eval' Next.js'in düzgün çalışması için (özellikle dev modda) genelde gereklidir.
+// Prodüksiyonda daha sıkı hale getirilebilir ama şimdilik sitenin patlamaması için bu ayar en dengelisidir.
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://images.unsplash.com https://source.unsplash.com;
     font-src 'self';
@@ -16,6 +18,9 @@ const cspHeader = `
 `;
 
 const nextConfig: NextConfig = {
+  // 1. GİZLİLİK: "X-Powered-By: Next.js" başlığını kaldır (Scannerlar framework'ü tanıyamasın)
+  poweredByHeader: false,
+
   /* Hata olsa bile build almayı zorla */
   eslint: {
     ignoreDuringBuilds: true,
@@ -23,7 +28,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  /* Resim optimizasyonu için Supabase'e izin ver */
+
   images: {
     remotePatterns: [
       {
@@ -32,52 +37,50 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Güvenlik Headerları
+
+  // 2. HTTP GÜVENLİK BAŞLIKLARI
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
-          // 1. CSP (XSS ve Script Koruması)
           {
             key: 'Content-Security-Policy',
             value: cspHeader.replace(/\n/g, ''),
           },
-          // 2. Clickjacking Koruması
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: 'DENY', // Clickjacking koruması (Site iframe içine alınamaz)
           },
-          // 3. MIME Sniffing Engelleme
           {
             key: 'X-Content-Type-Options',
-            value: 'nosniff',
+            value: 'nosniff', // MIME sniffing engeli
           },
-          // 4. Referrer Bilgisi Koruması
           {
             key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin', // Gizlilik koruması
           },
-          // 5. Donanım İzinleri Kısıtlaması (Kamera, Mikrofon vb.)
           {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+            key: 'Permissions-Policy', // Gereksiz donanım erişimlerini kapat
+            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=()',
           },
-          // 6. HSTS (Zorunlu HTTPS)
           {
-            key: 'Strict-Transport-Security',
+            key: 'Strict-Transport-Security', // HTTPS Zorunluluğu (2 yıl)
             value: 'max-age=63072000; includeSubDomains; preload',
           },
-          // 7. Opsiyonel: Cross-Origin Politikaları
+          // Cross-Origin İzolasyonu
           {
             key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin-allow-popups', // Auth işlemleri için allow-popups önerilir
+            value: 'same-origin',
+          },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'credentialless', // Resimlerin yüklenmesini engellememesi için 'require-corp' yerine 'credentialless' daha güvenlidir.
           },
           {
             key: 'Cross-Origin-Resource-Policy',
             value: 'same-origin',
           },
-          // X-DNS-Prefetch-Control
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',

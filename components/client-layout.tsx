@@ -13,10 +13,17 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     const pathname = usePathname();
     const isChat = pathname?.startsWith('/chat');
     const isAdmin = pathname?.startsWith('/admin');
+    // MAINTENANCE ISOLATION: Hide everything on /bakimdayiz
+    const isMaintenance = pathname === '/bakimdayiz';
 
     // ADMIN ROUTE FIX: Return children directly (admin layout handles the shell)
     if (isAdmin) {
         return <>{children}<Toaster /></>;
+    }
+
+    // MAINTENANCE ROUTE FIX: Return children directly (centered maintenance page handles itself)
+    if (isMaintenance) {
+        return <>{children}</>;
     }
 
     const showFooter = !isChat;

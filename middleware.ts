@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { updateSession } from '@/utils/supabase/middleware';
+import { createServerClient } from '@supabase/ssr';
 
 export async function middleware(request: NextRequest) {
     const hostname = request.headers.get('host') || '';
@@ -80,14 +81,51 @@ export async function middleware(request: NextRequest) {
 
                 // A. BAKIM MODU KONTROLÜ
                 if (maintenanceMode) {
-                    // İzin verilen yollar: /admin, /auth, /bakimdayiz (döngü olmasın diye)
-                    const isAllowedPath =
+                    // 1. Temel İzinler (Admin paneli, Auth sayfaları, Statik dosyalar)
+                    const isBasicAllowed =
                         request.nextUrl.pathname.startsWith('/admin') ||
                         request.nextUrl.pathname.startsWith('/auth') ||
+                        request.nextUrl.pathname.startsWith('/_next') ||
+                        request.nextUrl.pathname.startsWith('/api') ||
                         request.nextUrl.pathname === '/bakimdayiz';
 
-                    if (!isAllowedPath) {
-                        return NextResponse.redirect(new URL('/bakimdayiz', request.url));
+                    if (!isBasicAllowed) {
+                        // 2. VIP KONTROLÜ (Admin/Moderator ise siteyi görsün)
+                        let isVip = false;
+
+                        try {
+                            const supabase = createServerClient(
+                                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+                                {
+                                    cookies: {
+                                        getAll() { return request.cookies.getAll() },
+                                        setAll(cookiesToSet) { cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value)) },
+                                    },
+                                }
+                            );
+
+                            const { data: { user } } = await supabase.auth.getUser();
+                            if (user) {
+                                // Rolü kontrol et
+                                const { data: profile } = await supabase
+                                    .from('profiles')
+                                    .select('role')
+                                    .eq('id', user.id)
+                                    .single();
+
+                                if (profile && (profile.role === 'admin' || profile.role === 'moderator')) {
+                                    isVip = true;
+                                }
+                            }
+                        } catch (vipErr) {
+                            console.error('VIP Check Failed:', vipErr);
+                        }
+
+                        // Eğer VIP değilse -> Bakım sayfasına yönlendir
+                        if (!isVip) {
+                            return NextResponse.redirect(new URL('/bakimdayiz', request.url));
+                        }
                     }
                 } else {
                     // Bakım modu kapalıysa ve /bakimdayiz'a gidiyorsa anasayfaya at

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Facebook, Instagram, Youtube, ShieldCheck, Linkedin } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Linkedin, ShieldCheck } from 'lucide-react';
 
 export function Footer() {
     const pathname = usePathname();
@@ -20,85 +20,95 @@ export function Footer() {
     );
 
     return (
-        <footer className="w-full bg-white mt-auto pb-32 md:pb-0">
+        <footer className="w-full bg-white border-t border-gray-100 mt-auto pb-32 md:pb-10">
             {/* 
                CRITICAL MOBILE FIX: pb-32 added above to prevent overlap with Bottom Navigation.
-               On Desktop (md:), it resets to pb-0.
             */}
 
-            <div className="max-w-[1280px] mx-auto px-4 py-12 md:py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 text-center md:text-left">
+            <div className="max-w-[1280px] mx-auto px-6 py-12 md:py-16">
 
-                    {/* Sütun 1: Popüler Kategoriler */}
-                    <div className="flex flex-col items-center md:items-start">
-                        <h4 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wide">Popüler Kategoriler</h4>
-                        <ul className="space-y-2.5">
-                            <li><Link href="/search?category=Elektronik" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">İkinci El Cep Telefonu</Link></li>
-                            <li><Link href="/search?category=Elektronik" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Bilgisayar & Tablet</Link></li>
-                            <li><Link href="/search?category=Araba" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Araba</Link></li>
-                            <li><Link href="/search?category=Motosiklet" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Motosiklet</Link></li>
-                            <li><Link href="/search?category=Ev" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Beyaz Eşya</Link></li>
+                {/* 5-Column Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 text-center md:text-left">
+
+                    {/* Sütun 1: Kurumsal */}
+                    <div className="flex flex-col space-y-4">
+                        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Kurumsal</h4>
+                        <ul className="space-y-3 text-sm text-gray-600">
+                            <li><Link href="/kurumsal/hakkimizda" className="hover:text-[#001e93] transition-colors">Hakkımızda</Link></li>
+                            <li><Link href="/blog" className="hover:text-[#001e93] transition-colors">Blog</Link></li>
+                            <li><Link href="/kurumsal/basin" className="hover:text-[#001e93] transition-colors">Basın/Medya</Link></li>
+                            <li><Link href="/kurumsal/kariyer" className="hover:text-[#001e93] transition-colors">Kariyer</Link></li>
                         </ul>
                     </div>
 
-                    {/* Sütun 2: Popüler Sayfalar */}
-                    <div className="flex flex-col items-center md:items-start">
-                        <h4 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wide">Popüler Sayfalar</h4>
-                        <ul className="space-y-2.5">
-                            <li><Link href="/search?category=Giyim" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Giyim & Aksesuar</Link></li>
-                            <li><Link href="/search?category=Bebek" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Bebek Araç Gereç</Link></li>
-                            <li><Link href="/search?category=Elektronik" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Elektronik</Link></li>
-                            <li><Link href="/search?category=Ev" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Mobilya</Link></li>
-                            <li><Link href="/search" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Tüm İlanlar</Link></li>
+                    {/* Sütun 2: Yardım & Destek */}
+                    <div className="flex flex-col space-y-4">
+                        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Yardım & Destek</h4>
+                        <ul className="space-y-3 text-sm text-gray-600">
+                            <li><Link href="/destek/sss" className="hover:text-[#001e93] transition-colors">Sıkça Sorulan Sorular</Link></li>
+                            <li><Link href="/yasal/kullanim-kosullari" className="hover:text-[#001e93] transition-colors">Kullanım Koşulları</Link></li>
+                            <li><Link href="/yasal/gizlilik" className="hover:text-[#001e93] transition-colors">Gizlilik Politikası</Link></li>
+                            <li><Link href="/iletisim" className="hover:text-[#001e93] transition-colors">İletişim</Link></li>
                         </ul>
                     </div>
 
-                    {/* Sütun 3: Kurumsal */}
-                    <div className="flex flex-col items-center md:items-start">
-                        <h4 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wide">Kurumsal</h4>
-                        <ul className="space-y-2.5">
-                            <li><Link href="/hakkimizda" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Hakkımızda</Link></li>
-                            <li><Link href="/yardim" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Yardım ve Destek</Link></li>
-                            <li><Link href="/sozlesmeler" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Kullanıcı Sözleşmesi</Link></li>
-                            <li><Link href="/gizlilik" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Gizlilik Politikası</Link></li>
-                            <li><Link href="/sozlesmeler" className="text-sm text-gray-600 hover:underline hover:text-[#001e93] transition-colors">Reklam Ver</Link></li>
+                    {/* Sütun 3: Alışveriş & Satış */}
+                    <div className="flex flex-col space-y-4">
+                        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Rehber</h4>
+                        <ul className="space-y-3 text-sm text-gray-600">
+                            <li><Link href="/rehber/nasil-satilir" className="hover:text-[#001e93] transition-colors">Nasıl Satılır?</Link></li>
+                            <li><Link href="/rehber/nasil-alinir" className="hover:text-[#001e93] transition-colors">Nasıl Alınır?</Link></li>
+                            <li><Link href="/rehber/guvenlik" className="hover:text-[#001e93] transition-colors">Güvenli Alışveriş</Link></li>
+                            <li><Link href="/rehber/ipuclari" className="hover:text-[#001e93] transition-colors">Satış İpuçları</Link></li>
                         </ul>
                     </div>
 
-                    {/* Sütun 4: Güven & Sosyal */}
-                    <div className="flex flex-col items-center justify-start">
-                        <div className="w-20 h-20 bg-gray-50 rounded-full flex flex-col items-center justify-center border-2 border-green-500 shadow-sm mb-4 group cursor-pointer hover:bg-green-50 transition-colors">
-                            <ShieldCheck className="w-8 h-8 text-green-600 mb-0.5 group-hover:scale-110 transition-transform" />
-                            <span className="text-[8px] font-bold text-green-700 uppercase tracking-tighter">Güvenli</span>
+                    {/* Sütun 4: Topluluk & Sosyal */}
+                    <div className="flex flex-col space-y-4 items-center md:items-start">
+                        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Sosyal Medya</h4>
+                        <div className="flex gap-4 mt-1">
+                            <Link href="#" className="text-gray-400 hover:text-[#1877F2] transition-colors duration-200 transform hover:scale-110"><Facebook className="w-6 h-6" /></Link>
+                            <Link href="#" className="text-gray-400 hover:text-[#E4405F] transition-colors duration-200 transform hover:scale-110"><Instagram className="w-6 h-6" /></Link>
+                            <Link href="#" className="text-gray-400 hover:text-black transition-colors duration-200 transform hover:scale-110"><XIcon className="w-6 h-6" /></Link>
+                            <Link href="#" className="text-gray-400 hover:text-[#FF0000] transition-colors duration-200 transform hover:scale-110"><Youtube className="w-6 h-6" /></Link>
+                            <Link href="#" className="text-gray-400 hover:text-[#0A66C2] transition-colors duration-200 transform hover:scale-110"><Linkedin className="w-6 h-6" /></Link>
                         </div>
+                        <div className="flex items-center gap-2 mt-4 text-green-600 bg-green-50 px-3 py-1.5 rounded-full border border-green-100">
+                            <ShieldCheck className="w-4 h-4" />
+                            <span className="text-xs font-bold">Güvenli Ticaret</span>
+                        </div>
+                    </div>
 
-                        <h4 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">Bizi Takip Et</h4>
-                        <div className="flex gap-4">
-                            <Link href="#" className="text-gray-400 hover:text-[#1877F2] transition-colors duration-200 transform hover:scale-110"><Facebook className="w-5 h-5" /></Link>
-                            <Link href="#" className="text-gray-400 hover:text-[#E4405F] transition-colors duration-200 transform hover:scale-110"><Instagram className="w-5 h-5" /></Link>
-                            <Link href="#" className="text-gray-400 hover:text-black transition-colors duration-200 transform hover:scale-110"><XIcon className="w-5 h-5" /></Link>
-                            <Link href="#" className="text-gray-400 hover:text-[#FF0000] transition-colors duration-200 transform hover:scale-110"><Youtube className="w-5 h-5" /></Link>
-                            <Link href="https://www.linkedin.com/company/satkolay/about/" className="text-gray-400 hover:text-[#0A66C2] transition-colors duration-200 transform hover:scale-110"><Linkedin className="w-5 h-5" /></Link>
+                    {/* Sütun 5: Mobil & Ekstra */}
+                    <div className="flex flex-col space-y-4 items-center md:items-start">
+                        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Mobil Uygulama</h4>
+                        <div className="flex flex-col gap-2 w-full max-w-[160px]">
+                            {/* Dummy Buttons */}
+                            <button className="bg-black text-white hover:bg-gray-800 rounded-lg px-3 py-2 text-xs font-bold flex items-center justify-center gap-2 transition-colors">
+                                <span></span> App Store
+                            </button>
+                            <button className="bg-black text-white hover:bg-gray-800 rounded-lg px-3 py-2 text-xs font-bold flex items-center justify-center gap-2 transition-colors">
+                                <span>▶</span> Google Play
+                            </button>
+                        </div>
+                        <div className="pt-2 flex flex-col space-y-2 text-sm text-gray-600">
+                            <Link href="/kampanyalar" className="hover:text-[#001e93] transition-colors font-medium">✨ Kampanyalar</Link>
+                            <Link href="/site-haritasi" className="hover:text-[#001e93] transition-colors">Site Haritası</Link>
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            {/* Alt Bar */}
-            <div className="border-t border-gray-100">
-                <div className="max-w-[1280px] mx-auto px-4 py-8 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-                    <div className="flex flex-col gap-1">
-                        <span className="text-sm font-bold text-[#001e93]">İkinci Elin Yeni Adresi.</span>
-                        <div className="text-xs text-gray-500 font-medium">
-                            © 2025 SatKolay. Tüm hakları saklıdır.
-                        </div>
+            {/* Copyright */}
+            <div className="border-t border-gray-100 bg-gray-50/50">
+                <div className="max-w-[1280px] mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                    <div>
+                        <span className="block text-sm font-bold text-[#001e93]">SatKolay</span>
+                        <span className="text-xs text-gray-500">İkinci Elin Yeni Adresi.</span>
                     </div>
-
-                    <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2">
-                        <Link href="/sozlesmeler" className="text-xs text-gray-500 hover:text-[#001e93] hover:underline transition-colors">Kullanıcı Sözleşmesi</Link>
-                        <Link href="/gizlilik" className="text-xs text-gray-500 hover:text-[#001e93] hover:underline transition-colors">Gizlilik Politikası</Link>
-                        <Link href="/yardim" className="text-xs text-gray-500 hover:text-[#001e93] hover:underline transition-colors">Kılavuz</Link>
+                    <div className="text-xs text-gray-400 font-medium">
+                        © 2025 SatKolay. Tüm hakları saklıdır.
                     </div>
                 </div>
             </div>

@@ -1,36 +1,80 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { updateSession } from '@/utils/supabase/middleware'
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { updateSession } from '@/utils/supabase/middleware';
 
 export async function middleware(request: NextRequest) {
-    const hostname = request.headers.get('host');
+    const hostname = request.headers.get('host') || '';
+    const headers = new Headers(request.headers);
 
-    // 1. Domain Redirect Logic
-    // Localhost'a dokunma
-    const isLocalhost = hostname && hostname.includes('localhost');
+    // 1. GÜVENLİK HEADERLARI (CSP, HSTS, vb.)
+    // 'unsafe-eval' ve 'unsafe-inline' Next.js için gereklidir.
+    const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' blob: data: https://images.unsplash.com https://source.unsplash.com;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    block-all-mixed-content;
+    upgrade-insecure-requests;
+    `.replace(/\s{2,}/g, ' ').trim(); // Boşlukları temizle
 
-    // Eğer localhost değilse ve "satkolay.com" değilse yönlendir
-    if (hostname && !isLocalhost && hostname !== 'satkolay.com' && hostname !== 'www.satkolay.com') {
+    const securityHeaders = {
+        'Content-Security-Policy': cspHeader,
+        'X-Frame-Options': 'DENY',
+        'X-Content-Type-Options': 'nosniff',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=()',
+        'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+        'X-DNS-Prefetch-Control': 'on',
+    };
+
+    // 2. YÖNLENDİRME MANTIĞI (Redirect)
+    // Eski vercel linkinden veya farklı domainden geliyorsa ana domaine at.
+    if (hostname && !hostname.includes('localhost') && hostname !== 'satkolay.com' && hostname !== 'www.satkolay.com') {
         const url = new URL(request.url);
-        url.hostname = 'satkolay.com';
+        url.hostname = 'satkolay.com'; // Veya www.satkolay.com (tercihe göre)
         url.protocol = 'https';
-        url.port = ''; // Portu temizle
-        return NextResponse.redirect(url);
+        url.port = '';
+
+        // Redirect cevabını oluştur
+        const response = NextResponse.redirect(url);
+
+        // KRİTİK ADIM: Redirect cevabına da güvenlik headerlarını ekle!
+        Object.entries(securityHeaders).forEach(([key, value]) => {
+            response.headers.set(key, value);
+        });
+
+        return response;
     }
 
-    // 2. Supabase Auth Logic (Mevcut)
-    return await updateSession(request)
+    // 3. NORMAL İSTEK (Supabase Auth & Response)
+    // Supabase session update işlemini çağırıyoruz
+    // updateSession normalde kendi response'unu döner, biz onu alıp header ekleyeceğiz.
+    let response = await updateSession(request);
+
+    // Eğer updateSession bir response dönmezse (nadiren), standart next() response oluştur.
+    if (!response) {
+        response = NextResponse.next({
+            request: {
+                headers: headers,
+            },
+        });
+    }
+
+    // Normal cevaba da güvenlik headerlarını ekle
+    Object.entries(securityHeaders).forEach(([key, value]) => {
+        response.headers.set(key, value);
+    });
+
+    return response;
 }
 
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for:
-         * - api (API routes)
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - images (public images)
-         */
-        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico).*)',
     ],
-}
+};

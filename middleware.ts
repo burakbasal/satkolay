@@ -81,18 +81,21 @@ export async function middleware(request: NextRequest) {
 
                 // A. BAKIM MODU KONTROLÜ
                 if (maintenanceMode) {
-                    // 1. Temel İzinler (Admin paneli, Auth sayfaları, Statik dosyalar)
-                    const isBasicAllowed =
-                        request.nextUrl.pathname.startsWith('/admin') ||
-                        request.nextUrl.pathname.startsWith('/auth') ||
+                    // Check VIP first (only if we have a robust way, or rely on explicit excludes first)
+                    // Strategy: 
+                    // 1. Exclude public paths (static, system, maintenance page)
+                    // 2. Exclude Auth (so admins can login)
+                    // 3. If not excluded, THEN check VIP.
+
+                    const isExplicitlyAllowed =
                         request.nextUrl.pathname.startsWith('/_next') ||
+                        request.nextUrl.pathname.startsWith('/static') ||
                         request.nextUrl.pathname.startsWith('/api') ||
-                        request.nextUrl.pathname === '/bakimdayiz';
+                        request.nextUrl.pathname.startsWith('/bakimdayiz') ||
+                        request.nextUrl.pathname.startsWith('/auth');
 
-                    if (!isBasicAllowed) {
-                        // 2. VIP KONTROLÜ (Admin/Moderator ise siteyi görsün)
+                    if (!isExplicitlyAllowed) {
                         let isVip = false;
-
                         try {
                             const supabase = createServerClient(
                                 process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -107,7 +110,7 @@ export async function middleware(request: NextRequest) {
 
                             const { data: { user } } = await supabase.auth.getUser();
                             if (user) {
-                                // Rolü kontrol et
+                                // Admin/Moderator Check
                                 const { data: profile } = await supabase
                                     .from('profiles')
                                     .select('role')
@@ -118,27 +121,27 @@ export async function middleware(request: NextRequest) {
                                     isVip = true;
                                 }
                             }
-                        } catch (vipErr) {
-                            console.error('VIP Check Failed:', vipErr);
+                        } catch (e) {
+                            console.error("Maintenance VIP check error", e);
                         }
 
-                        // Eğer VIP değilse -> Bakım sayfasına yönlendir
+                        // If NOT VIP -> Go to Maintenance
                         if (!isVip) {
                             return NextResponse.redirect(new URL('/bakimdayiz', request.url));
                         }
                     }
                 } else {
-                    // Bakım modu kapalıysa ve /bakimdayiz'a gidiyorsa anasayfaya at
-                    if (request.nextUrl.pathname === '/bakimdayiz') {
+                    // Bakım modu kapalıysa ve kullanıcı manuel olarak /bakimdayiz'a girdiyse -> Anasayfaya at
+                    if (request.nextUrl.pathname.startsWith('/bakimdayiz')) {
                         return NextResponse.redirect(new URL('/', request.url));
                     }
                 }
 
                 // B. KAYIT KAPALI KONTROLÜ
                 if (registrationClosed && request.nextUrl.pathname === '/auth/register') {
+                    // Prevent access to register page if closed, redirect to login
                     return NextResponse.redirect(new URL('/auth/login?error=registration_closed', request.url));
                 }
-
             }
         } catch (e) {
             console.error("Middleware settings check failed", e);

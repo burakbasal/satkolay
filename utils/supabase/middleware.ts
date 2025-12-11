@@ -45,7 +45,9 @@ export async function updateSession(request: NextRequest) {
         !request.nextUrl.pathname.startsWith('/destek') &&
         !request.nextUrl.pathname.startsWith('/rehber') &&
         !request.nextUrl.pathname.startsWith('/iletisim') &&
+        !request.nextUrl.pathname.startsWith('/iletisim') &&
         !request.nextUrl.pathname.startsWith('/blog') &&
+        !request.nextUrl.pathname.startsWith('/bakimdayiz') &&
         request.nextUrl.pathname !== '/robots.txt' &&
         request.nextUrl.pathname !== '/sitemap.xml' &&
         request.nextUrl.pathname !== '/'

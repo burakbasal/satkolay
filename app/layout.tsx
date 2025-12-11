@@ -54,41 +54,44 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        name: 'SatKolay',
+        url: 'https://www.satkolay.com',
+        logo: 'https://www.satkolay.com/satkolay-resmi-logo.jpg',
+        sameAs: ['https://twitter.com/satkolay', 'https://instagram.com/satkolay']
+      },
+      {
+        '@type': 'WebSite',
+        url: 'https://www.satkolay.com',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://www.satkolay.com/search?q={search_term_string}',
+          'query-input': 'required name=search_term_string'
+        }
+      },
+      {
+        '@type': 'ItemList',
+        itemListElement: [
+          { '@type': 'SiteNavigationElement', position: 1, name: 'Araba', url: 'https://www.satkolay.com/search?category=Araba' },
+          { '@type': 'SiteNavigationElement', position: 2, name: 'Telefon', url: 'https://www.satkolay.com/search?category=Telefon' },
+          { '@type': 'SiteNavigationElement', position: 3, name: 'Elektronik', url: 'https://www.satkolay.com/search?category=Elektronik' },
+          { '@type': 'SiteNavigationElement', position: 4, name: 'Ev & Yaşam', url: 'https://www.satkolay.com/search?category=Ev' }
+        ]
+      }
+    ]
+  };
+
   return (
     <html lang="tr">
       <body className={`${inter.className} bg-white text-gray-900 antialiased`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@graph': [
-                '@type': 'Organization',
-        name: 'SatKolay',
-        url: 'https://www.satkolay.com',
-        logo: 'https://www.satkolay.com/satkolay-resmi-logo.jpg',
-        sameAs: ['https://twitter.com/satkolay', 'https://instagram.com/satkolay']
-                },
-        {
-          '@type': 'WebSite',
-        url: 'https://www.satkolay.com',
-        potentialAction: {
-          '@type': 'SearchAction',
-        target: 'https://www.satkolay.com/search?q={search_term_string}',
-        'query-input': 'required name=search_term_string'
-                  }
-                },
-        {
-          '@type': 'ItemList',
-        itemListElement: [
-        {'@type': 'SiteNavigationElement', position: 1, name: 'Araba', url: 'https://www.satkolay.com/search?category=Araba' },
-        {'@type': 'SiteNavigationElement', position: 2, name: 'Telefon', url: 'https://www.satkolay.com/search?category=Telefon' },
-        {'@type': 'SiteNavigationElement', position: 3, name: 'Elektronik', url: 'https://www.satkolay.com/search?category=Elektronik' },
-        {'@type': 'SiteNavigationElement', position: 4, name: 'Ev & Yaşam', url: 'https://www.satkolay.com/search?category=Ev' }
-        ]
-                }
-        ]
-            })
+            __html: JSON.stringify(jsonLd)
           }}
         />
         <ClientLayout>{children}</ClientLayout>

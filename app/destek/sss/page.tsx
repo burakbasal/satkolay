@@ -50,7 +50,7 @@ export default function FAQPage() {
                 <AccordionItem value="item-5">
                     <AccordionTrigger>Satılan ürünü nasıl kaldırırım?</AccordionTrigger>
                     <AccordionContent>
-                        Profilim > İlanlarım menüsüne gidin. İlgili ilanın yanındaki seçeneklerden "Satıldı Olarak İşaretle" veya "İlanı Sil" seçeneğini kullanabilirsiniz.
+                        Profilim &gt; İlanlarım menüsüne gidin. İlgili ilanın yanındaki seçeneklerden "Satıldı Olarak İşaretle" veya "İlanı Sil" seçeneğini kullanabilirsiniz.
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>

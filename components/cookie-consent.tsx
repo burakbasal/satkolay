@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 
@@ -34,9 +35,9 @@ export function CookieConsent() {
                 <div className="text-sm md:text-base text-gray-700 text-center md:text-left">
                     <p>
                         Sizlere daha iyi hizmet sunabilmek adına sitemizde çerezler kullanılmaktadır. Detaylı bilgi için{" "}
-                        <a href="https://www.satkolay.com/gizlilik" target="_blank" className="underline font-medium text-primary hover:text-primary/80">
+                        <Link href="/yasal/gizlilik" className="underline font-medium text-primary hover:text-primary/80">
                             Gizlilik Politikamızı
-                        </a>{" "}
+                        </Link>{" "}
                         inceleyebilirsiniz.
                     </p>
                 </div>

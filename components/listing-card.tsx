@@ -9,6 +9,9 @@ export function ListingCard({ item }: { item: any }) {
     if (!item || !item.id) return null;
 
     const isLarge = item.is_large === true;
+    const isRejected = item.status === 'rejected';
+    const isPending = item.status === 'pending';
+    const isSold = item.status === 'sold';
 
     return (
         <div className={`group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all relative flex flex-col h-full ${isLarge ? 'md:col-span-2' : 'col-span-1'} ${isRejected || isSold ? 'grayscale opacity-75' : ''}`}>

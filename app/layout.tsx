@@ -10,6 +10,7 @@ import { CookieConsent } from "@/components/cookie-consent";
 const inter = Inter({ subsets: ["latin"], display: 'swap' });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.satkolay.com'),
   title: {
     default: 'SatKolay | İkinci Elin Güvenli ve Yeni Adresi',
     template: '%s | SatKolay - İkinci Elin Yeni Adresi'

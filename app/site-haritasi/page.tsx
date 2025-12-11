@@ -42,16 +42,6 @@ export default function SitemapPage() {
                     </ul>
                 </div>
 
-                <div>
-                    <h3 className="font-bold text-lg border-b pb-2 mb-4">Kategoriler</h3>
-                    <ul className="space-y-2 text-gray-600">
-                        <li><Link href="/search?category=Elektronik" className="hover:underline">Elektronik</Link></li>
-                        <li><Link href="/search?category=Araba" className="hover:underline">Araba</Link></li>
-                        <li><Link href="/search?category=Ev" className="hover:underline">Ev & Yaşam</Link></li>
-                        <li><Link href="/search?category=Giyim" className="hover:underline">Moda & Giyim</Link></li>
-                    </ul>
-                </div>
-
             </div>
         </StaticPageLayout>
     );

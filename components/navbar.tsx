@@ -33,7 +33,7 @@ function DesktopSearchBar() {
             <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Search className="h-5 w-5 text-gray-400" /></div>
                 <input type="text" className="block w-full pl-11 pr-10 py-2 bg-gray-100 rounded-full focus:bg-white focus:ring-1 focus:ring-[#001e93] outline-none transition-all placeholder:text-gray-500 text-base h-11" placeholder="Ürün, marka, kategori ara..." value={query} onChange={(e) => setQuery(e.target.value)} />
-                {query && <button type="button" onClick={() => { setQuery(""); router.push('/search'); }} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"><X className="h-5 w-5" /></button>}
+                <button aria-label="Aramayı Temizle" type="button" onClick={() => { setQuery(""); router.push('/search'); }} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"><X className="h-5 w-5" /></button>
             </div>
         </form>
     );
@@ -135,7 +135,7 @@ export function Navbar() {
                 {isMounted && (
                     <Sheet>
                         <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="mr-2 shrink-0 hidden md:flex">
+                            <Button variant="ghost" size="icon" className="mr-2 shrink-0 hidden md:flex" aria-label="Menüyü Aç">
                                 <Menu className="w-6 h-6 text-gray-700" />
                             </Button>
                         </SheetTrigger>
@@ -162,7 +162,7 @@ export function Navbar() {
                     </Sheet>
                 )}
                 {!isMounted && (
-                    <Button variant="ghost" size="icon" className="mr-2 shrink-0 hidden md:flex">
+                    <Button variant="ghost" size="icon" className="mr-2 shrink-0 hidden md:flex" aria-label="Menüyü Aç">
                         <Menu className="w-6 h-6 text-gray-700" />
                     </Button>
                 )}
@@ -181,7 +181,7 @@ export function Navbar() {
                     <LocationPicker />
                 </div>
                 {/* 3. BİLDİRİM: h-11 ile diğerleriyle aynı yüksekliğe getirildi */}
-                <Link href="/notifications" className="flex items-center justify-center h-11 w-11 text-gray-600 shrink-0 relative hover:bg-gray-50 rounded-full">
+                <Link href="/notifications" className="flex items-center justify-center h-11 w-11 text-gray-600 shrink-0 relative hover:bg-gray-50 rounded-full" aria-label="Bildirimler">
                     <Bell className="w-6 h-6" />
                     <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
                 </Link>
@@ -196,11 +196,11 @@ export function Navbar() {
                         <LocationPicker />
                         {user ? (
                             <div className="flex items-center gap-3">
-                                <Link href="/profile/favorites" className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><Heart className="w-6 h-6" /></Link>
-                                <Link href="/chat" className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><MessageCircle className="w-6 h-6" /></Link>
-                                <Link href="/notifications" className="p-2 hover:bg-gray-100 rounded-full text-gray-600"><Bell className="w-6 h-6" /></Link>
+                                <Link href="/profile/favorites" className="p-2 hover:bg-gray-100 rounded-full text-gray-600" aria-label="Favorilerim"><Heart className="w-6 h-6" /></Link>
+                                <Link href="/chat" className="p-2 hover:bg-gray-100 rounded-full text-gray-600" aria-label="Mesajlar"><MessageCircle className="w-6 h-6" /></Link>
+                                <Link href="/notifications" className="p-2 hover:bg-gray-100 rounded-full text-gray-600" aria-label="Bildirimler"><Bell className="w-6 h-6" /></Link>
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger asChild><Button variant="ghost" className="relative h-11 w-11 rounded-full ml-1"><Avatar className="h-10 w-10 border"><AvatarImage src={user.user_metadata?.avatar_url} /><AvatarFallback><User className="w-5 h-5" /></AvatarFallback></Avatar></Button></DropdownMenuTrigger>
+                                    <DropdownMenuTrigger asChild><Button variant="ghost" className="relative h-11 w-11 rounded-full ml-1" aria-label="Kullanıcı Menüsü"><Avatar className="h-10 w-10 border"><AvatarImage src={user.user_metadata?.avatar_url} /><AvatarFallback><User className="w-5 h-5" /></AvatarFallback></Avatar></Button></DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-64" align="end">
                                         <DropdownMenuLabel>
                                             <div className="flex flex-col space-y-1">

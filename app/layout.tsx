@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import ClientLayout from "@/components/client-layout";
 import { CookieConsent } from "@/components/cookie-consent";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], display: 'swap' });
 
 export const metadata: Metadata = {
   title: {

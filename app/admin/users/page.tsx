@@ -26,7 +26,7 @@ export default async function AdminUsersPage() {
                 {profiles?.map((profile) => (
                     <DataTableRow key={profile.id}>
                         <DataTableCell>
-                            <div className="flex items-center gap-3">
+                            <Link href={`/admin/users/${profile.id}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                                 <div className="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-slate-300">
                                     {profile.full_name?.[0] || '?'}
                                 </div>
@@ -34,7 +34,7 @@ export default async function AdminUsersPage() {
                                     <div className="font-bold text-white">{profile.full_name || 'İsimsiz'}</div>
                                     <div className="text-xs text-slate-500">{profile.email}</div>
                                 </div>
-                            </div>
+                            </Link>
                         </DataTableCell>
                         <DataTableCell>
                             {profile.role === 'admin' ? (

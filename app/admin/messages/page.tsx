@@ -29,8 +29,8 @@ export default async function AdminMessagesPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black text-white tracking-tight">Mesaj Merkezi (Spy Mode)</h2>
-                    <p className="text-slate-400">Son 100 mesaj görüntüleniyor.</p>
+                    <h2 className="text-2xl font-black text-white tracking-tight">Mesaj Yönetim Merkezi</h2>
+                    <p className="text-slate-400">Son 100 mesaj görüntüleniyor (Gizlilik modu: İçerikler şifrelenmemiştir).</p>
                 </div>
             </div>
 

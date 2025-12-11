@@ -5,9 +5,12 @@ export const metadata = {
     title: 'Admin Dashboard',
 };
 
-async function StatsCard({ title, value, icon: Icon, color }: any) {
-    return (
-        <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl hover:border-slate-700 transition-colors group">
+import Link from 'next/link';
+// ... imports
+
+async function StatsCard({ title, value, icon: Icon, color, href }: any) {
+    const CardContent = (
+        <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl hover:border-slate-700 transition-colors group cursor-pointer h-full">
             <div className="flex items-center justify-between">
                 <div>
                     <p className="text-sm font-medium text-slate-500 mb-1">{title}</p>
@@ -19,6 +22,12 @@ async function StatsCard({ title, value, icon: Icon, color }: any) {
             </div>
         </div>
     );
+
+    if (href) {
+        return <Link href={href} className="block h-full">{CardContent}</Link>;
+    }
+
+    return CardContent;
 }
 
 export default async function AdminDashboard() {
@@ -54,9 +63,9 @@ export default async function AdminDashboard() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatsCard title="Toplam Kullanıcı" value={userCount || 0} icon={Users} color="bg-blue-500 text-blue-500" />
-                <StatsCard title="Onay Bekleyen" value={pendingItemCount || 0} icon={AlertTriangle} color="bg-yellow-500 text-yellow-500" />
-                <StatsCard title="Aktif İlanlar" value={activeItemCount || 0} icon={ShoppingCart} color="bg-green-500 text-green-500" />
+                <StatsCard title="Toplam Kullanıcı" value={userCount || 0} icon={Users} color="bg-blue-500 text-blue-500" href="/admin/users" />
+                <StatsCard title="Onay Bekleyen" value={pendingItemCount || 0} icon={AlertTriangle} color="bg-yellow-500 text-yellow-500" href="/admin/approval" />
+                <StatsCard title="Aktif İlanlar" value={activeItemCount || 0} icon={ShoppingCart} color="bg-green-500 text-green-500" href="/admin/items" />
                 <StatsCard title="Toplam Gelir" value={revenueDisplay} icon={TrendingUp} color="bg-emerald-500 text-emerald-500" />
             </div>
 

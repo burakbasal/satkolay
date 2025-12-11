@@ -100,19 +100,28 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
                 </div>
             </div>
 
-            {/* TABS / SECTIONS */}
+            {/* CONTENT GRID */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                {/* LEFT COLUMN: ACTIVITY & INFO */}
+                {/* LEFT COLUMN: TABS CONTAINER */}
                 <div className="lg:col-span-2 space-y-6">
+
+                    {/* TABS NAVIGATION (Visual) */}
+                    <div className="flex items-center gap-4 border-b border-slate-800 pb-1">
+                        <button className="text-blue-400 font-bold border-b-2 border-blue-400 pb-2 text-sm px-1">Genel Bakış & İlanlar</button>
+                        <button className="text-slate-400 font-medium hover:text-slate-200 pb-2 text-sm px-1">Mesajlar (Yakında)</button>
+                        <button className="text-slate-400 font-medium hover:text-slate-200 pb-2 text-sm px-1">Sistem Logları</button>
+                    </div>
+
                     {/* Items Section */}
                     <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
                         <div className="p-4 border-b border-slate-800 flex items-center justify-between">
-                            <h3 className="font-bold text-white">İlanlar</h3>
+                            <h3 className="font-bold text-white">Kullanıcının İlanları</h3>
+                            <span className="text-xs text-slate-500">{items?.length || 0} adet</span>
                         </div>
-                        <div className="divide-y divide-slate-800">
+                        <div className="divide-y divide-slate-800 max-h-[500px] overflow-y-auto">
                             {items && items.length > 0 ? items.map((item: any) => (
-                                <div key={item.id} className="p-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors">
+                                <Link href={`/item/${item.id}`} target="_blank" key={item.id} className="p-4 flex items-center justify-between hover:bg-slate-800/50 transition-colors group">
                                     <div className="flex items-center gap-3">
                                         {item.image_urls?.[0] ? (
                                             // eslint-disable-next-line @next/next/no-img-element
@@ -121,18 +130,20 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
                                             <div className="w-12 h-12 rounded bg-slate-950 flex items-center justify-center text-xs text-slate-500">Img</div>
                                         )}
                                         <div>
-                                            <div className="font-bold text-slate-200">{item.title}</div>
+                                            <div className="font-bold text-slate-200 group-hover:text-blue-400 transition-colors">{item.title}</div>
                                             <div className="text-xs text-green-400">{item.price} ₺</div>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        {item.is_sold ? (
-                                            <span className="text-xs font-bold text-red-500 bg-red-500/10 px-2 py-1 rounded">SATILDI</span>
-                                        ) : (
+                                        {item.status === 'sold' ? (
+                                            <span className="text-xs font-bold text-slate-500 bg-slate-800 px-2 py-1 rounded">SATILDI</span>
+                                        ) : item.status === 'active' ? (
                                             <span className="text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded">AKTİF</span>
+                                        ) : (
+                                            <span className="text-xs font-bold text-yellow-500 bg-yellow-500/10 px-2 py-1 rounded uppercase">{item.status}</span>
                                         )}
                                     </div>
-                                </div>
+                                </Link>
                             )) : (
                                 <div className="p-8 text-center text-slate-500 text-sm">İlan bulunamadı.</div>
                             )}
@@ -140,11 +151,12 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
                     </div>
                 </div>
 
-                {/* RIGHT COLUMN: LOGS */}
+                {/* RIGHT COLUMN: QUICK LOGS */}
                 <div className="space-y-6">
                     <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-                        <div className="p-4 border-b border-slate-800">
-                            <h3 className="font-bold text-white">Aktivite Geçmişi</h3>
+                        <div className="p-4 border-b border-slate-800 flex items-center gap-2">
+                            <Shield className="w-4 h-4 text-slate-400" />
+                            <h3 className="font-bold text-white">Sicil / Loglar</h3>
                         </div>
                         <div className="p-4">
                             <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-2 before:w-0.5 before:bg-slate-800">

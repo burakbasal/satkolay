@@ -67,11 +67,11 @@ export function Footer() {
                     <div className="flex flex-col space-y-4 items-center md:items-start">
                         <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Sosyal Medya</h4>
                         <div className="flex gap-4 mt-1">
-                            <Link href="#" aria-label="Facebook" className="text-gray-400 hover:text-[#1877F2] transition-colors duration-200 transform hover:scale-110"><Facebook className="w-6 h-6" /></Link>
-                            <Link href="#" aria-label="Instagram" className="text-gray-400 hover:text-[#E4405F] transition-colors duration-200 transform hover:scale-110"><Instagram className="w-6 h-6" /></Link>
-                            <Link href="#" aria-label="Twitter / X" className="text-gray-400 hover:text-black transition-colors duration-200 transform hover:scale-110"><XIcon className="w-6 h-6" /></Link>
-                            <Link href="#" aria-label="YouTube" className="text-gray-400 hover:text-[#FF0000] transition-colors duration-200 transform hover:scale-110"><Youtube className="w-6 h-6" /></Link>
-                            <Link href="#" aria-label="LinkedIn" className="text-gray-400 hover:text-[#0A66C2] transition-colors duration-200 transform hover:scale-110"><Linkedin className="w-6 h-6" /></Link>
+                            <Link href="#" aria-label="Facebook" className="text-gray-600 hover:text-[#1877F2] transition-colors duration-200 transform hover:scale-110"><Facebook className="w-6 h-6" /></Link>
+                            <Link href="#" aria-label="Instagram" className="text-gray-600 hover:text-[#E4405F] transition-colors duration-200 transform hover:scale-110"><Instagram className="w-6 h-6" /></Link>
+                            <Link href="#" aria-label="Twitter / X" className="text-gray-600 hover:text-black transition-colors duration-200 transform hover:scale-110"><XIcon className="w-6 h-6" /></Link>
+                            <Link href="#" aria-label="YouTube" className="text-gray-600 hover:text-[#FF0000] transition-colors duration-200 transform hover:scale-110"><Youtube className="w-6 h-6" /></Link>
+                            <Link href="#" aria-label="LinkedIn" className="text-gray-600 hover:text-[#0A66C2] transition-colors duration-200 transform hover:scale-110"><Linkedin className="w-6 h-6" /></Link>
                         </div>
 
                         <div className="flex flex-col space-y-2 mt-6 text-sm text-gray-600 w-full md:w-auto">

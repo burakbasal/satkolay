@@ -40,6 +40,14 @@ export async function updateSession(request: NextRequest) {
         !request.nextUrl.pathname.startsWith('/search') &&
         !request.nextUrl.pathname.startsWith('/item') &&
         !request.nextUrl.pathname.startsWith('/categories') &&
+        !request.nextUrl.pathname.startsWith('/kurumsal') &&
+        !request.nextUrl.pathname.startsWith('/yasal') &&
+        !request.nextUrl.pathname.startsWith('/destek') &&
+        !request.nextUrl.pathname.startsWith('/rehber') &&
+        !request.nextUrl.pathname.startsWith('/iletisim') &&
+        !request.nextUrl.pathname.startsWith('/blog') &&
+        request.nextUrl.pathname !== '/robots.txt' &&
+        request.nextUrl.pathname !== '/sitemap.xml' &&
         request.nextUrl.pathname !== '/'
     ) {
         const url = request.nextUrl.clone()

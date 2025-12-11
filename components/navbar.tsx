@@ -31,9 +31,9 @@ function DesktopSearchBar() {
     return (
         <form onSubmit={handleSearch} className="flex-1 relative max-w-3xl mx-6">
             <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Search className="h-5 w-5 text-gray-400" /></div>
-                <input type="text" className="block w-full pl-11 pr-10 py-2 bg-gray-100 rounded-full focus:bg-white focus:ring-1 focus:ring-[#001e93] outline-none transition-all placeholder:text-gray-500 text-base h-11" placeholder="Ürün, marka, kategori ara..." value={query} onChange={(e) => setQuery(e.target.value)} />
-                <button aria-label="Aramayı Temizle" type="button" onClick={() => { setQuery(""); router.push('/search'); }} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"><X className="h-5 w-5" /></button>
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Search className="h-5 w-5 text-gray-600" /></div>
+                <input type="text" className="block w-full pl-11 pr-10 py-2 bg-gray-100 rounded-full focus:bg-white focus:ring-1 focus:ring-[#001e93] outline-none transition-all placeholder:text-gray-600 text-base h-11" placeholder="Ürün, marka, kategori ara..." value={query} onChange={(e) => setQuery(e.target.value)} />
+                <button aria-label="Aramayı Temizle" type="button" onClick={() => { setQuery(""); router.push('/search'); }} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 hover:text-gray-800"><X className="h-5 w-5" /></button>
             </div>
         </form>
     );
@@ -64,11 +64,11 @@ function MobileSearchBar() {
         <form onSubmit={handleSearch} className="flex-1 min-w-0 mx-2">
             <div className="relative flex items-center h-11"> {/* Yükseklik h-11 yapıldı */}
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="w-5 h-5 text-gray-400" />
+                    <Search className="w-5 h-5 text-gray-600" />
                 </div>
                 <input
                     type="text"
-                    className="w-full h-full bg-gray-100 rounded-full pl-10 pr-9 text-base focus:bg-white focus:ring-1 focus:ring-[#001e93] outline-none transition-all placeholder:text-gray-500"
+                    className="w-full h-full bg-gray-100 rounded-full pl-10 pr-9 text-base focus:bg-white focus:ring-1 focus:ring-[#001e93] outline-none transition-all placeholder:text-gray-600"
                     placeholder="Ara..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -77,8 +77,9 @@ function MobileSearchBar() {
                 {query && (
                     <button
                         type="button"
+                        aria-label="Aramayı Temizle"
                         onClick={clearSearch}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 active:text-gray-600"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 active:text-gray-800"
                     >
                         <X className="w-5 h-5" />
                     </button>

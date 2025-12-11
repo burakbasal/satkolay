@@ -1,6 +1,7 @@
+```
 import { createClient } from '@/utils/supabase/server';
-import Link from 'next/link';
 import { checkAdminAccess } from '@/utils/admin-auth';
+import { UserListRow } from '@/components/admin/user-list-row';
 
 export default async function UsersPage() {
     await checkAdminAccess();
@@ -31,43 +32,7 @@ export default async function UsersPage() {
                     </thead>
                     <tbody className="divide-y divide-slate-800">
                         {users?.map((user) => (
-                            <tr key={user.id} className="hover:bg-slate-800/50 transition-colors">
-                                <td className="px-6 py-4">
-                                    <Link href={`/admin/users/${user.id}`} className="flex items-center gap-3 group">
-                                        <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold">
-                                            {(user.email?.[0] || '?').toUpperCase()}
-                                        </div>
-                                        <div>
-                                            <div className="text-white font-medium group-hover:text-blue-400 transition-colors">
-                                                {user.full_name || 'İsimsiz'}
-                                            </div>
-                                            <div className="text-xs text-slate-500">{user.email}</div>
-                                        </div>
-                                    </Link>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-red-500/10 text-red-400' :
-                                            user.role === 'moderator' ? 'bg-yellow-500/10 text-yellow-400' :
-                                                'bg-blue-500/10 text-blue-400'
-                                        }`}>
-                                        {(user.role || 'USER').toUpperCase()}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    {new Date(user.created_at).toLocaleDateString('tr-TR')}
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded text-xs">Aktif</span>
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <Link
-                                        href={`/admin/users/${user.id}`}
-                                        className="text-blue-400 hover:text-blue-300 transition-colors font-medium text-xs border border-blue-500/30 px-3 py-1.5 rounded hover:bg-blue-500/10"
-                                    >
-                                        Detaylar &rarr;
-                                    </Link>
-                                </td>
-                            </tr>
+                            <UserListRow key={user.id} user={user} />
                         ))}
                     </tbody>
                 </table>

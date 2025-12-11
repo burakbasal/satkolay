@@ -53,7 +53,7 @@ export function ListingCard({ item }: { item: any }) {
 
                 {/* BÜYÜK İLAN ETİKETİ (Sadece Large ise) */}
                 {item.listing_type === 'large' && (
-                    <div className="absolute bottom-2 left-20 z-20 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                    <div className="absolute bottom-2 left-20 z-20 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
                         BÜYÜK FIRSAT
                     </div>
                 )}

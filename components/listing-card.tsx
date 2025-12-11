@@ -14,7 +14,7 @@ export function ListingCard({ item }: { item: any }) {
     const isSold = item.status === 'sold';
 
     return (
-        <div className={`group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all relative flex flex-col h-full ${isLarge ? 'md:col-span-2' : 'col-span-1'} ${isRejected || isSold ? 'grayscale opacity-75' : ''}`}>
+        <div className={`group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all relative flex flex-col h-full ${isLarge ? 'col-span-2' : 'col-span-1'} ${isRejected || isSold ? 'grayscale opacity-75' : ''}`}>
 
             {/* DURUM ETİKETLERİ */}
             {isRejected && (
@@ -55,7 +55,7 @@ export function ListingCard({ item }: { item: any }) {
 
                 {/* BÜYÜK İLAN ETİKETİ (Sadece Large ise) */}
                 {isLarge && (
-                    <div className="absolute bottom-2 left-20 z-20 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                    <div className="absolute bottom-3 right-3 z-20 bg-primary text-white text-xs font-bold px-3 py-1 rounded shadow-md">
                         BÜYÜK FIRSAT
                     </div>
                 )}

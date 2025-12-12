@@ -59,6 +59,13 @@ export default function UserSicilPage() {
     const supabase = createClient();
     const router = useRouter();
 
+    // HELPER: Construct Image URL
+    const getImageUrl = (path: string | null) => {
+        if (!path) return null;
+        if (path.startsWith('http')) return path;
+        return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/items/${path}`;
+    };
+
     // --- STATES ---
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState<Profile | null>(null);
@@ -502,7 +509,13 @@ export default function UserSicilPage() {
                                     <div key={item.id} className="bg-slate-950 border border-slate-800 rounded-lg overflow-hidden group">
                                         <div className="aspect-square relative bg-slate-900">
                                             {item.image_url ? (
-                                                <Image src={item.image_url} alt="" fill className="object-cover opacity-80 group-hover:opacity-100 transition" />
+                                                <Image
+                                                    src={getImageUrl(item.image_url) || '/placeholder.png'}
+                                                    alt=""
+                                                    fill
+                                                    className="object-cover opacity-80 group-hover:opacity-100 transition"
+                                                    onError={(e) => { e.currentTarget.src = '/placeholder.png' }}
+                                                />
                                             ) : (
                                                 <div className="flex items-center justify-center h-full text-slate-700"><Archive size={24} /></div>
                                             )}
@@ -548,7 +561,10 @@ export default function UserSicilPage() {
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-bold">{partnerId.substring(0, 2)}</div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-bold text-white truncate font-mono">{partnerId}</p>
+                                                <p className="text-sm font-bold text-white truncate font-mono">
+                                                    {partnerId === id ? 'Bu Kullanıcı' : 'Karşı Taraf'}
+                                                    <span className="text-xs text-slate-600 font-mono ml-2">({partnerId.substring(0, 6)})</span>
+                                                </p>
                                                 <p className="text-xs text-slate-500">{conversations[partnerId].length} mesaj</p>
                                             </div>
                                         </div>

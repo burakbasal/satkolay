@@ -9,7 +9,7 @@ import {
     Loader2, ArrowLeft, MessageSquare, Save, Shield, Clock, Archive,
     FileText, Activity, MapPin, Calendar, DollarSign, Trash2,
     Ban, CheckCircle, UserCog, History, Eye, ShieldAlert,
-    AlertTriangle, Power, Edit3, X, Mail
+    AlertTriangle, Power, Edit3, X, Mail, Package
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -84,33 +84,65 @@ export default function UserSicilPage() {
         async function fetchAllData() {
             setLoading(true);
 
-            // A. Profile (Critical)
+            // A. Profile
             const pProfile = supabase.from('profiles').select('*').eq('id', id).single();
 
-            // B. Items (Resilient)
-            const pItems = supabase.from('items').select('*').eq('owner_id', id).order('created_at', { ascending: false });
+            // B. Items (Resilient Wrapper: Try owner_id, fallback to user_id)
+            const fetchItems = async () => {
+                const { data, error } = await supabase.from('items').select('*').eq('owner_id', id).order('created_at', { ascending: false });
+                if (!error && data) return data;
 
-            // C. Logs (Resilient)
+                console.warn('Items fetch with owner_id failed, trying user_id...');
+                const { data: d2, error: e2 } = await supabase.from('items').select('*').eq('user_id', id).order('created_at', { ascending: false });
+                if (!e2 && d2) return d2;
+
+                return []; // Fail safe: return empty array
+            };
+
+            // C. Logs
             const pLogs = supabase.from('activity_logs').select('*').eq('user_id', id).order('created_at', { ascending: false }).limit(100);
 
-            // D. Messages (Resilient)
-            const pMessages = supabase.from('messages').select('*').or(`sender_id.eq.${id},receiver_id.eq.${id}`).order('created_at', { ascending: true });
+            // D. Messages (Correct Syntax & Joins)
+            const pMessages = supabase
+                .from('messages')
+                .select('*, sender:profiles!sender_id(full_name, email), receiver:profiles!receiver_id(full_name, email)')
+                .or(`sender_id.eq.${id},receiver_id.eq.${id}`)
+                .order('created_at', { ascending: true });
 
-            const [resProfile, resItems, resLogs, resMessages] = await Promise.allSettled([pProfile, pItems, pLogs, pMessages]);
+            const [resProfile, resItems, resLogs, resMessages] = await Promise.allSettled([
+                pProfile,
+                fetchItems(),
+                pLogs,
+                pMessages
+            ]);
 
             // Handle Profile
             if (resProfile.status === 'fulfilled' && resProfile.value.data) {
                 setProfile(resProfile.value.data);
-                setEditForm(resProfile.value.data); // Init edit form
+                setEditForm(resProfile.value.data);
                 setAdminNote(resProfile.value.data.admin_notes || '');
             } else {
                 toast.error('Kullanıcı profili yüklenemedi.');
             }
 
-            // Handle Others
-            if (resItems.status === 'fulfilled' && resItems.value.data) setItems(resItems.value.data);
-            if (resLogs.status === 'fulfilled' && resLogs.value.data) setLogs(resLogs.value.data);
-            if (resMessages.status === 'fulfilled' && resMessages.value.data) setMessages(resMessages.value.data);
+            // Handle Items (Wrapper returns data directly)
+            if (resItems.status === 'fulfilled') {
+                setItems(resItems.value);
+            }
+
+            // Handle Logs (Supabase returns { data, error })
+            if (resLogs.status === 'fulfilled' && resLogs.value.data) {
+                setLogs(resLogs.value.data);
+            }
+
+            // Handle Messages (Supabase returns { data, error })
+            if (resMessages.status === 'fulfilled') {
+                if (resMessages.value.data) {
+                    setMessages(resMessages.value.data);
+                } else if (resMessages.value.error) {
+                    console.error('Messages Fetch Error:', resMessages.value.error);
+                }
+            }
 
             setLoading(false);
         }
@@ -242,8 +274,8 @@ export default function UserSicilPage() {
                         {/* Global Actions */}
                         <div className="flex items-center gap-3">
                             <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded border ${profile.role === 'admin' ? 'bg-red-900/20 text-red-500 border-red-900' :
-                                    profile.role === 'moderator' ? 'bg-yellow-900/20 text-yellow-500 border-yellow-900' :
-                                        'bg-blue-900/20 text-blue-500 border-blue-900'
+                                profile.role === 'moderator' ? 'bg-yellow-900/20 text-yellow-500 border-yellow-900' :
+                                    'bg-blue-900/20 text-blue-500 border-blue-900'
                                 }`}>
                                 {profile.role}
                             </span>
@@ -267,8 +299,8 @@ export default function UserSicilPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
                                 className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id
-                                        ? 'border-blue-500 text-white bg-slate-800/50 rounded-t-lg'
-                                        : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/30'
+                                    ? 'border-blue-500 text-white bg-slate-800/50 rounded-t-lg'
+                                    : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/30'
                                     }`}
                             >
                                 <tab.icon size={16} /> {tab.label}
@@ -403,8 +435,8 @@ export default function UserSicilPage() {
                                         <button
                                             onClick={handleToggleBan}
                                             className={`w-32 py-1.5 rounded text-xs font-bold uppercase transition ${profile.banned
-                                                    ? 'bg-green-600 text-white hover:bg-green-700'
-                                                    : 'bg-red-600 text-white hover:bg-red-700'
+                                                ? 'bg-green-600 text-white hover:bg-green-700'
+                                                : 'bg-red-600 text-white hover:bg-red-700'
                                                 }`}
                                         >
                                             {profile.banned ? 'Yasağı Kaldır' : 'Yasakla'}
@@ -461,7 +493,12 @@ export default function UserSicilPage() {
                         <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl">
                             <h3 className="font-bold text-white mb-6">İlan Listesi</h3>
                             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                                {items.map(item => (
+                                {items.length === 0 ? (
+                                    <div className="col-span-full py-12 text-center text-slate-500 bg-slate-950 rounded-xl border border-slate-800 border-dashed">
+                                        <Package size={48} className="mx-auto mb-4 opacity-20" />
+                                        <p className="font-medium">Henüz ilan bulunmuyor.</p>
+                                    </div>
+                                ) : items.map(item => (
                                     <div key={item.id} className="bg-slate-950 border border-slate-800 rounded-lg overflow-hidden group">
                                         <div className="aspect-square relative bg-slate-900">
                                             {item.image_url ? (
@@ -497,6 +534,11 @@ export default function UserSicilPage() {
                                 <h3 className="text-xs font-bold uppercase text-slate-400">Aktif Sohbetler</h3>
                             </div>
                             <div className="flex-1 overflow-y-auto">
+                                {Object.keys(conversations).length === 0 && (
+                                    <div className="p-8 text-center text-slate-500 text-xs">
+                                        Mesaj kaydı bulunamadı.
+                                    </div>
+                                )}
                                 {Object.keys(conversations).map(partnerId => (
                                     <div
                                         key={partnerId}

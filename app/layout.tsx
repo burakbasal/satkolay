@@ -12,8 +12,12 @@ const inter = Inter({ subsets: ["latin"], display: 'swap' });
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.satkolay.com'),
   title: {
-    default: 'SatKolay | İkinci Elin Güvenli ve Yeni Adresi',
-    template: '%s | SatKolay - İkinci Elin Yeni Adresi'
+    default: 'İkinci Elin Yeni Adresi - SatKolay',
+    template: '%s | SatKolay',
+  },
+  description: 'Türkiye\'nin en güvenli ve hızlı ikinci el pazar yeri. Araba, telefon, elektronik ve mobilya alım satımının yeni adresi.',
+  alternates: {
+    canonical: '/',
   },
   icons: {
     icon: [
@@ -30,35 +34,23 @@ export const metadata: Metadata = {
       },
     ],
   },
-  manifest: '/manifest.webmanifest',
-  description: 'Türkiye\'nin en hızlı büyüyen ikinci el pazar yeri. Sahibinden araba, telefon, mobilya, elektronik ve giyim ürünlerini ücretsiz ilan vererek kolayca sat veya güvenle al.',
-  keywords: [
-    'ikinci el', 'satılık', 'sahibinden', 'ücretsiz ilan', 'letgo benzeri',
-    'dolap uygulaması', 'güvenli alışveriş', 'online pazar yeri',
-    'ikinci el telefon', 'ikinci el araba', 'ikinci el mobilya',
-    'hızlı sat', 'sat kolay', 'türkiye ikinci el'
-  ],
-  authors: [{ name: 'SatKolay Ekibi' }],
   openGraph: {
-    type: 'website',
-    locale: 'tr_TR',
-    url: 'https://www.satkolay.com',
-    title: 'SatKolay - İkinci El Alışverişin En Kolay Yolu',
+    title: 'İkinci Elin Yeni Adresi - SatKolay',
     description: 'Aradığın her şey SatKolay\'da! İkinci el eşyalarını hemen nakite çevir.',
+    url: 'https://www.satkolay.com',
     siteName: 'SatKolay',
-    images: ['/banner.png'],
+    images: [
+      {
+        url: '/satkolay-resmi-banner.png',
+        width: 1200,
+        height: 630,
+        alt: 'SatKolay Resmi Banner',
+      },
+    ],
+    locale: 'tr_TR',
+    type: 'website',
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
+  manifest: '/manifest.webmanifest',
 };
 
 export default function RootLayout({
@@ -71,27 +63,55 @@ export default function RootLayout({
     '@graph': [
       {
         '@type': 'Organization',
-        name: 'SatKolay',
-        url: 'https://www.satkolay.com',
-        logo: 'https://www.satkolay.com/satkolay-resmi-logo.jpg',
-        sameAs: ['https://twitter.com/satkolay', 'https://instagram.com/satkolay']
+        'name': 'SatKolay',
+        'url': 'https://www.satkolay.com',
+        'logo': 'https://www.satkolay.com/satkolay-resmi-logo.jpg',
+        'sameAs': [
+          'https://www.instagram.com/satkolay',
+          'https://twitter.com/satkolay'
+        ]
       },
       {
         '@type': 'WebSite',
-        url: 'https://www.satkolay.com',
-        potentialAction: {
+        'url': 'https://www.satkolay.com',
+        'name': 'SatKolay',
+        'potentialAction': {
           '@type': 'SearchAction',
-          target: 'https://www.satkolay.com/search?q={search_term_string}',
+          'target': 'https://www.satkolay.com/search?q={search_term_string}',
           'query-input': 'required name=search_term_string'
         }
       },
       {
         '@type': 'ItemList',
-        itemListElement: [
-          { '@type': 'SiteNavigationElement', position: 1, name: 'Araba', url: 'https://www.satkolay.com/search?category=Araba' },
-          { '@type': 'SiteNavigationElement', position: 2, name: 'Telefon', url: 'https://www.satkolay.com/search?category=Telefon' },
-          { '@type': 'SiteNavigationElement', position: 3, name: 'Elektronik', url: 'https://www.satkolay.com/search?category=Elektronik' },
-          { '@type': 'SiteNavigationElement', position: 4, name: 'Ev & Yaşam', url: 'https://www.satkolay.com/search?category=Ev' }
+        'itemListElement': [
+          {
+            '@type': 'SiteNavigationElement',
+            'position': 1,
+            'name': 'Araba',
+            'description': 'İkinci El Araba İlanları',
+            'url': 'https://www.satkolay.com/search?category=Araba'
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            'position': 2,
+            'name': 'Telefon',
+            'description': 'İkinci El Telefon Modelleri',
+            'url': 'https://www.satkolay.com/search?category=Telefon'
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            'position': 3,
+            'name': 'Elektronik',
+            'description': 'Bilgisayar ve Elektronik',
+            'url': 'https://www.satkolay.com/search?category=Elektronik'
+          },
+          {
+            '@type': 'SiteNavigationElement',
+            'position': 4,
+            'name': 'Ev & Yaşam',
+            'description': 'Mobilya ve Ev Eşyaları',
+            'url': 'https://www.satkolay.com/search?category=Ev'
+          }
         ]
       }
     ]

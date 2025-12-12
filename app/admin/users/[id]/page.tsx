@@ -59,11 +59,17 @@ export default function UserSicilPage() {
     const supabase = createClient();
     const router = useRouter();
 
-    // HELPER: Construct Image URL
-    const getImageUrl = (path: string | null) => {
+    // --- HELPER: ROBUST URL BUILDER ---
+    const getStorageUrl = (path: string | null) => {
         if (!path) return null;
         if (path.startsWith('http')) return path;
-        return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/items/${path}`;
+
+        // Construct the full URL manually. 
+        // ASSUMING BUCKET IS NAMED 'items'. 
+        const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const cleanPath = path.replace(/^\/+/, '');
+
+        return `${baseUrl}/storage/v1/object/public/items/${cleanPath}`;
     };
 
     // --- STATES ---
@@ -109,10 +115,10 @@ export default function UserSicilPage() {
             // C. Logs
             const pLogs = supabase.from('activity_logs').select('*').eq('user_id', id).order('created_at', { ascending: false }).limit(100);
 
-            // D. Messages (Correct Syntax & Joins)
+            // D. Messages (Raw Fetch - No Joins for stability)
             const pMessages = supabase
                 .from('messages')
-                .select('*, sender:profiles!sender_id(full_name, email), receiver:profiles!receiver_id(full_name, email)')
+                .select('*')
                 .or(`sender_id.eq.${id},receiver_id.eq.${id}`)
                 .order('created_at', { ascending: true });
 
@@ -508,13 +514,13 @@ export default function UserSicilPage() {
                                 ) : items.map(item => (
                                     <div key={item.id} className="bg-slate-950 border border-slate-800 rounded-lg overflow-hidden group">
                                         <div className="aspect-square relative bg-slate-900">
-                                            {item.image_url ? (
+                                            {getStorageUrl(item.image_url) ? (
                                                 <Image
-                                                    src={getImageUrl(item.image_url) || '/placeholder.png'}
+                                                    src={getStorageUrl(item.image_url)!}
                                                     alt=""
                                                     fill
                                                     className="object-cover opacity-80 group-hover:opacity-100 transition"
-                                                    onError={(e) => { e.currentTarget.src = '/placeholder.png' }}
+                                                    onError={(e: any) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }}
                                                 />
                                             ) : (
                                                 <div className="flex items-center justify-center h-full text-slate-700"><Archive size={24} /></div>

@@ -1,97 +1,110 @@
 import { createClient } from '@/utils/supabase/server';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import UserActions from '@/components/admin/user-actions';
+
+export const dynamic = 'force-dynamic';
 
 export default async function UserSicilPage({ params }: { params: { id: string } }) {
     const supabase = createClient();
 
-    // Fetch Profile & Items
+    // 1. Safe Data Fetching
     const { data: profile } = await supabase.from('profiles').select('*').eq('id', params.id).single();
     const { data: items } = await supabase.from('items').select('*').eq('user_id', params.id);
 
     if (!profile) return notFound();
 
+    // 2. Safe Variable Preparation (Prevent React #419)
+    const displayName = profile.full_name || 'İsimsiz Kullanıcı';
+    const displayEmail = profile.email || 'E-posta yok';
+    const displayRole = profile.role || 'user';
+    const displayCity = profile.city || 'Konum Belirtilmedi';
+    const joinDate = profile.created_at ? new Date(profile.created_at).toLocaleDateString('tr-TR') : '-';
+    const isBanned = profile.banned === true; // Boolean check
+
     return (
         <div className="p-8 space-y-8 bg-slate-950 min-h-screen text-slate-200">
-            {/* Header Bar */}
+            {/* Breadcrumb */}
             <div className="flex items-center justify-between mb-6">
-                <Link href="/admin/users" className="flex items-center text-slate-400 hover:text-white transition-colors">
-                    &larr; Kullanıcı Listesine Dön
+                <Link href="/admin/users" className="text-slate-400 hover:text-white transition-colors text-sm">
+                    &larr; Listeye Dön
                 </Link>
-                <h1 className="text-xl font-bold text-slate-100">Kullanıcı Sicil Dosyası</h1>
+                <span className="text-slate-500 text-sm font-mono">{params.id}</span>
             </div>
 
-            {/* User Identity Card */}
-            <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <h1 className="text-9xl font-black text-white">USER</h1>
-                </div>
-
-                <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-slate-700 bg-slate-800 flex items-center justify-center shrink-0">
+            {/* Profile Card */}
+            <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-start md:items-center gap-8">
+                <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-slate-800 bg-slate-800 shrink-0">
                     {profile.avatar_url ? (
                         <Image src={profile.avatar_url} alt="Avatar" fill className="object-cover" />
                     ) : (
-                        <span className="text-4xl font-bold">{profile.email?.[0]?.toUpperCase()}</span>
+                        <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-slate-500">
+                            {displayEmail[0]?.toUpperCase()}
+                        </div>
                     )}
                 </div>
 
-                <div className="flex-1 text-center md:text-left z-10">
-                    <h2 className="text-3xl font-bold text-white mb-1">{profile.full_name || 'İsimsiz Kullanıcı'}</h2>
-                    <p className="text-slate-400 font-mono mb-4">{profile.email}</p>
-                    <p className="text-xs text-slate-600 font-mono select-all">ID: {profile.id}</p>
-
-                    <div className="flex flex-wrap gap-2 mt-4 justify-center md:justify-start">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border ${profile.role === 'admin' ? 'bg-red-950 border-red-800 text-red-400' :
-                                'bg-blue-950 border-blue-800 text-blue-400'
-                            }`}>
-                            {profile.role || 'USER'}
+                <div className="flex-1 space-y-2">
+                    <h1 className="text-3xl font-bold text-white">{displayName}</h1>
+                    <p className="text-slate-400 font-mono">{displayEmail}</p>
+                    <div className="flex gap-2 pt-2">
+                        <span className="px-3 py-1 bg-blue-900/30 text-blue-400 border border-blue-900 rounded-full text-xs font-bold uppercase">
+                            {displayRole}
                         </span>
-                        <span className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-slate-800 border border-slate-700 text-slate-300">
-                            {profile.city || 'Konum Belirtilmedi'}
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase border ${isBanned ? 'bg-red-900/30 text-red-400 border-red-900' : 'bg-green-900/30 text-green-400 border-green-900'}`}>
+                            {isBanned ? 'YASAKLI' : 'AKTİF'}
                         </span>
                     </div>
                 </div>
+
+                {/* INTERACTIVE ACTIONS */}
+                <UserActions userId={params.id} currentRole={displayRole} isBanned={isBanned} />
             </div>
 
-            {/* Stats & Items */}
+            {/* Stats & Content */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Stats */}
-                <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                    <h3 className="text-slate-400 text-sm uppercase font-bold mb-4">İstatistikler</h3>
-                    <div className="space-y-4">
-                        <div className="flex justify-between border-b border-slate-800 pb-2">
-                            <span>Toplam İlan</span>
-                            <span className="font-bold text-white">{items?.length || 0}</span>
+                {/* Sidebar Stats */}
+                <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 h-fit">
+                    <h3 className="text-slate-500 text-xs font-bold uppercase mb-4 tracking-wider">Kullanıcı Bilgileri</h3>
+                    <div className="space-y-4 text-sm">
+                        <div className="flex justify-between py-2 border-b border-slate-800/50">
+                            <span className="text-slate-400">Konum</span>
+                            <span className="text-white">{displayCity}</span>
                         </div>
-                        <div className="flex justify-between border-b border-slate-800 pb-2">
-                            <span>Kayıt Tarihi</span>
-                            <span className="font-mono text-sm">{new Date(profile.created_at).toLocaleDateString('tr-TR')}</span>
+                        <div className="flex justify-between py-2 border-b border-slate-800/50">
+                            <span className="text-slate-400">Kayıt Tarihi</span>
+                            <span className="text-white font-mono">{joinDate}</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-slate-800/50">
+                            <span className="text-slate-400">Toplam İlan</span>
+                            <span className="text-white font-bold">{items?.length || 0}</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Items List */}
-                <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-6">
-                    <h3 className="text-slate-400 text-sm uppercase font-bold mb-4">İlan Geçmişi</h3>
+                {/* Main Content (Items) */}
+                <div className="lg:col-span-2 space-y-6">
+                    <h3 className="text-xl font-bold text-white">İlan Geçmişi</h3>
                     {items && items.length > 0 ? (
-                        <div className="space-y-3">
+                        <div className="grid gap-3">
                             {items.map((item: any) => (
-                                <div key={item.id} className="flex items-center gap-4 p-3 bg-slate-950 rounded-lg hover:bg-slate-800 transition-colors group">
-                                    <div className="w-12 h-12 bg-slate-800 rounded overflow-hidden relative">
+                                <div key={item.id} className="flex items-center gap-4 p-4 bg-slate-900 border border-slate-800 rounded-xl hover:border-slate-600 transition-colors">
+                                    <div className="w-16 h-16 bg-slate-800 rounded-lg overflow-hidden relative shrink-0">
                                         {item.image_url && <Image src={item.image_url} alt="" fill className="object-cover" />}
                                     </div>
-                                    <div className="flex-1">
-                                        <h4 className="text-white font-medium group-hover:text-blue-400 transition-colors">{item.title}</h4>
-                                        <p className="text-slate-500 text-xs">{item.price} TL</p>
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="text-white font-medium truncate">{item.title}</h4>
+                                        <p className="text-slate-400 text-sm">{item.price} TL</p>
                                     </div>
-                                    <span className={`text-[10px] px-2 py-1 rounded uppercase ${item.status === 'active' ? 'bg-green-900 text-green-400' : 'bg-yellow-900 text-yellow-400'
-                                        }`}>{item.status}</span>
+                                    <span className="text-xs px-2 py-1 bg-slate-800 rounded text-slate-300 uppercase">{item.status}</span>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <p className="text-slate-500 italic">Henüz ilan kaydı yok.</p>
+                        <div className="p-8 text-center bg-slate-900 border border-slate-800 rounded-xl text-slate-500">
+                            İlan kaydı bulunamadı.
+                        </div>
                     )}
                 </div>
             </div>

@@ -60,7 +60,7 @@ export default function UserSicilPage() {
     const router = useRouter();
 
     // --- HELPER: ROBUST URL BUILDER ---
-    const getStorageUrl = (path: string | null) => {
+    const resolveImageUrl = (path: string | null) => {
         if (!path) return null;
         if (path.startsWith('http')) return path;
 
@@ -509,18 +509,22 @@ export default function UserSicilPage() {
                                 {items.length === 0 ? (
                                     <div className="col-span-full py-12 text-center text-slate-500 bg-slate-950 rounded-xl border border-slate-800 border-dashed">
                                         <Package size={48} className="mx-auto mb-4 opacity-20" />
-                                        <p className="font-medium">Henüz ilan bulunmuyor.</p>
+                                        <p className="font-medium">Bu kullanıcıya ait ilan yok.</p>
+                                        <p className="text-xs text-slate-600 font-mono mt-2">Aranan ID: {id}</p>
                                     </div>
                                 ) : items.map(item => (
                                     <div key={item.id} className="bg-slate-950 border border-slate-800 rounded-lg overflow-hidden group">
                                         <div className="aspect-square relative bg-slate-900">
-                                            {getStorageUrl(item.image_url) ? (
+                                            {item.image_url ? (
                                                 <Image
-                                                    src={getStorageUrl(item.image_url)!}
-                                                    alt=""
+                                                    src={resolveImageUrl(item.image_url) || '/placeholder.png'}
+                                                    alt={item.title}
                                                     fill
                                                     className="object-cover opacity-80 group-hover:opacity-100 transition"
-                                                    onError={(e: any) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }}
+                                                    onError={(e) => {
+                                                        e.currentTarget.srcset = '';
+                                                        e.currentTarget.src = 'https://placehold.co/400x400/1e293b/475569?text=Resim+Yok';
+                                                    }}
                                                 />
                                             ) : (
                                                 <div className="flex items-center justify-center h-full text-slate-700"><Archive size={24} /></div>

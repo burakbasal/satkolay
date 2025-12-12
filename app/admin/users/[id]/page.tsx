@@ -19,35 +19,38 @@ export default function UserSicilPage() {
     const supabase = createClient();
 
     useEffect(() => {
-        if (!id) return; // Don't fetch if ID is missing
+        if (!id) return;
 
         async function fetchData() {
-            try {
-                // 1. Fetch Profile
-                const { data: userProfile, error: profileError } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
+            setLoading(true);
 
-                if (profileError) throw profileError;
+            // 1. Fetch Profile (Critical)
+            const { data: userProfile, error: profileError } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', id)
+                .single();
 
-                // 2. Fetch Items
-                const { data: userItems, error: itemsError } = await supabase
-                    .from('items')
-                    .select('*')
-                    .eq('user_id', id);
-
-                if (itemsError) throw itemsError;
-
+            if (userProfile) {
                 setProfile(userProfile);
-                setItems(userItems || []);
-            } catch (error) {
-                console.error('Veri çekme hatası:', error);
-                // Optional: toast.error('Kullanıcı verisi alınamadı');
-            } finally {
-                setLoading(false); // Stop loading no matter what
+            } else {
+                console.error('Profil hatası:', profileError);
             }
+
+            // 2. Fetch Items (Non-Critical) - Try 'owner_id' first
+            const { data: userItems, error: itemsError } = await supabase
+                .from('items')
+                .select('*')
+                .eq('owner_id', id); // CHANGED FROM user_id
+
+            if (itemsError) {
+                console.error('İlan çekme hatası (Sütun adı yanlış olabilir):', itemsError);
+                setItems([]);
+            } else {
+                setItems(userItems || []);
+            }
+
+            setLoading(false);
         }
 
         fetchData();

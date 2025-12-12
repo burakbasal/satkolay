@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
 
     // A. Guest -> Protected Route ? Redirect to Login
     if (isProtected && !user) {
-        return NextResponse.redirect(new URL('/auth/login', request.url));
+        return NextResponse.redirect(new URL('/login', request.url));
     }
 
     // B. User -> Login Page ? Redirect to Home

@@ -39,6 +39,22 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // 3. YÖNLENDİRMELER (Redirects)
+  async redirects() {
+    return [
+      {
+        source: '/%24', // URL encoded '$' just in case
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/\\$', // Escaped '$' if treated as literal
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
+
   // 2. HTTP GÜVENLİK BAŞLIKLARI
   async headers() {
     return [

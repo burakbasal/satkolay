@@ -16,10 +16,21 @@ export const metadata: Metadata = {
     template: '%s | SatKolay - İkinci Elin Yeni Adresi'
   },
   icons: {
-    icon: '/icon.png',
+    icon: [
+      { url: '/icon.png', href: '/icon.png' },
+      { url: '/icon.png', href: '/icon.png', sizes: '192x192' },
+      { url: '/icon.png', href: '/icon.png', sizes: '512x512' },
+    ],
     shortcut: '/icon.png',
     apple: '/icon.png',
+    other: [
+      {
+        rel: 'apple-touch-icon-precomposed',
+        url: '/icon.png',
+      },
+    ],
   },
+  manifest: '/manifest.webmanifest',
   description: 'Türkiye\'nin en hızlı büyüyen ikinci el pazar yeri. Sahibinden araba, telefon, mobilya, elektronik ve giyim ürünlerini ücretsiz ilan vererek kolayca sat veya güvenle al.',
   keywords: [
     'ikinci el', 'satılık', 'sahibinden', 'ücretsiz ilan', 'letgo benzeri',

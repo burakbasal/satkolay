@@ -51,6 +51,13 @@ export const metadata: Metadata = {
     type: 'website',
   },
   manifest: '/manifest.webmanifest',
+  robots: {
+    index: true,
+    follow: true,
+  },
+  verification: {
+    google: 'verification_token',
+  },
 };
 
 export default function RootLayout({

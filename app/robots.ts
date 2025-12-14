@@ -4,8 +4,8 @@ export default function robots(): MetadataRoute.Robots {
     return {
         rules: {
             userAgent: '*',
-            allow: ['/', '/search'],
-            disallow: ['/admin/', '/profile/', '/api/', '/_next/'],
+            allow: '/',
+            disallow: ['/admin/', '/profile/private/', '/api/', '/_next/'],
         },
         sitemap: 'https://www.satkolay.com/sitemap.xml',
     }

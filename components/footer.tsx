@@ -7,8 +7,8 @@ import { Facebook, Instagram, Youtube, Linkedin, ShieldCheck } from 'lucide-reac
 export function Footer() {
     const pathname = usePathname();
 
-    // Sohbet sayfasında footer gizlenir
-    if (pathname?.startsWith('/chat')) {
+    // Sohbet ve Bakım sayfasında footer gizlenir
+    if (pathname?.startsWith('/chat') || pathname?.startsWith('/maintenance')) {
         return null;
     }
 

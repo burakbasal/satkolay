@@ -93,8 +93,8 @@ function MobileSearchBar() {
 export function Navbar() {
     const pathname = usePathname();
 
-    // Admin panelinde Navbar'ı gizle
-    if (pathname?.startsWith('/admin')) {
+    // Admin panelinde ve Bakım sayfasında Navbar'ı gizle
+    if (pathname?.startsWith('/admin') || pathname?.startsWith('/maintenance')) {
         return null;
     }
 

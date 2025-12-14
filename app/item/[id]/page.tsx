@@ -69,7 +69,10 @@ export default async function ItemPage(props: { params: Params }) {
 
     // --- GÜVENLİK DUVARI (YENİ) ---
     const { data: viewerProfile } = await supabase.from('profiles').select('role').eq('id', user?.id).single();
-    const isOwner = user?.id === item.seller_id;
+
+    // DB Migration Compat: Check owner_id, seller_id, or user_id
+    const ownerId = item.owner_id || item.seller_id || item.user_id;
+    const isOwner = user?.id === ownerId;
     const isAdmin = ['admin', 'owner', 'staff'].includes(viewerProfile?.role);
 
     // Eğer ilan yayında değilse VE giren kişi sahibi/admin değilse -> 404
@@ -150,7 +153,7 @@ export default async function ItemPage(props: { params: Params }) {
                             </div>
                         </Link>
 
-                        <ItemActions itemId={item.id} sellerId={item.seller_id} userId={user?.id || null} price={item.price} />
+                        <ItemActions itemId={item.id} sellerId={ownerId} userId={user?.id || null} price={item.price} />
                     </div>
 
                     <div className="bg-white p-4 rounded-xl border border-gray-200 flex items-start gap-3">

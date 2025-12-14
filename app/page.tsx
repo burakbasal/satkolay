@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { createClient } from '@/utils/supabase/server';
 import { ListingCard } from '@/components/listing-card';
 import { normalizeCityInput } from '@/lib/normalization';
@@ -6,6 +7,24 @@ import { HeroSlider } from '@/components/home/hero-slider';
 import { TrendCategories } from '@/components/home/trend-categories';
 
 export const dynamic = 'force-dynamic';
+
+/* ✅ SEO METADATA — BURASI ÇOK ÖNEMLİ */
+export const metadata: Metadata = {
+  title: 'İkinci Elin En Yeni Adresi – SatKolay',
+  description:
+    "SatKolay, ikinci el alışverişi hızlı, güvenli ve kolay hale getiren yeni nesil bir platformdur. Kullanmadığınız eşyaları kolayca satın, aradığınız ürünlere uygun fiyatlarla ulaşın.",
+  alternates: {
+    canonical: 'https://www.satkolay.com/',
+  },
+  openGraph: {
+    title: 'İkinci Elin En Yeni Adresi – SatKolay',
+    description:
+      "SatKolay, ikinci el alışverişi hızlı, güvenli ve kolay hale getiren yeni nesil bir platformdur. Kullanmadığınız eşyaları kolayca satın, aradığınız ürünlere uygun fiyatlarla ulaşın.",
+    url: 'https://www.satkolay.com/',
+    siteName: 'SatKolay',
+    type: 'website',
+  },
+};
 
 export default async function Home() {
   // Cookie üzerinden şehir bilgisini al
@@ -17,7 +36,8 @@ export default async function Home() {
 
   const supabase = await createClient();
 
-  let query = supabase.from('items')
+  let query = supabase
+    .from('items')
     .select('*, profiles(username, avatar_url)')
     .eq('status', 'active')
     .order('created_at', { ascending: false });
@@ -46,7 +66,9 @@ export default async function Home() {
       <div className="flex items-center justify-between mb-4 px-4 md:px-0">
         <h1 className="text-xl font-bold text-gray-800">
           {dbCity ? `${dbCity} İlanları` : 'Vitrin'}
-          <span className="ml-2 text-sm font-normal text-gray-500">({items?.length || 0} ilan)</span>
+          <span className="ml-2 text-sm font-normal text-gray-500">
+            ({items?.length || 0} ilan)
+          </span>
         </h1>
       </div>
 
@@ -60,7 +82,9 @@ export default async function Home() {
       ) : (
         <div className="text-center py-20 bg-white rounded-xl border border-dashed">
           <h3 className="text-lg font-bold text-gray-900">Henüz İlan Yok</h3>
-          <p className="text-gray-500 mt-2">Bu kriterlerde ilan bulunamadı.</p>
+          <p className="text-gray-500 mt-2">
+            Bu kriterlerde ilan bulunamadı.
+          </p>
         </div>
       )}
     </div>

@@ -60,7 +60,9 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
         <div className="container mx-auto px-4 py-8 max-w-3xl">
             <h1 className="text-2xl font-bold mb-6">İlanı Düzenle</h1>
 
-            <form action={updateListing} className="space-y-6 bg-white p-6 rounded-xl border border-gray-200">
+            <form action={async (formData) => {
+                await updateListing(formData);
+            }} className="space-y-6 bg-white p-6 rounded-xl border border-gray-200">
                 <input type="hidden" name="itemId" value={item.id} />
                 <input type="hidden" name="category" value={item.category} />
 

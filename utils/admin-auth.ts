@@ -14,7 +14,7 @@ export async function checkAdminAccess() {
     // 2. Profildeki rolü kontrol et
     const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('role, is_admin')
+        .select('*')
         .eq('id', user.id)
         .single();
 

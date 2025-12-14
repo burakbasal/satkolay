@@ -10,25 +10,27 @@ export async function GET() {
         .from('items')
         .select('id, updated_at')
         .eq('status', 'active')
-        .order('created_at', { ascending: false })
+        .order('updated_at', { ascending: false })
         .limit(10000);
 
     const urls = (products || []).map(product => {
+        // Format date to YYYY-MM-DD
+        const lastMod = new Date(product.updated_at).toISOString().split('T')[0];
+
         return `
   <url>
     <loc>${baseUrl}/product/${product.id}</loc>
-    <lastmod>${new Date(product.updated_at).toISOString()}</lastmod>
+    <lastmod>${lastMod}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
     `.trim();
-    }).join('');
+    }).join('\n');
 
-    const sitemap = `
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
-</urlset>
-  `.trim();
+</urlset>`.trim();
 
     return new Response(sitemap, {
         headers: {

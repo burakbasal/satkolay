@@ -1,5 +1,5 @@
 export async function GET() {
-    const sitemapIndex = `
+    const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://www.satkolay.com/sitemap-static.xml</loc>
@@ -7,8 +7,7 @@ export async function GET() {
   <sitemap>
     <loc>https://www.satkolay.com/sitemap-products.xml</loc>
   </sitemap>
-</sitemapindex>
-  `.trim();
+</sitemapindex>`.trim();
 
     return new Response(sitemapIndex, {
         headers: {

@@ -41,7 +41,10 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
         itemsQuery = itemsQuery.eq('status', 'active');
     }
 
-    const { data: rawItems } = await itemsQuery;
+    // Verify query params
+    console.log(`Fetching items for owner: ${profile.id} | IsOwner: ${isOwner}`);
+    const { data: rawItems, error: itemsError } = await itemsQuery;
+    if (itemsError) console.error("Item Fetch Error:", itemsError);
 
     // Transform items for images
     const items = rawItems?.map(item => ({

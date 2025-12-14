@@ -93,15 +93,21 @@ export function ItemActions({ itemId, ownerId, userId, price }: { itemId: string
     return (
         <div className="grid gap-3">
             <Button
-                onClick={() => handleAction('chat')}
-                disabled={loading || !ownerId}
+                onClick={() => {
+                    if (!ownerId) return toast.error("Satıcı bilgisi yüklenemedi. Lütfen sayfayı yenileyin.");
+                    handleAction('chat');
+                }}
+                disabled={loading}
                 className="w-full bg-[#001e93] hover:bg-[#e63548] text-white font-bold h-12 text-lg"
             >
                 {loading ? <Loader2 className="animate-spin" /> : <><MessageCircle className="mr-2 w-5 h-5" /> Sohbet</>}
             </Button>
             <Button
-                onClick={() => handleAction('offer')}
-                disabled={loading || !ownerId}
+                onClick={() => {
+                    if (!ownerId) return toast.error("Satıcı bilgisi yüklenemedi. Lütfen sayfayı yenileyin.");
+                    handleAction('offer');
+                }}
+                disabled={loading}
                 variant="outline"
                 className="w-full border-[#001e93] text-[#001e93] hover:bg-red-50 font-bold h-12 text-lg"
             >

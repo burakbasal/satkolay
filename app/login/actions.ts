@@ -57,7 +57,7 @@ export async function signup(formData: FormData) {
 
     if (!result.success) {
         // Return the first error message
-        return { error: result.error.errors[0].message }
+        return { error: result.error.issues[0].message }
     }
 
     const origin = (await headers()).get('origin')

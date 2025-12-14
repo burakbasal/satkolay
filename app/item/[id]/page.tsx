@@ -1,9 +1,9 @@
+import { Metadata, ResolvingMetadata } from 'next';
 import { createClient } from '@/utils/supabase/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-import { MapPin, Heart, Share2, ShieldCheck, User, MessageCircle, AlertTriangle } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import Script from 'next/script';
+import { MapPin, ShieldCheck, User, AlertTriangle } from 'lucide-react';
 import { ImageGallery } from "@/components/image-gallery";
 import { ItemActions } from "@/components/item-actions";
 import { FavoriteButton } from '@/components/favorite-button';
@@ -12,14 +12,49 @@ import { ListingCard } from '@/components/listing-card';
 
 type Params = Promise<{ id: string }>;
 
+// --- 1. GENERATE METADATA ---
+export async function generateMetadata(
+    props: { params: Params },
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    const params = await props.params;
+    const id = params.id;
+    const supabase = await createClient();
+
+    const { data: item } = await supabase
+        .from('items')
+        .select('title, description, city, price, image_urls')
+        .eq('id', id)
+        .single();
+
+    if (!item) {
+        return {
+            title: 'Ürün Bulunamadı | SatKolay',
+        };
+    }
+
+    const city = item.city || 'Türkiye';
+    const price = item.price?.toLocaleString('tr-TR');
+    const description = `${item.title}. ${city} konumunda satılık ikinci el ürün. Fiyat: ${price} TL. Güvenli ödeme ile SatKolay'da hemen al.`.substring(0, 160);
+
+    return {
+        title: `${item.title} – ${city} | SatKolay`,
+        description: description,
+        openGraph: {
+            title: `${item.title} – ${city} | SatKolay`,
+            description: description,
+            images: item.image_urls?.[0] ? [item.image_urls[0]] : [],
+        },
+    };
+}
+
+// --- 2. MAIN COMPONENT ---
 export default async function ItemPage(props: { params: Params }) {
     const params = await props.params;
     const { id } = params;
-
     const supabase = await createClient();
 
-    // 1. İlanı Çekmeye Çalış (Hata yakalama açık)
-    // STRICT SCHEMA: Use owner_id relation
+    // Fetch Item & Owner
     const { data: item, error } = await supabase
         .from('items')
         .select('*, owner:profiles!owner_id(*)')
@@ -28,7 +63,7 @@ export default async function ItemPage(props: { params: Params }) {
 
     const { data: { user } } = await supabase.auth.getUser();
 
-    // --- BENZER İLANLARI ÇEK ---
+    // Fetch Similar Items
     let similarItems: any[] = [];
     if (item) {
         const { data: simData } = await supabase
@@ -42,7 +77,7 @@ export default async function ItemPage(props: { params: Params }) {
         similarItems = simData || [];
     }
 
-    // --- HATA VARSA EKRANA BAS (404 VERME) ---
+    // Error Handling
     if (error || !item) {
         return (
             <div className="container mx-auto p-10 flex flex-col items-center justify-center min-h-[60vh]">
@@ -50,52 +85,55 @@ export default async function ItemPage(props: { params: Params }) {
                     <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                     <h1 className="text-2xl font-bold text-red-700 mb-2">Veri Çekme Hatası!</h1>
                     <p className="text-gray-700 mb-4">Bu ürün görüntülenemiyor. İşte teknik sebebi:</p>
-
                     <div className="bg-black text-green-400 p-4 rounded-lg text-left font-mono text-sm overflow-auto mb-6">
                         {error ? JSON.stringify(error, null, 2) : "Hata yok ama 'item' verisi boş (Null) döndü."}
                     </div>
-
-                    <div className="text-sm text-gray-500">
-                        <strong>Olası Sebepler:</strong><br />
-                        1. RLS Politikası (Okuma izni yok).<br />
-                        2. ID yanlış veya silinmiş.<br />
-                        3. İlişki hatası (Profiles tablosuna bağlanamıyor).
-                    </div>
-
                     <Link href="/" className="mt-6 inline-block bg-gray-900 text-white px-6 py-2 rounded-full">Anasayfaya Dön</Link>
                 </div>
             </div>
         );
     }
 
-    // --- GÜVENLİK DUVARI (YENİ) ---
+    // Security Checks
     const { data: viewerProfile } = await supabase.from('profiles').select('role').eq('id', user?.id).single();
-
-    // STRICT SCHEMA: Use owner_id
     const ownerId = item.owner_id;
-    // Map relations (Handle both 'owner' alias or raw 'profiles' if alias fails, but alias 'owner' is requested)
     const ownerProfile = item.owner || item.profiles;
-
     const isOwner = user?.id === ownerId;
     const isAdmin = ['admin', 'owner', 'staff', 'moderator'].includes(viewerProfile?.role);
 
-    // Eğer ilan yayında değilse VE giren kişi sahibi/admin değilse -> 404
     if (item.status !== 'active' && ((!isOwner && !isAdmin) || !ownerId)) {
-        // If ownerId is missing entirely, it's a data corruption, but treating as 404/maintenance depends on policy.
-        // For now, allow admin to see it even if ownerId is broken? 
-        // If ownerId is null, isOwner is false.
         if (!isAdmin) notFound();
     }
 
-    // --- HATA YOKSA SAYFAYI GÖSTER ---
-
-    // Resim Garantisi
     const images = item.image_urls && item.image_urls.length > 0
         ? item.image_urls
         : ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800'];
 
+    // --- 3. CONSTRUCT JSON-LD ---
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: item.title,
+        image: images,
+        description: item.description,
+        offers: {
+            '@type': 'Offer',
+            price: item.price,
+            priceCurrency: 'TRY',
+            availability: item.status === 'active' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            itemCondition: item.condition === 'new' ? 'https://schema.org/NewCondition' : 'https://schema.org/UsedCondition',
+            url: `https://www.satkolay.com/product/${item.id}`,
+        }
+    };
+
     return (
         <div className="container mx-auto px-4 py-8 bg-gray-50 min-h-screen font-sans">
+            {/* INJECT SCHEMA */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+
             <div className="text-sm text-gray-500 mb-4 flex items-center gap-2">
                 <Link href="/" className="hover:underline">Anasayfa</Link> ›
                 <span className="text-gray-900 font-medium truncate max-w-[300px]">{item.title}</span>
@@ -113,7 +151,6 @@ export default async function ItemPage(props: { params: Params }) {
             )}
 
             <div className="flex flex-col lg:flex-row gap-8">
-                {/* SOL: GALERİ */}
                 <div className="w-full lg:w-2/3">
                     <ImageGallery images={images} />
                     <div className="bg-white p-6 rounded-xl border border-gray-200 mt-6">
@@ -122,14 +159,12 @@ export default async function ItemPage(props: { params: Params }) {
                     </div>
                 </div>
 
-                {/* SAĞ: BİLGİ KARTI */}
                 <div className="w-full lg:w-1/3 space-y-4 sticky top-24 h-fit">
                     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative">
                         <div className="absolute top-4 right-4 flex gap-2 z-10">
                             <ShareButton title={item.title} text={item.description || ''} />
                             <FavoriteButton itemId={item.id} />
                         </div>
-
                         <h1 className="text-4xl font-black text-gray-900 mb-2 tracking-tight">{item.price?.toLocaleString('tr-TR')} TL</h1>
                         <h2 className="text-lg text-gray-700 mb-4 leading-snug pr-10">{item.title}</h2>
 
@@ -173,7 +208,6 @@ export default async function ItemPage(props: { params: Params }) {
                 </div>
             </div>
 
-            {/* --- BENZER İLANLAR --- */}
             <div className="mt-12 border-t pt-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-6">Buna Bakanlar Şunları da Beğendi</h3>
                 {similarItems && similarItems.length > 0 ? (

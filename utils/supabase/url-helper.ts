@@ -1,13 +1,13 @@
-export const getStorageUrl = (path: string | null) => {
-    if (!path) return '/placeholder.png'; // Make sure this file exists in public/
+export const getStorageUrl = (path: string | null | undefined) => {
+    if (!path) return '/placeholder.png'; // Default placeholder
     if (path.startsWith('http')) return path;
 
-    // Remove any leading slashes to prevent double slashes in the URL
+    // Remove leading slashes
     const cleanPath = path.replace(/^\/+/, '');
 
-    // Construct the full URL
-    // Assuming 'images' is the bucket name based on the user request.
-    // If the bucket might be 'items' or 'avatars', this might need adjustment or a parameter.
-    // Using the path structure from the user request: /storage/v1/object/public/images/
+    // Construct full URL
+    // Assumption: bucket is 'images' based on previous context. 
+    // If path already contains 'storage/v1...', handles it gracefully? 
+    // No, standard path stored is typically just the filename or folder/filename.
     return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${cleanPath}`;
 };

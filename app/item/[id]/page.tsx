@@ -19,9 +19,10 @@ export default async function ItemPage(props: { params: Params }) {
     const supabase = await createClient();
 
     // 1. İlanı Çekmeye Çalış (Hata yakalama açık)
+    // STRICT SCHEMA: Use owner_id relation
     const { data: item, error } = await supabase
         .from('items')
-        .select('*, profiles(id, username, full_name, avatar_url)')
+        .select('*, owner:profiles!owner_id(*)')
         .eq('id', id)
         .single();
 
@@ -71,9 +72,12 @@ export default async function ItemPage(props: { params: Params }) {
     const { data: viewerProfile } = await supabase.from('profiles').select('role').eq('id', user?.id).single();
 
     // STRICT SCHEMA: Use owner_id
-    const ownerId = item.owner_id; // items table now strictly has owner_id
+    const ownerId = item.owner_id;
+    // Map relations (Handle both 'owner' alias or raw 'profiles' if alias fails, but alias 'owner' is requested)
+    const ownerProfile = item.owner || item.profiles;
+
     const isOwner = user?.id === ownerId;
-    const isAdmin = ['admin', 'owner', 'staff'].includes(viewerProfile?.role);
+    const isAdmin = ['admin', 'owner', 'staff', 'moderator'].includes(viewerProfile?.role);
 
     // Eğer ilan yayında değilse VE giren kişi sahibi/admin değilse -> 404
     if (item.status !== 'active' && ((!isOwner && !isAdmin) || !ownerId)) {
@@ -142,21 +146,21 @@ export default async function ItemPage(props: { params: Params }) {
                     </div>
 
                     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                        <Link href={`/profile/${item.profiles?.username}`} className="flex items-center gap-4 mb-6 hover:bg-gray-50 p-2 rounded-lg transition-colors -ml-2">
+                        <Link href={`/profile/${ownerProfile?.username}`} className="flex items-center gap-4 mb-6 hover:bg-gray-50 p-2 rounded-lg transition-colors -ml-2">
                             <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200 overflow-hidden">
-                                {item.profiles?.avatar_url ? (
-                                    <img src={item.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                                {ownerProfile?.avatar_url ? (
+                                    <img src={ownerProfile.avatar_url} alt="" className="w-full h-full object-cover" />
                                 ) : (
                                     <User className="w-8 h-8 text-gray-400" />
                                 )}
                             </div>
                             <div>
-                                <div className="font-bold text-lg text-gray-900">{item.profiles?.full_name || 'Satıcı'}</div>
+                                <div className="font-bold text-lg text-gray-900">{ownerProfile?.full_name || 'Satıcı'}</div>
                                 <div className="text-xs text-gray-500">Üyelik: 2025</div>
                             </div>
                         </Link>
 
-                        <ItemActions itemId={item.id} sellerId={ownerId} userId={user?.id || null} price={item.price} />
+                        <ItemActions itemId={item.id} ownerId={ownerId} userId={user?.id || null} price={item.price} />
                     </div>
 
                     <div className="bg-white p-4 rounded-xl border border-gray-200 flex items-start gap-3">

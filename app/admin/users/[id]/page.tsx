@@ -34,7 +34,8 @@ type Item = {
     id: number;
     title: string;
     price: number;
-    image_url: string | null;
+    image_urls: string[];
+    owner_id: string;
     status: 'active' | 'sold' | 'inactive' | 'deleted';
     created_at: string;
 };
@@ -107,7 +108,7 @@ export default function UserSicilPage() {
 
             const [resProfile, resItems, resLogs, resMessages] = await Promise.allSettled([
                 pProfile,
-                fetchItems(),
+                pItems,
                 pLogs,
                 pMessages
             ]);

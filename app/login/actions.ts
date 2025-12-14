@@ -62,6 +62,12 @@ export async function signup(formData: FormData) {
 
     const origin = (await headers()).get('origin')
 
+    // GLOBAL REGISTRATION LOCK
+    const { data: settings } = await supabase.from('platform_settings').select('is_registration_open').eq('id', 1).single();
+    if (settings && settings.is_registration_open === false) {
+        return { error: 'Yeni üye kayıtları şu an için durdurulmuştur. Lütfen daha sonra tekrar deneyiniz.' };
+    }
+
     const { error } = await supabase.auth.signUp({
         email,
         password,

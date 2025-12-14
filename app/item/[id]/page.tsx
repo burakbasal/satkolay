@@ -12,7 +12,7 @@ import { ListingCard } from '@/components/listing-card';
 
 type Params = Promise<{ id: string }>;
 
-// --- 1. GENERATE METADATA ---
+// --- METADATA ---
 export async function generateMetadata(
     props: { params: Params },
     parent: ResolvingMetadata
@@ -27,34 +27,33 @@ export async function generateMetadata(
         .eq('id', id)
         .single();
 
-    if (!item) {
-        return {
-            title: 'Ürün Bulunamadı | SatKolay',
-        };
-    }
+    if (!item) return { title: 'Ürün Bulunamadı | SatKolay' };
 
     const city = item.city || 'Türkiye';
     const price = item.price?.toLocaleString('tr-TR');
-    const description = `${item.title}. ${city} konumunda satılık ikinci el ürün. Fiyat: ${price} TL. Güvenli ödeme ile SatKolay'da hemen al.`.substring(0, 160);
+    const title = `${item.title} – ${city} | SatKolay (Güvenli Ödeme)`;
+    const description = `${item.title}. ${city} konumunda, ${price} TL fiyatla satılık. SatKolay güvencesiyle hemen al.`.substring(0, 160);
 
     return {
-        title: `${item.title} – ${city} | SatKolay`,
-        description: description,
+        title,
+        description,
+        alternates: {
+            canonical: `https://www.satkolay.com/product/${id}`,
+        },
         openGraph: {
-            title: `${item.title} – ${city} | SatKolay`,
-            description: description,
+            title,
+            description,
             images: item.image_urls?.[0] ? [item.image_urls[0]] : [],
         },
     };
 }
 
-// --- 2. MAIN COMPONENT ---
 export default async function ItemPage(props: { params: Params }) {
     const params = await props.params;
     const { id } = params;
     const supabase = await createClient();
 
-    // Fetch Item & Owner
+    // 1. Fetch Data
     const { data: item, error } = await supabase
         .from('items')
         .select('*, owner:profiles!owner_id(*)')
@@ -63,7 +62,7 @@ export default async function ItemPage(props: { params: Params }) {
 
     const { data: { user } } = await supabase.auth.getUser();
 
-    // Fetch Similar Items
+    // 2. Similar Items Logic
     let similarItems: any[] = [];
     if (item) {
         const { data: simData } = await supabase
@@ -77,24 +76,21 @@ export default async function ItemPage(props: { params: Params }) {
         similarItems = simData || [];
     }
 
-    // Error Handling
+    // 3. Error Handling
     if (error || !item) {
         return (
             <div className="container mx-auto p-10 flex flex-col items-center justify-center min-h-[60vh]">
                 <div className="bg-red-50 border border-red-200 rounded-xl p-6 max-w-2xl w-full text-center">
                     <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                     <h1 className="text-2xl font-bold text-red-700 mb-2">Veri Çekme Hatası!</h1>
-                    <p className="text-gray-700 mb-4">Bu ürün görüntülenemiyor. İşte teknik sebebi:</p>
-                    <div className="bg-black text-green-400 p-4 rounded-lg text-left font-mono text-sm overflow-auto mb-6">
-                        {error ? JSON.stringify(error, null, 2) : "Hata yok ama 'item' verisi boş (Null) döndü."}
-                    </div>
+                    <p className="text-gray-700 mb-4">Bu ürün görüntülenemiyor.</p>
                     <Link href="/" className="mt-6 inline-block bg-gray-900 text-white px-6 py-2 rounded-full">Anasayfaya Dön</Link>
                 </div>
             </div>
         );
     }
 
-    // Security Checks
+    // 4. Security & Access Logic
     const { data: viewerProfile } = await supabase.from('profiles').select('role').eq('id', user?.id).single();
     const ownerId = item.owner_id;
     const ownerProfile = item.owner || item.profiles;
@@ -109,26 +105,71 @@ export default async function ItemPage(props: { params: Params }) {
         ? item.image_urls
         : ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800'];
 
-    // --- 3. CONSTRUCT JSON-LD ---
-    const jsonLd = {
-        '@context': 'https://schema.org',
+    // 5. PREPARE SCHEMA DATA
+    const productUrl = `https://www.satkolay.com/product/${item.id}`;
+    const imageUrl = item.image_urls?.[0] || 'https://www.satkolay.com/og-image.png'; // Fallback
+    const brandName = item.attributes?.brand || 'SatKolay';
+
+    // A. Product Schema
+    const productSchema = {
         '@type': 'Product',
         name: item.title,
-        image: images,
-        description: item.description,
+        image: imageUrl,
+        description: item.description || item.title,
+        brand: {
+            '@type': 'Brand',
+            name: brandName
+        },
         offers: {
             '@type': 'Offer',
             price: item.price,
             priceCurrency: 'TRY',
+            url: productUrl,
             availability: item.status === 'active' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
             itemCondition: item.condition === 'new' ? 'https://schema.org/NewCondition' : 'https://schema.org/UsedCondition',
-            url: `https://www.satkolay.com/product/${item.id}`,
         }
+    };
+
+    // B. Breadcrumb Schema
+    const breadcrumbSchema = {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', 'position': 1, 'name': 'Anasayfa', 'item': 'https://www.satkolay.com' },
+            { '@type': 'ListItem', 'position': 2, 'name': item.category || 'Vitrin', 'item': 'https://www.satkolay.com/search' },
+            { '@type': 'ListItem', 'position': 3, 'name': item.title, 'item': productUrl }
+        ]
+    };
+
+    // C. FAQ Schema (The Dominance Move)
+    const faqSchema = {
+        '@type': 'FAQPage',
+        mainEntity: [
+            {
+                '@type': 'Question',
+                name: 'Bu ürünü nasıl güvenle alabilirim?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'SatKolay "Güvenli Ödeme" sistemi ile paranız havuzda tutulur. Ürünü teslim alıp onaylayana kadar satıcıya aktarılmaz.'
+                }
+            },
+            {
+                '@type': 'Question',
+                name: 'İade hakkım var mı?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Eğer ürün anlatılandan farklıysa veya gönderilmezse, paranız %100 iade edilir.'
+                }
+            }
+        ]
+    };
+
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@graph': [productSchema, breadcrumbSchema, faqSchema]
     };
 
     return (
         <div className="container mx-auto px-4 py-8 bg-gray-50 min-h-screen font-sans">
-            {/* INJECT SCHEMA */}
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -136,6 +177,7 @@ export default async function ItemPage(props: { params: Params }) {
 
             <div className="text-sm text-gray-500 mb-4 flex items-center gap-2">
                 <Link href="/" className="hover:underline">Anasayfa</Link> ›
+                {item.category && <><Link href={`/search?category=${item.category}`} className="hover:underline">{item.category}</Link> ›</>}
                 <span className="text-gray-900 font-medium truncate max-w-[300px]">{item.title}</span>
             </div>
 
@@ -208,6 +250,7 @@ export default async function ItemPage(props: { params: Params }) {
                 </div>
             </div>
 
+            {/* Similar Items */}
             <div className="mt-12 border-t pt-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-6">Buna Bakanlar Şunları da Beğendi</h3>
                 {similarItems && similarItems.length > 0 ? (

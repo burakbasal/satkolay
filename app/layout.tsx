@@ -118,7 +118,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="tr">
+    <html lang="tr" suppressHydrationWarning>
       <body className={`${inter.className} bg-white text-gray-900 antialiased`}>
         <script
           type="application/ld+json"

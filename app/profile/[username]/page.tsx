@@ -1,12 +1,14 @@
 import { createClient } from '@/utils/supabase/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Settings, MapPin, Calendar, ShieldCheck, Star } from 'lucide-react';
+import { Settings, MapPin, Calendar, ShieldCheck, Star, Construction } from 'lucide-react';
 import { ListingCard } from '@/components/listing-card';
 import { FollowButton, ProfileAvatar, TrustBadges } from '@/components/profile-interactive';
 import { FollowModal } from '@/components/profile/follow-modal';
 import { ReviewModal } from '@/components/profile/review-modal';
 import { EditProfileDialog } from '@/components/profile/edit-profile-dialog';
+import { getStorageUrl } from '@/utils/supabase/url-helper';
+import { Button } from '@/components/ui/button';
 
 export default async function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
     const { username } = await params;
@@ -31,7 +33,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
     let itemsQuery = supabase
         .from('items')
         .select('*')
-        .eq('seller_id', profile.id)
+        .eq('owner_id', profile.id) // Corrected from seller_id
         .order('created_at', { ascending: false });
 
     // Ziyaretçi ise sadece active olanları görsün. Sahibi ise her şeyi (filtre yok).
@@ -39,7 +41,18 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
         itemsQuery = itemsQuery.eq('status', 'active');
     }
 
-    const { data: items } = await itemsQuery;
+    const { data: rawItems } = await itemsQuery;
+
+    // Transform items for images
+    const items = rawItems?.map(item => ({
+        ...item,
+        image_urls: item.image_urls?.map((url: string) => getStorageUrl(url)) || []
+    }));
+
+    // Check if current user is admin
+    const { data: currentUserProfile } = currentUserId ? await supabase.from('profiles').select('role').eq('id', currentUserId).single() : { data: null };
+    const isAdmin = currentUserProfile?.role === 'admin' || user?.email === 'dev.burakbsl@gmail.com';
+
 
     // 4. DİĞER VERİLER
     const [followersRes, followingRes, reviewsRes, isFollowingRes] = await Promise.all([
@@ -95,7 +108,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
                                     </div>
                                 ) : (
                                     <div className="space-y-2">
-                                        {user?.email === 'dev.burakbsl@gmail.com' && (
+                                        {isAdmin && (
                                             <Link href="/admin" className="flex items-center justify-center gap-2 w-full bg-gray-900 text-white py-2 rounded-lg text-sm font-medium"><ShieldCheck className="w-4 h-4" /> Admin Paneli</Link>
                                         )}
                                         <EditProfileDialog profile={profile} />

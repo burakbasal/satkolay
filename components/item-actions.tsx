@@ -18,6 +18,11 @@ export function ItemActions({ itemId, sellerId, userId, price }: { itemId: strin
         setLoading(true);
 
         try {
+            if (!sellerId) {
+                toast.error("Satıcı bilgisi bulunamadı.");
+                return;
+            }
+
             // 1. Bu ürün için zaten bir konuşma var mı?
             const { data: existingConv } = await supabase
                 .from('conversations')
@@ -35,7 +40,7 @@ export function ItemActions({ itemId, sellerId, userId, price }: { itemId: strin
                     .insert({
                         user1_id: userId,
                         user2_id: sellerId,
-                        item_id: itemId // ARTIK ÜRÜNÜ DE KAYDEDİYORUZ
+                        item_id: itemId
                     })
                     .select()
                     .single();
@@ -89,13 +94,14 @@ export function ItemActions({ itemId, sellerId, userId, price }: { itemId: strin
         <div className="grid gap-3">
             <Button
                 onClick={() => handleAction('chat')}
-                disabled={loading}
+                disabled={loading || !sellerId}
                 className="w-full bg-[#001e93] hover:bg-[#e63548] text-white font-bold h-12 text-lg"
             >
                 {loading ? <Loader2 className="animate-spin" /> : <><MessageCircle className="mr-2 w-5 h-5" /> Sohbet</>}
             </Button>
             <Button
                 onClick={() => handleAction('offer')}
+                disabled={loading || !sellerId}
                 variant="outline"
                 className="w-full border-[#001e93] text-[#001e93] hover:bg-red-50 font-bold h-12 text-lg"
             >

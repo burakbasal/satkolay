@@ -28,6 +28,51 @@ export async function middleware(request: NextRequest) {
     const protectedPaths = ['/admin', '/profile', '/sell', '/messages', '/favorites'];
     const authPaths = ['/auth'];
 
+    // 4. MAINTENANCE MODE CHECK (CRITICAL SECURITY)
+    try {
+        const { data: settings } = await supabase
+            .from('platform_settings')
+            .select('is_maintenance_mode')
+            .eq('id', 1)
+            .single();
+
+        if (settings?.is_maintenance_mode) {
+            // Exceptions: 
+            // 1. Admin/Login paths
+            // 2. Static assets (handled by config matcher mostly, but double check)
+            // 3. The maintenance page itself (prevent loop)
+            const isAllowedPath =
+                path.startsWith('/admin') ||
+                path.startsWith('/login') ||
+                path.startsWith('/auth') ||
+                path === '/maintenance';
+
+            // Check if user is admin (Strict Check)
+            let isAdmin = false;
+            if (user) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', user.id)
+                    .single();
+                isAdmin = profile?.role === 'admin' || profile?.role === 'moderator';
+            }
+
+            // Redirect logic
+            if (!isAllowedPath && !isAdmin) {
+                // If not on maintenance page, send them there
+                if (path !== '/maintenance') {
+                    return NextResponse.redirect(new URL('/maintenance', request.url));
+                }
+            }
+        }
+    } catch (e) {
+        // Fail open or closed? Fail open (allow access) on db error to prevent lockouts during outages? 
+        // Or fail closed. Let's stick to fail open for now to avoid breaking the site if settings table is missing.
+        console.error("Middleware Settings Check Error:", e);
+    }
+
+
     const isProtected = protectedPaths.some((p) => path.startsWith(p));
     const isAuthPage = authPaths.some((p) => path.startsWith(p));
 

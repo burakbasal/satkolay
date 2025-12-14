@@ -25,6 +25,7 @@ type Profile = {
     bio: string | null;
     phone: string | null;
     admin_notes: string | null;
+    is_maintenance_mode: boolean;
     created_at: string;
     updated_at: string;
 };
@@ -53,24 +54,15 @@ type Message = {
     created_at: string;
 };
 
+import { getStorageUrl } from '@/utils/supabase/url-helper';
+
+// ... imports remain the same
+
 export default function UserSicilPage() {
     const params = useParams();
     const id = params?.id as string;
     const supabase = createClient();
     const router = useRouter();
-
-    // --- HELPER: ROBUST URL BUILDER ---
-    const resolveImageUrl = (path: string | null) => {
-        if (!path) return null;
-        if (path.startsWith('http')) return path;
-
-        // Construct the full URL manually. 
-        // ASSUMING BUCKET IS NAMED 'items'. 
-        const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const cleanPath = path.replace(/^\/+/, '');
-
-        return `${baseUrl}/storage/v1/object/public/items/${cleanPath}`;
-    };
 
     // --- STATES ---
     const [loading, setLoading] = useState(true);
@@ -115,9 +107,9 @@ export default function UserSicilPage() {
             // C. Logs
             const pLogs = supabase.from('activity_logs').select('*').eq('user_id', id).order('created_at', { ascending: false }).limit(100);
 
-            // D. Messages (Raw Fetch - No Joins for stability)
+            // D. Messages (God Mode)
             const pMessages = supabase
-                .from('messages')
+                .from('direct_messages')
                 .select('*')
                 .or(`sender_id.eq.${id},receiver_id.eq.${id}`)
                 .order('created_at', { ascending: true });
@@ -468,6 +460,31 @@ export default function UserSicilPage() {
                                             <Mail size={12} className="inline mr-1" /> Gönder
                                         </button>
                                     </div>
+
+                                    <div className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800">
+                                        <div>
+                                            <p className="text-slate-200 font-bold text-sm">Bakım Modu</p>
+                                            <p className="text-slate-500 text-xs">Kullanıcıyı bakım moduna alır.</p>
+                                        </div>
+                                        <button
+                                            onClick={async () => {
+                                                if (!profile) return;
+                                                const newState = !profile.is_maintenance_mode;
+                                                const { error } = await supabase.from('profiles').update({ is_maintenance_mode: newState }).eq('id', id);
+                                                if (error) toast.error('İşlem başarısız');
+                                                else {
+                                                    setProfile({ ...profile, is_maintenance_mode: newState });
+                                                    toast.success(newState ? 'Bakım modu açıldı' : 'Bakım modu kapatıldı');
+                                                }
+                                            }}
+                                            className={`w-32 py-1.5 rounded text-xs font-bold uppercase transition ${profile.is_maintenance_mode
+                                                ? 'bg-orange-600 text-white hover:bg-orange-700'
+                                                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                                                }`}
+                                        >
+                                            {profile.is_maintenance_mode ? 'Kapat' : 'Aç'}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -517,7 +534,7 @@ export default function UserSicilPage() {
                                         <div className="aspect-square relative bg-slate-900">
                                             {item.image_url ? (
                                                 <Image
-                                                    src={resolveImageUrl(item.image_url) || '/placeholder.png'}
+                                                    src={getStorageUrl(item.image_url) || '/placeholder.png'}
                                                     alt={item.title}
                                                     fill
                                                     className="object-cover opacity-80 group-hover:opacity-100 transition"

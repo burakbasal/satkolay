@@ -124,7 +124,8 @@ export default function UserSicilPage() {
 
             // Handle Items (Wrapper returns data directly)
             if (resItems.status === 'fulfilled') {
-                setItems(resItems.value);
+                const itemsData = resItems.value.data || [];
+                setItems(itemsData as Item[]);
             }
 
             // Handle Logs (Supabase returns { data, error })

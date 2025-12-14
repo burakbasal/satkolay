@@ -70,14 +70,17 @@ export default async function ItemPage(props: { params: Params }) {
     // --- GÜVENLİK DUVARI (YENİ) ---
     const { data: viewerProfile } = await supabase.from('profiles').select('role').eq('id', user?.id).single();
 
-    // DB Migration Compat: Check owner_id, seller_id, or user_id
-    const ownerId = item.owner_id || item.seller_id || item.user_id;
+    // STRICT SCHEMA: Use owner_id
+    const ownerId = item.owner_id; // items table now strictly has owner_id
     const isOwner = user?.id === ownerId;
     const isAdmin = ['admin', 'owner', 'staff'].includes(viewerProfile?.role);
 
     // Eğer ilan yayında değilse VE giren kişi sahibi/admin değilse -> 404
-    if (item.status !== 'active' && !isOwner && !isAdmin) {
-        notFound();
+    if (item.status !== 'active' && ((!isOwner && !isAdmin) || !ownerId)) {
+        // If ownerId is missing entirely, it's a data corruption, but treating as 404/maintenance depends on policy.
+        // For now, allow admin to see it even if ownerId is broken? 
+        // If ownerId is null, isOwner is false.
+        if (!isAdmin) notFound();
     }
 
     // --- HATA YOKSA SAYFAYI GÖSTER ---

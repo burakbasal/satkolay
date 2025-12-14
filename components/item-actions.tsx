@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Edit, Trash2, Loader2, Tag } from 'lucide-react';
 import { toast } from 'sonner';
 
-export function ItemActions({ itemId, sellerId, userId, price }: { itemId: string, sellerId: string, userId: string | null, price: number }) {
+export function ItemActions({ itemId, ownerId, userId, price }: { itemId: string, ownerId: string, userId: string | null, price: number }) {
     const router = useRouter();
     const supabase = createClient();
     const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export function ItemActions({ itemId, sellerId, userId, price }: { itemId: strin
         setLoading(true);
 
         try {
-            if (!sellerId) {
+            if (!ownerId) {
                 toast.error("Satıcı bilgisi bulunamadı.");
                 return;
             }
@@ -28,7 +28,7 @@ export function ItemActions({ itemId, sellerId, userId, price }: { itemId: strin
                 .from('conversations')
                 .select('id')
                 .eq('item_id', itemId)
-                .or(`and(user1_id.eq.${userId},user2_id.eq.${sellerId}),and(user1_id.eq.${sellerId},user2_id.eq.${userId})`)
+                .or(`and(user1_id.eq.${userId},user2_id.eq.${ownerId}),and(user1_id.eq.${ownerId},user2_id.eq.${userId})`)
                 .single();
 
             let conversationId = existingConv?.id;
@@ -39,7 +39,7 @@ export function ItemActions({ itemId, sellerId, userId, price }: { itemId: strin
                     .from('conversations')
                     .insert({
                         user1_id: userId,
-                        user2_id: sellerId,
+                        user2_id: ownerId,
                         item_id: itemId
                     })
                     .select()
@@ -76,7 +76,7 @@ export function ItemActions({ itemId, sellerId, userId, price }: { itemId: strin
     };
 
     // İlan Sahibi
-    if (userId === sellerId) {
+    if (userId === ownerId) {
         return (
             <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" onClick={() => router.push(`/edit/${itemId}`)} className="w-full border-gray-300">
@@ -94,14 +94,14 @@ export function ItemActions({ itemId, sellerId, userId, price }: { itemId: strin
         <div className="grid gap-3">
             <Button
                 onClick={() => handleAction('chat')}
-                disabled={loading || !sellerId}
+                disabled={loading || !ownerId}
                 className="w-full bg-[#001e93] hover:bg-[#e63548] text-white font-bold h-12 text-lg"
             >
                 {loading ? <Loader2 className="animate-spin" /> : <><MessageCircle className="mr-2 w-5 h-5" /> Sohbet</>}
             </Button>
             <Button
                 onClick={() => handleAction('offer')}
-                disabled={loading || !sellerId}
+                disabled={loading || !ownerId}
                 variant="outline"
                 className="w-full border-[#001e93] text-[#001e93] hover:bg-red-50 font-bold h-12 text-lg"
             >

@@ -92,22 +92,13 @@ export default function UserSicilPage() {
             // A. Profile
             const pProfile = supabase.from('profiles').select('*').eq('id', id).single();
 
-            // B. Items (Resilient Wrapper: Try owner_id, fallback to user_id)
-            const fetchItems = async () => {
-                const { data, error } = await supabase.from('items').select('*').eq('owner_id', id).order('created_at', { ascending: false });
-                if (!error && data) return data;
-
-                console.warn('Items fetch with owner_id failed, trying user_id...');
-                const { data: d2, error: e2 } = await supabase.from('items').select('*').eq('user_id', id).order('created_at', { ascending: false });
-                if (!e2 && d2) return d2;
-
-                return []; // Fail safe: return empty array
-            };
+            // B. Items (STRICT SCHEMA: owner_id)
+            const pItems = supabase.from('items').select('*').eq('owner_id', id).order('created_at', { ascending: false });
 
             // C. Logs
             const pLogs = supabase.from('activity_logs').select('*').eq('user_id', id).order('created_at', { ascending: false }).limit(100);
 
-            // D. Messages (God Mode)
+            // D. Messages (Fetch from active 'direct_messages' table as per chat system)
             const pMessages = supabase
                 .from('direct_messages')
                 .select('*')
@@ -532,16 +523,13 @@ export default function UserSicilPage() {
                                 ) : items.map(item => (
                                     <div key={item.id} className="bg-slate-950 border border-slate-800 rounded-lg overflow-hidden group">
                                         <div className="aspect-square relative bg-slate-900">
-                                            {item.image_url ? (
+                                            {item.image_urls && item.image_urls.length > 0 ? (
                                                 <Image
-                                                    src={getStorageUrl(item.image_url) || '/placeholder.png'}
+                                                    src={getStorageUrl(item.image_urls[0])}
                                                     alt={item.title}
                                                     fill
                                                     className="object-cover opacity-80 group-hover:opacity-100 transition"
-                                                    onError={(e) => {
-                                                        e.currentTarget.srcset = '';
-                                                        e.currentTarget.src = 'https://placehold.co/400x400/1e293b/475569?text=Resim+Yok';
-                                                    }}
+                                                    sizes="48px"
                                                 />
                                             ) : (
                                                 <div className="flex items-center justify-center h-full text-slate-700"><Archive size={24} /></div>

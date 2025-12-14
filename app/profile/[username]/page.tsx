@@ -33,7 +33,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
     let itemsQuery = supabase
         .from('items')
         .select('*')
-        .eq('owner_id', profile.id) // Corrected from seller_id
+        .eq('owner_id', profile.id)
         .order('created_at', { ascending: false });
 
     // Ziyaretçi ise sadece active olanları görsün. Sahibi ise her şeyi (filtre yok).

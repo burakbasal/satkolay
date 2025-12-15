@@ -52,14 +52,16 @@ export function Footer() {
                         </ul>
                     </div>
 
-                    {/* Sütun 3: Alışveriş & Satış */}
+                    {/* Sütun 3: Alışveriş & Satış & Kategoriler */}
                     <div className="flex flex-col space-y-4">
-                        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Rehber</h4>
-                        <ul className="space-y-3 text-sm text-gray-600">
-                            <li><Link href="/rehber/nasil-satilir" className="hover:text-[#001e93] transition-colors">Nasıl Satılır?</Link></li>
-                            <li><Link href="/rehber/nasil-alinir" className="hover:text-[#001e93] transition-colors">Nasıl Alınır?</Link></li>
-                            <li><Link href="/rehber/guvenlik" className="hover:text-[#001e93] transition-colors">Güvenli Alışveriş</Link></li>
-                            <li><Link href="/rehber/ipuclari" className="hover:text-[#001e93] transition-colors">Satış İpuçları</Link></li>
+                        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Kategoriler</h4>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                            <li><Link href="/category/beyaz-esya" className="hover:text-[#001e93] transition-colors">Beyaz Eşya</Link></li>
+                            <li><Link href="/category/anne-bebek" className="hover:text-[#001e93] transition-colors">Anne & Bebek</Link></li>
+                            <li><Link href="/category/spor-outdoor" className="hover:text-[#001e93] transition-colors">Spor & Outdoor</Link></li>
+                            <li><Link href="/category/motosiklet" className="hover:text-[#001e93] transition-colors">Motosiklet</Link></li>
+                            <li><Link href="/category/bilgisayar" className="hover:text-[#001e93] transition-colors">Bilgisayar</Link></li>
+                            <li><Link href="/category/evcil-hayvan" className="hover:text-[#001e93] transition-colors">Evcil Hayvanlar</Link></li>
                         </ul>
                     </div>
 

@@ -10,6 +10,14 @@ const CATEGORY_MAP: Record<string, string> = {
     'elektronik': 'Elektronik',
     'ev-yasam': 'Ev & Yaşam',
     'giyim': 'Giyim',
+    'motosiklet': 'Motosiklet',
+    'bilgisayar': 'Bilgisayar',
+    'beyaz-esya': 'Beyaz Eşya',
+    'anne-bebek': 'Anne & Bebek',
+    'spor-outdoor': 'Spor & Outdoor',
+    'kitap-muzik': 'Kitap, Müzik & Hobi',
+    'evcil-hayvan': 'Evcil Hayvanlar',
+    'kozmetik': 'Kişisel Bakım & Kozmetik',
     'diger': 'Diğer'
 };
 

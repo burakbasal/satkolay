@@ -15,7 +15,13 @@ const VIP_CATEGORY_MAP: Record<string, string> = {
     'Diğer': 'diger',
     'Motosiklet': 'motosiklet',
     'Bilgisayar': 'bilgisayar',
-    'Emlak': 'emlak'
+    'Emlak': 'emlak',
+    'Beyaz Eşya': 'beyaz-esya',
+    'Anne & Bebek': 'anne-bebek',
+    'Spor & Outdoor': 'spor-outdoor',
+    'Kitap, Müzik & Hobi': 'kitap-muzik',
+    'Evcil Hayvanlar': 'evcil-hayvan',
+    'Kişisel Bakım & Kozmetik': 'kozmetik'
 };
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
@@ -69,8 +75,10 @@ export async function generateMetadata(props: {
 
     // 3. Robots Logic (Smart Indexing)
     // Don't index complex filter combinations to preserve crawl budget
+    // CRITICAL: If canonical points elsewhere (e.g. to /category/...), NOINDEX this search page.
+    const isCanonicalSelf = canonicalUrl.includes('/search');
     const isComplexFilter = (min_price || max_price || sort);
-    const shouldIndex = !isComplexFilter;
+    const shouldIndex = isCanonicalSelf && !isComplexFilter;
 
     return {
         title,

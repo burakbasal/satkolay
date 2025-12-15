@@ -3,6 +3,7 @@ import { createClient } from '@/utils/supabase/server';
 import { ListingCard } from '@/components/listing-card';
 import { normalizeCityInput } from '@/lib/normalization';
 import { cookies } from 'next/headers';
+import Link from 'next/link';
 import { HeroSlider } from '@/components/home/hero-slider';
 import { TrendCategories } from '@/components/home/trend-categories';
 import Script from 'next/script';
@@ -98,7 +99,7 @@ export default async function Home() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-white">
       {/* SCHEMA INJECTION */}
       <script
         type="application/ld+json"
@@ -109,55 +110,75 @@ export default async function Home() {
       <HeroSlider />
 
       {/* 2. TREND KATEGORİLER */}
-      <TrendCategories />
-
-      {/* 3. VİTRİN HEADER (Semantic H1 + Dynamic H2 + SEO Text) */}
-      <div className="mb-6 px-4 md:px-0">
-        {/* Static H1 for Authority */}
-        <h1 className="text-xl font-bold text-gray-800">
-          Türkiye'nin Güvenli İkinci El Pazar Yeri
-        </h1>
-
-        {/* Dynamic H2 for Context/Filtering */}
-        <h2 className="text-sm text-gray-600 mt-1 flex items-center gap-2">
-          {dbCity ? (
-            <>
-              <span>{dbCity} İkinci El İlanları</span>
-              <span className="bg-gray-100 px-2 py-0.5 rounded-full text-xs font-medium">
-                {items?.length || 0}
-              </span>
-            </>
-          ) : (
-            <>
-              <span>Vitrin</span>
-              <span className="bg-gray-100 px-2 py-0.5 rounded-full text-xs font-medium">
-                {items?.length || 0} ilan
-              </span>
-            </>
-          )}
-        </h2>
-
-        {/* Visible SEO Text */}
-        <p className="text-xs text-gray-400 mt-2 max-w-2xl hidden md:block">
-          SatKolay; telefon, elektronik, ev eşyası ve araba aksesuarları kategorilerinde güvenli ödeme ile ikinci el alışveriş imkanı sunar.
-        </p>
+      <div className="container mx-auto px-4 mt-6">
+        <TrendCategories />
       </div>
 
-      {/* İLANLAR */}
-      {items && items.length > 0 ? (
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-4 grid-flow-dense">
-          {items.map((item) => (
-            <ListingCard key={item.id} item={item} />
-          ))}
+      <div className="container mx-auto px-4 py-8">
+        {/* 3. VİTRİN HEADER (User Friendly) */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 flex items-baseline gap-2">
+            {dbCity ? (
+              <span>{dbCity} Vitrini</span>
+            ) : (
+              <span>Günün Fırsatları</span>
+            )}
+            <span className="text-sm font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+              {items?.length || 0}
+            </span>
+          </h2>
+          <Link href="/search" className="text-blue-600 text-sm font-medium hover:underline flex items-center">
+            Tümünü Gör →
+          </Link>
         </div>
-      ) : (
-        <div className="text-center py-20 bg-white rounded-xl border border-dashed">
-          <h3 className="text-lg font-bold text-gray-900">Henüz İlan Yok</h3>
-          <p className="text-gray-500 mt-2">
-            Bu kriterlerde ilan bulunamadı.
-          </p>
+
+        {/* İLANLAR */}
+        {items && items.length > 0 ? (
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-4 grid-flow-dense">
+            {items.map((item) => (
+              <ListingCard key={item.id} item={item} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 bg-gray-50 rounded-xl border border-dashed">
+            <h3 className="text-lg font-bold text-gray-900">Henüz İlan Yok</h3>
+            <p className="text-gray-500 mt-2">
+              Bu kriterlerde ilan bulunamadı.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* SEO FOOTER BLOCK (Google Friendly & Visual Hierarchy Solved) */}
+      <section className="bg-gray-50 border-t border-gray-200 mt-16 py-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl">
+            {/* THE SEO H1 MOVED HERE */}
+            <h1 className="text-xl font-bold text-gray-900 mb-3">
+              Türkiye'nin Güvenli İkinci El Pazar Yeri
+            </h1>
+            <p className="text-sm text-gray-500 leading-relaxed mb-6">
+              SatKolay; telefon, elektronik, ev eşyası ve araba aksesuarları kategorilerinde
+              güvenli ödeme ile ikinci el alışveriş imkanı sunar. İster {dbCity || 'İstanbul'},
+              ister Ankara, İzmir olsun, tüm Türkiye'de güvenli alışverişin adresidir.
+            </p>
+
+            {/* INTERNAL LINK GRAPH (Categories) */}
+            <div className="flex flex-wrap gap-4 text-xs md:text-sm text-gray-600 font-medium">
+              <Link href="/category/telefon" className="hover:text-blue-600 transition-colors">İkinci El Telefon</Link>
+              <span className="text-gray-300">|</span>
+              <Link href="/category/araba" className="hover:text-blue-600 transition-colors">Sahibinden Araba</Link>
+              <span className="text-gray-300">|</span>
+              <Link href="/category/elektronik" className="hover:text-blue-600 transition-colors">Elektronik Eşya</Link>
+              <span className="text-gray-300">|</span>
+              <Link href="/category/ev-yasam" className="hover:text-blue-600 transition-colors">Ev & Mobilya</Link>
+              <span className="text-gray-300">|</span>
+              <Link href="/category/giyim" className="hover:text-blue-600 transition-colors">Giyim</Link>
+            </div>
+          </div>
         </div>
-      )}
+      </section>
+
     </div>
   );
 }

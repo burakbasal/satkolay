@@ -16,6 +16,7 @@ export function ShareButton({ title }: { title: string }) {
                     alert('Link kopyalandı!');
                 }
             }}
+            aria-label="İlanı Paylaş"
             className="bg-white/90 p-2 rounded-full hover:bg-white transition text-gray-700 shadow-sm border border-gray-100"
         >
             <Share2 className="w-5 h-5" />

@@ -71,7 +71,7 @@ export function HeroSlider() {
     return (
         <div className="w-full max-w-[1280px] mx-auto px-4 mb-4 mt-2">
             {/* CLS FIX: Fixed Height Container with relative positioning */}
-            <div className="rounded-xl overflow-hidden shadow-sm relative group bg-gray-100 min-h-[160px] md:min-h-[300px]" role="region" aria-label="Kampanya Slider">
+            <div className="w-full relative min-h-[250px] sm:min-h-[350px] md:min-h-[450px] bg-gray-100 rounded-xl overflow-hidden shadow-sm group" role="region" aria-label="Kampanya Slider">
 
                 {/* KAR EFEKTİ (CSS Animation) */}
                 <div className="absolute inset-0 pointer-events-none z-20 opacity-80" aria-hidden="true">

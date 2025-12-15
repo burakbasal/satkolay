@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { createClient } from '@/utils/supabase/server';
 import { ListingCard } from '@/components/listing-card';
 import { SearchFilters } from '@/components/search-filters';
@@ -5,20 +6,79 @@ import { normalizeCityInput } from '@/lib/normalization';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default async function SearchPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }) {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export async function generateMetadata(props: {
+    searchParams: SearchParams;
+}): Promise<Metadata> {
+    const searchParams = await props.searchParams;
+    const { category, q, query, city, min_price, max_price, sort } = searchParams;
+    const queryText = (q || query) as string | undefined;
+
+    // 1. Build Title
+    let title = 'İkinci El İlanlar ve Fiyatlar | SatKolay';
+    let description = 'Aradığınız tüm ikinci el ürünler, güvenli ödeme ve taksit seçenekleriyle SatKolay\'da.';
+
+    const categoryStr = typeof category === 'string' ? category : '';
+    const cityStr = typeof city === 'string' ? city : '';
+
+    if (categoryStr && queryText) {
+        title = `${queryText} ${categoryStr} İlanları | SatKolay`;
+        description = `${categoryStr} kategorisinde ${queryText} araması için en uygun fiyatlı ilanlar.`;
+    } else if (categoryStr) {
+        title = `${categoryStr} İlanları ve Fiyatları | SatKolay`;
+        description = `En temiz ikinci el ${categoryStr} modelleri ve fiyatları SatKolay'da.`;
+    } else if (queryText) {
+        title = `"${queryText}" Arama Sonuçları | SatKolay`;
+    }
+
+    // 2. Build Canonical (Clean URL)
+    // Only keep 'category' and 'query' for the master version of the page
+    const canonicalParams = new URLSearchParams();
+    if (categoryStr) canonicalParams.set('category', categoryStr);
+    if (queryText) canonicalParams.set('query', queryText);
+    if (cityStr) canonicalParams.set('city', cityStr);
+
+    const canonicalString = canonicalParams.toString();
+    const canonicalUrl = `https://www.satkolay.com/search${canonicalString ? `?${canonicalString}` : ''}`;
+
+    // 3. Robots Logic (Smart Indexing)
+    // Don't index complex filter combinations to preserve crawl budget
+    const isComplexFilter = (min_price || max_price || sort);
+    const shouldIndex = !isComplexFilter;
+
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: canonicalUrl,
+        },
+        robots: {
+            index: shouldIndex,
+            follow: true,
+        },
+        openGraph: {
+            title,
+            description,
+            url: canonicalUrl,
+        }
+    };
+}
+
+export default async function SearchPage({ searchParams }: { searchParams: SearchParams }) {
     const params = await searchParams;
     const supabase = await createClient();
 
-    const queryText = params.q || params.query; // q veya query
+    const queryText = (params.q || params.query) as string | undefined; // q veya query
 
     // Parametreleri al
-    const category = params.category;
+    const category = params.category as string | undefined;
     const minPrice = params.min_price;
     const maxPrice = params.max_price;
     const sort = params.sort;
-    const rawCity = params.city;
+    const rawCity = params.city as string | undefined;
     const dbCity = normalizeCityInput(rawCity);
-    const rawDistrict = params.district;
+    const rawDistrict = params.district as string | undefined;
     const dbDistrict = rawDistrict ? decodeURIComponent(rawDistrict) : undefined;
 
     // --- 1. İLAN SORGUSU ---

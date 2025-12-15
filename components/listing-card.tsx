@@ -91,7 +91,7 @@ export function ListingCard({ item, priority = false }: ListingCardProps) {
                         <MapPin className="w-3 h-3" />
                         <span className="truncate max-w-[120px]">{item.city} {item.district ? `/ ${item.district}` : ''}</span>
                     </div>
-                    <span>{item.created_at ? new Date(item.created_at).toLocaleDateString('tr-TR') : ''}</span>
+                    <span suppressHydrationWarning>{item.created_at ? new Date(item.created_at).toLocaleDateString('tr-TR') : ''}</span>
                 </div>
             </Link>
         </div>

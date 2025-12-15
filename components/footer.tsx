@@ -97,7 +97,7 @@ export function Footer() {
                         <span className="block text-sm font-bold text-[#001e93]">SatKolay</span>
                         <span className="text-xs text-gray-500">İkinci Elin Yeni Adresi.</span>
                     </div>
-                    <div className="text-xs text-gray-500 font-medium">
+                    <div className="text-xs text-gray-500 font-medium" suppressHydrationWarning>
                         © 2025 SatKolay. Tüm hakları saklıdır.
                     </div>
                 </div>

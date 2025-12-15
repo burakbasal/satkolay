@@ -10,6 +10,15 @@ import { FavoriteButton } from '@/components/favorite-button';
 import { ShareButton } from '@/components/share-button';
 import { ListingCard } from '@/components/listing-card';
 
+const CATEGORY_SLUG_MAP: Record<string, string> = {
+    'Araba': 'araba',
+    'Telefon': 'telefon',
+    'Elektronik': 'elektronik',
+    'Ev & Yaşam': 'ev-yasam',
+    'Giyim': 'giyim',
+    'Diğer': 'diger'
+};
+
 type Params = Promise<{ id: string }>;
 
 /* =========================
@@ -108,6 +117,15 @@ export default async function ItemPage(props: { params: Params }) {
     const productUrl = `https://www.satkolay.com/product/${item.id}`;
     const brandName = item.attributes?.brand || 'SatKolay';
 
+    // Determine Category URL for Schema
+    let categoryUrl = 'https://www.satkolay.com/search';
+    if (item.category && CATEGORY_SLUG_MAP[item.category]) {
+        categoryUrl = `https://www.satkolay.com/category/${CATEGORY_SLUG_MAP[item.category]}`;
+    } else if (item.category) {
+        // Fallback to search if not in map but category exists
+        categoryUrl = `https://www.satkolay.com/search?category=${item.category}`;
+    }
+
     const jsonLd = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -148,9 +166,7 @@ export default async function ItemPage(props: { params: Params }) {
                         '@type': 'ListItem',
                         position: 2,
                         name: item.category || 'Vitrin',
-                        item: item.category
-                            ? `https://www.satkolay.com/search?category=${item.category}`
-                            : 'https://www.satkolay.com/search',
+                        item: categoryUrl,
                     },
                     {
                         '@type': 'ListItem',
@@ -194,11 +210,28 @@ export default async function ItemPage(props: { params: Params }) {
             />
 
             {/* Breadcrumb UI */}
-            <div className="text-sm text-gray-500 mb-4">
-                <Link href="/" className="hover:underline">
-                    Anasayfa
-                </Link>{' '}
-                › <span className="text-gray-900">{item.title}</span>
+            <div className="text-sm text-gray-500 mb-4 flex items-center gap-1">
+                <Link href="/" className="hover:underline">Anasayfa</Link>
+                <span>›</span>
+                {item.category ? (
+                    CATEGORY_SLUG_MAP[item.category] ? (
+                        <>
+                            <Link
+                                href={`/category/${CATEGORY_SLUG_MAP[item.category]}`}
+                                className="hover:underline hover:text-blue-600 transition-colors"
+                            >
+                                {item.category}
+                            </Link>
+                            <span>›</span>
+                        </>
+                    ) : (
+                        <>
+                            <span>{item.category}</span>
+                            <span>›</span>
+                        </>
+                    )
+                ) : null}
+                <span className="text-gray-900 truncate max-w-[200px] md:max-w-md">{item.title}</span>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8">

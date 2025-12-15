@@ -6,6 +6,18 @@ import { normalizeCityInput } from '@/lib/normalization';
 import Link from 'next/link';
 import Image from 'next/image';
 
+const VIP_CATEGORY_MAP: Record<string, string> = {
+    'Araba': 'araba',
+    'Telefon': 'telefon',
+    'Elektronik': 'elektronik',
+    'Ev & Yaşam': 'ev-yasam',
+    'Giyim': 'giyim',
+    'Diğer': 'diger',
+    'Motosiklet': 'motosiklet',
+    'Bilgisayar': 'bilgisayar',
+    'Emlak': 'emlak'
+};
+
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 export async function generateMetadata(props: {
@@ -32,15 +44,28 @@ export async function generateMetadata(props: {
         title = `"${queryText}" Arama Sonuçları | SatKolay`;
     }
 
-    // 2. Build Canonical (Clean URL)
-    // Only keep 'category' and 'query' for the master version of the page
-    const canonicalParams = new URLSearchParams();
-    if (categoryStr) canonicalParams.set('category', categoryStr);
-    if (queryText) canonicalParams.set('query', queryText);
-    if (cityStr) canonicalParams.set('city', cityStr);
+    // 2. Build Canonical (Clean URL) & SMART BRIDGE LOGIC
+    let canonicalUrl = 'https://www.satkolay.com/search';
 
-    const canonicalString = canonicalParams.toString();
-    const canonicalUrl = `https://www.satkolay.com/search${canonicalString ? `?${canonicalString}` : ''}`;
+    // Check if this is a "Main Category" view that should point to the Landing Page
+    const vipSlug = VIP_CATEGORY_MAP[categoryStr];
+
+    // Ensure no complex filters are present for the redirect condition
+    const hasFilters = queryText || min_price || max_price || (sort && sort !== 'newest') || cityStr;
+
+    if (vipSlug && !hasFilters) {
+        // Scenario A: It's a pure main category view -> Point to Landing Page
+        canonicalUrl = `https://www.satkolay.com/category/${vipSlug}`;
+    } else {
+        // Scenario B: It's a specific search/filter -> Point to self (cleaned)
+        const canonicalParams = new URLSearchParams();
+        if (categoryStr) canonicalParams.set('category', categoryStr);
+        if (queryText) canonicalParams.set('query', queryText);
+        if (cityStr) canonicalParams.set('city', cityStr);
+
+        const canonicalString = canonicalParams.toString();
+        canonicalUrl = `https://www.satkolay.com/search${canonicalString ? `?${canonicalString}` : ''}`;
+    }
 
     // 3. Robots Logic (Smart Indexing)
     // Don't index complex filter combinations to preserve crawl budget

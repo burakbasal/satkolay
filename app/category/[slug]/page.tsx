@@ -21,6 +21,71 @@ const CATEGORY_MAP: Record<string, string> = {
     'diger': 'Diğer'
 };
 
+const RELATED_SEARCHES: Record<string, string[]> = {
+    // ARABA & VASITA
+    'araba': [
+        'Renault', 'Volkswagen', 'Fiat', 'Ford', 'Opel', 'Peugeot', 'Honda', 'Toyota', 'Hyundai', 'BMW', 'Mercedes'
+    ],
+    'motosiklet': [
+        'Honda', 'Yamaha', 'Kuba', 'RKS', 'Mondial', 'Arora', 'Kask', 'Motosiklet Montu', 'Eldiven'
+    ],
+
+    // TELEFON & İLETİŞİM
+    'telefon': [
+        'iPhone 15', 'iPhone 13', 'iPhone 11', 'iPhone 14 Pro Max', 'Samsung', 'Xiaomi', 'Huawei', 'Oppo', 'Redmi', 'Vivo', 'Şarj Cihazı', 'Bluetooth Kulaklık'
+    ],
+
+    // ELEKTRONİK & BİLGİSAYAR
+    'elektronik': [
+        'Televizyon', 'Fotoğraf Makinesi', 'Drone', 'PlayStation', 'Xbox', 'Akıllı Saat', 'Tablet', 'Projeksiyon', 'Ses Sistemi'
+    ],
+    'bilgisayar': [
+        'Dizüstü Bilgisayar', 'Masaüstü Bilgisayar', 'Oyuncu Bilgisayarı', 'Monitör', 'Yazıcı', 'Ekran Kartı', 'Modem', 'Tablet'
+    ],
+
+    // EV & YAŞAM & MOBİLYA
+    'ev-yasam': [
+        'Koltuk Takımı', 'Yemek Masası', 'Yatak Odası', 'Halı', 'Perde', 'Avize', 'Lambader', 'Tablo', 'Ayna', 'Bahçe Mobilyası'
+    ],
+    'beyaz-esya': [
+        'Buzdolabı', 'Çamaşır Makinesi', 'Bulaşık Makinesi', 'Fırın', 'Klima', 'Kombi', 'Süpürge', 'Ütü', 'Mikrodalga'
+    ],
+
+    // GİYİM & MODA
+    'giyim': [
+        'Kadın Giyim', 'Erkek Giyim', 'Ayakkabı', 'Mont', 'Çanta', 'Elbise', 'Tesettür Giyim', 'Spor Ayakkabı', 'Saat', 'Güneş Gözlüğü'
+    ],
+
+    // ANNE & BEBEK & OYUNCAK
+    'anne-bebek': [
+        'Bebek Arabası', 'Oto Koltuğu', 'Mama Sandalyesi', 'Park Yatak', 'Bebek Bezi', 'Oyuncak Araba', 'Akülü Araba', 'Lego', 'Eğitici Oyuncak'
+    ],
+
+    // SPOR & OUTDOOR
+    'spor-outdoor': [
+        'Bisiklet', 'Elektrikli Bisiklet', 'Koşu Bandı', 'Kamp Çadırı', 'Balıkçılık', 'Olta', 'Uyku Tulumu', 'Dambıl', 'Pilates'
+    ],
+
+    // KİTAP & MÜZİK & HOBİ
+    'kitap-muzik': [
+        'Roman', 'Ders Kitabı', 'Plak', 'Gitar', 'Bağlama', 'Piyano', 'Keman', 'Puzzle', 'Kutu Oyunları'
+    ],
+
+    // EVCİL HAYVAN
+    'evcil-hayvan': [
+        'Kedi Maması', 'Köpek Maması', 'Akvaryum', 'Kedi Kumu', 'Köpek Tasması', 'Kuş Kafesi'
+    ],
+
+    // KİŞİSEL BAKIM
+    'kozmetik': [
+        'Parfüm', 'Makyaj', 'Cilt Bakımı', 'Saç Kurutma Makinesi', 'Tıraş Makinesi', 'Epilasyon Aleti'
+    ],
+
+    'diger': [
+        'Ofis Mobilyaları', 'Kırtasiye', 'Yapı Market', 'Hırdavat', 'Jeneratör', 'Tarım Aletleri'
+    ]
+};
+
 type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata(props: { params: Params }): Promise<Metadata> {
@@ -60,9 +125,9 @@ export default async function CategoryPage(props: { params: Params }) {
         .limit(50);
 
     const safeItems = items || [];
+    const relatedTags = RELATED_SEARCHES[slug] || [];
 
     // STRICT JSON-LD: RAW STRINGS ONLY
-    // Fixed: Removed Markdown links from valid JSON-LD
     const jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
@@ -110,13 +175,28 @@ export default async function CategoryPage(props: { params: Params }) {
             </div>
 
             {/* Header */}
-            <div className="mb-8 bg-white p-6 rounded-xl border border-gray-200">
+            <div className="mb-4 bg-white p-6 rounded-xl border border-gray-200">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">İkinci El {categoryName}</h1>
                 <p className="text-gray-600 max-w-3xl">
                     Aradığınız <strong>{categoryName}</strong> modelleri uygun fiyatlarla burada.
                     SatKolay güvencesiyle, ister elden teslim ister kargo seçenekleriyle güvenle alışveriş yapabilirsiniz.
                 </p>
             </div>
+
+            {/* RELATED SEARCH PILLS (New Feature) */}
+            {relatedTags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-8">
+                    {relatedTags.map((tag) => (
+                        <Link
+                            key={tag}
+                            href={`/search?category=${encodeURIComponent(categoryName)}&query=${encodeURIComponent(tag)}`}
+                            className="px-4 py-1.5 bg-white border border-gray-200 rounded-full text-sm text-gray-600 hover:border-gray-900 hover:text-gray-900 transition-colors"
+                        >
+                            {tag}
+                        </Link>
+                    ))}
+                </div>
+            )}
 
             {/* Grid */}
             {safeItems.length > 0 ? (

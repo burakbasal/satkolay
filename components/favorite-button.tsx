@@ -57,6 +57,7 @@ export function FavoriteButton({ itemId, className, variant = 'icon' }: Favorite
         return (
             <button
                 onClick={toggleFav}
+                aria-label={isFav ? "Favorilerden Çıkar" : "Favoriye Ekle"}
                 className={cn("flex items-center gap-2 px-4 py-2 rounded-full border transition-all active:scale-95", isFav ? "bg-red-50 border-red-200 text-red-600" : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50", className)}
             >
                 <Heart className={cn("w-5 h-5 transition-transform duration-300", isFav && "fill-current", animate && "scale-125")} />
@@ -68,6 +69,7 @@ export function FavoriteButton({ itemId, className, variant = 'icon' }: Favorite
     return (
         <button
             onClick={toggleFav}
+            aria-label={isFav ? "Favorilerden Çıkar" : "Favoriye Ekle"}
             className={cn("p-2 rounded-full transition-all active:scale-75", isFav ? "bg-white text-red-500" : "bg-white/90 text-gray-500 hover:text-red-500", className)}
         >
             <Heart className={cn("w-5 h-5 transition-transform duration-300", isFav && "fill-current", animate && "scale-150")} />

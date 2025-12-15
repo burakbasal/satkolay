@@ -5,7 +5,12 @@ import Image from 'next/image';
 import { MapPin } from 'lucide-react';
 import { FavoriteButton } from './favorite-button';
 
-export function ListingCard({ item }: { item: any }) {
+interface ListingCardProps {
+    item: any;
+    priority?: boolean;
+}
+
+export function ListingCard({ item, priority = false }: ListingCardProps) {
     if (!item || !item.id) return null;
 
     const isLarge = item.is_large === true;
@@ -40,16 +45,16 @@ export function ListingCard({ item }: { item: any }) {
                 </div>
             )}
 
-            {/* RESİM ALANI */}
+            {/* RESİM ALANI - CLS & LCP OPTIMIZATION */}
             <div className={`relative bg-gray-100 overflow-hidden ${isLarge ? 'aspect-[2/1]' : 'aspect-[4/3]'}`}>
-                <Link href={`/item/${item.id}`} className="block w-full h-full">
+                <Link href={`/item/${item.id}`} className="block w-full h-full" aria-label={`${item.title} ilan detayına git`}>
                     <Image
                         src={item.image_urls?.[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500'}
                         alt={item.title || 'İlan'}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                         sizes={isLarge ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"}
-                        priority={isLarge}
+                        priority={priority}
                     />
                 </Link>
 
@@ -77,9 +82,11 @@ export function ListingCard({ item }: { item: any }) {
                     <h4 className="text-gray-900 font-medium text-[15px] line-clamp-1 mb-1 group-hover:text-[#001e93] transition-colors">
                         {item.title}
                     </h4>
-                    <p className="text-xs text-gray-500 truncate">{item.city || 'Konum Yok'}</p>
+                    {/* Contrast Fix: text-gray-600 */}
+                    <p className="text-xs text-gray-600 truncate">{item.city || 'Konum Yok'}</p>
                 </div>
-                <div className="flex items-center justify-between text-xs text-gray-400 mt-2 pt-2 border-t border-gray-50">
+                {/* Contrast Fix: text-gray-500 -> text-gray-600 */}
+                <div className="flex items-center justify-between text-xs text-gray-600 mt-2 pt-2 border-t border-gray-50">
                     <div className="flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
                         <span className="truncate max-w-[120px]">{item.city} {item.district ? `/ ${item.district}` : ''}</span>

@@ -1,13 +1,26 @@
 'use client';
 
-import React from "react";
+import React, { useEffect } from "react";
 import Slider from "react-slick";
 import { Button } from "@/components/ui/button";
 import { TreePine, Shirt, Laptop } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image"; // Image importu eklendi
+import Image from "next/image";
 
 export function HeroSlider() {
+    // A11y Hack: Remove focus from cloned slides to prevent Focus Trap
+    useEffect(() => {
+        const fixFocus = () => {
+            // Find all cloned slides
+            const clones = document.querySelectorAll('.slick-cloned a, .slick-cloned button');
+            // Remove them from tab order
+            clones.forEach(el => el.setAttribute('tabindex', '-1'));
+        };
+        // Run after mount and potentially after slide change if needed
+        const timer = setTimeout(fixFocus, 500);
+        return () => clearTimeout(timer);
+    }, []);
+
     const settings = {
         dots: true,
         infinite: true,
@@ -17,7 +30,7 @@ export function HeroSlider() {
         autoplay: true,
         autoplaySpeed: 4000,
         arrows: false,
-        accessibility: true, // A11y
+        accessibility: true,
         focusOnSelect: false,
         pauseOnFocus: true
     };
@@ -57,7 +70,7 @@ export function HeroSlider() {
 
     return (
         <div className="w-full max-w-[1280px] mx-auto px-4 mb-4 mt-2">
-            {/* CLS FIX: Fixed Height Container */}
+            {/* CLS FIX: Fixed Height Container with relative positioning */}
             <div className="rounded-xl overflow-hidden shadow-sm relative group bg-gray-100 min-h-[160px] md:min-h-[300px]" role="region" aria-label="Kampanya Slider">
 
                 {/* KAR EFEKTİ (CSS Animation) */}
@@ -70,13 +83,13 @@ export function HeroSlider() {
                 </div>
 
                 <Slider {...settings}>
-                    {slides.map((slide) => (
+                    {slides.map((slide, index) => (
                         <div key={slide.id} className="outline-none" tabIndex={-1}>
                             <div className={`${slide.bg} h-[160px] md:h-[300px] flex items-center relative overflow-hidden px-4 md:px-12`}>
 
                                 <div className="flex flex-row items-center justify-between w-full relative z-10 gap-4">
 
-                                    {/* Sol: Yazı Alanı */}
+                                    {/* Sol: Yazı Alanı - LCP Text Optimization is inherently fast with fonts */}
                                     <div className="flex-1 text-left text-white">
                                         <div className="inline-block px-1.5 py-0.5 bg-white/20 backdrop-blur-sm rounded text-[10px] font-bold mb-1 tracking-wider">
                                             {slide.badge}

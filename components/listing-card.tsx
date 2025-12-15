@@ -82,10 +82,10 @@ export function ListingCard({ item, priority = false }: ListingCardProps) {
                     <h4 className="text-gray-900 font-medium text-[15px] line-clamp-1 mb-1 group-hover:text-[#001e93] transition-colors">
                         {item.title}
                     </h4>
-                    {/* Contrast Fix: text-gray-600 */}
+                    {/* Contrast Fix: text-gray-600 (AAA) */}
                     <p className="text-xs text-gray-600 truncate">{item.city || 'Konum Yok'}</p>
                 </div>
-                {/* Contrast Fix: text-gray-500 -> text-gray-600 */}
+                {/* Contrast Fix: text-gray-600 (AAA) */}
                 <div className="flex items-center justify-between text-xs text-gray-600 mt-2 pt-2 border-t border-gray-50">
                     <div className="flex items-center gap-1">
                         <MapPin className="w-3 h-3" />

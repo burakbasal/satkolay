@@ -263,6 +263,21 @@ export default async function ItemPage(props: { params: Params }) {
                     <p className="text-gray-500 text-sm">Bu kategoride başka ilan bulunamadı.</p>
                 )}
             </div>
+
+            {/* --- VISIBLE FAQ SECTION (Mandatory for Schema Compliance) --- */}
+            <div className="mt-12 bg-white border border-gray-200 rounded-xl p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Sıkça Sorulan Sorular</h3>
+                <div className="space-y-4">
+                    <div>
+                        <h4 className="font-semibold text-gray-900 text-sm">Bu ürünü nasıl güvenle alabilirim?</h4>
+                        <p className="text-gray-600 text-sm mt-1">SatKolay "Güvenli Ödeme" sistemi ile paranız havuzda tutulur. Ürünü teslim alıp onaylayana kadar satıcıya aktarılmaz.</p>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold text-gray-900 text-sm">İade hakkım var mı?</h4>
+                        <p className="text-gray-600 text-sm mt-1">Eğer ürün anlatılandan farklıysa veya gönderilmezse, paranız %100 iade edilir.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

@@ -5,24 +5,33 @@ import { normalizeCityInput } from '@/lib/normalization';
 import { cookies } from 'next/headers';
 import { HeroSlider } from '@/components/home/hero-slider';
 import { TrendCategories } from '@/components/home/trend-categories';
+import Script from 'next/script';
 
 export const dynamic = 'force-dynamic';
 
-/* ✅ SEO METADATA — BURASI ÇOK ÖNEMLİ */
+/* ✅ SEO METADATA — AUTHORITY MODE */
 export const metadata: Metadata = {
-  title: 'İkinci Elin En Yeni Adresi – SatKolay',
+  title: "SatKolay | Türkiye'nin Güvenli İkinci El Pazar Yeri",
   description:
-    "SatKolay, ikinci el alışverişi hızlı, güvenli ve kolay hale getiren yeni nesil bir platformdur. Kullanmadığınız eşyaları kolayca satın, aradığınız ürünlere uygun fiyatlarla ulaşın.",
+    "SatKolay ile ikinci el alışveriş çok kolay. Güvenli ödeme sistemi, komisyonsuz satış ve ücretsiz kargo fırsatlarıyla hemen alıp satmaya başlayın.",
   alternates: {
     canonical: 'https://www.satkolay.com/',
   },
   openGraph: {
-    title: 'İkinci Elin En Yeni Adresi – SatKolay',
+    title: "SatKolay | Türkiye'nin Güvenli İkinci El Pazar Yeri",
     description:
-      "SatKolay, ikinci el alışverişi hızlı, güvenli ve kolay hale getiren yeni nesil bir platformdur. Kullanmadığınız eşyaları kolayca satın, aradığınız ürünlere uygun fiyatlarla ulaşın.",
+      "SatKolay ile ikinci el alışveriş çok kolay. Güvenli ödeme sistemi, komisyonsuz satış ve ücretsiz kargo fırsatlarıyla hemen alıp satmaya başlayın.",
     url: 'https://www.satkolay.com/',
     siteName: 'SatKolay',
     type: 'website',
+    images: [
+      {
+        url: 'https://www.satkolay.com/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'SatKolay - Güvenli İkinci El Alışveriş',
+      }
+    ]
   },
 };
 
@@ -54,19 +63,55 @@ export default async function Home() {
 
   const { data: items } = await query;
 
+  // --- ENTITY SCHEMAS (Organization + WebSite) ---
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        name: 'SatKolay',
+        url: 'https://www.satkolay.com',
+        logo: 'https://www.satkolay.com/icon.png',
+        sameAs: [
+          'https://instagram.com/satkolay',
+          'https://twitter.com/satkolay'
+        ]
+      },
+      {
+        '@type': 'WebSite',
+        url: 'https://www.satkolay.com',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://www.satkolay.com/search?query={search_term_string}',
+          'query-input': 'required name=search_term_string'
+        }
+      }
+    ]
+  };
+
   return (
     <div className="w-full">
+      {/* SCHEMA INJECTION */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* 1. HERO SLIDER */}
       <HeroSlider />
 
       {/* 2. TREND KATEGORİLER */}
       <TrendCategories />
 
-      {/* 3. VİTRİN BAŞLIĞI */}
+      {/* 3. VİTRİN BAŞLIĞI (KEYWORD RICH) */}
       <div className="flex items-center justify-between mb-4 px-4 md:px-0">
-        <h1 className="text-xl font-bold text-gray-800">
-          {dbCity ? `${dbCity} İlanları` : 'Vitrin'}
-          <span className="ml-2 text-sm font-normal text-gray-500">
+        <h1 className="text-xl font-bold text-gray-800 flex items-baseline gap-2">
+          {dbCity ? (
+            <span>{dbCity} İkinci El İlanları</span>
+          ) : (
+            <span>Türkiye'nin Güvenli İkinci El Pazar Yeri</span>
+          )}
+          <span className="text-sm font-normal text-gray-500 whitespace-nowrap">
             ({items?.length || 0} ilan)
           </span>
         </h1>
@@ -74,7 +119,7 @@ export default async function Home() {
 
       {/* İLANLAR */}
       {items && items.length > 0 ? (
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 grid-flow-dense">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-4 grid-flow-dense">
           {items.map((item) => (
             <ListingCard key={item.id} item={item} />
           ))}

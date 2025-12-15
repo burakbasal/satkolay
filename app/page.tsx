@@ -15,13 +15,13 @@ export const metadata: Metadata = {
   description:
     "SatKolay ile ikinci el alışveriş çok kolay. Güvenli ödeme sistemi, komisyonsuz satış ve ücretsiz kargo fırsatlarıyla hemen alıp satmaya başlayın.",
   alternates: {
-    canonical: 'https://www.satkolay.com/',
+    canonical: 'https://www.satkolay.com',
   },
   openGraph: {
     title: "SatKolay | Türkiye'nin Güvenli İkinci El Pazar Yeri",
     description:
       "SatKolay ile ikinci el alışveriş çok kolay. Güvenli ödeme sistemi, komisyonsuz satış ve ücretsiz kargo fırsatlarıyla hemen alıp satmaya başlayın.",
-    url: 'https://www.satkolay.com/',
+    url: 'https://www.satkolay.com',
     siteName: 'SatKolay',
     type: 'website',
     images: [
@@ -69,17 +69,25 @@ export default async function Home() {
     '@graph': [
       {
         '@type': 'Organization',
+        '@id': 'https://www.satkolay.com/#organization',
         name: 'SatKolay',
         url: 'https://www.satkolay.com',
         logo: 'https://www.satkolay.com/icon.png',
         sameAs: [
           'https://instagram.com/satkolay',
           'https://twitter.com/satkolay'
-        ]
+        ],
+        contactPoint: {
+          '@type': 'ContactPoint',
+          contactType: 'customer support',
+          availableLanguage: ['Turkish']
+        }
       },
       {
         '@type': 'WebSite',
+        '@id': 'https://www.satkolay.com/#website',
         url: 'https://www.satkolay.com',
+        name: 'SatKolay',
         potentialAction: {
           '@type': 'SearchAction',
           target: 'https://www.satkolay.com/search?query={search_term_string}',
@@ -103,18 +111,36 @@ export default async function Home() {
       {/* 2. TREND KATEGORİLER */}
       <TrendCategories />
 
-      {/* 3. VİTRİN BAŞLIĞI (KEYWORD RICH) */}
-      <div className="flex items-center justify-between mb-4 px-4 md:px-0">
-        <h1 className="text-xl font-bold text-gray-800 flex items-baseline gap-2">
-          {dbCity ? (
-            <span>{dbCity} İkinci El İlanları</span>
-          ) : (
-            <span>Türkiye'nin Güvenli İkinci El Pazar Yeri</span>
-          )}
-          <span className="text-sm font-normal text-gray-500 whitespace-nowrap">
-            ({items?.length || 0} ilan)
-          </span>
+      {/* 3. VİTRİN HEADER (Semantic H1 + Dynamic H2 + SEO Text) */}
+      <div className="mb-6 px-4 md:px-0">
+        {/* Static H1 for Authority */}
+        <h1 className="text-xl font-bold text-gray-800">
+          Türkiye'nin Güvenli İkinci El Pazar Yeri
         </h1>
+
+        {/* Dynamic H2 for Context/Filtering */}
+        <h2 className="text-sm text-gray-600 mt-1 flex items-center gap-2">
+          {dbCity ? (
+            <>
+              <span>{dbCity} İkinci El İlanları</span>
+              <span className="bg-gray-100 px-2 py-0.5 rounded-full text-xs font-medium">
+                {items?.length || 0}
+              </span>
+            </>
+          ) : (
+            <>
+              <span>Vitrin</span>
+              <span className="bg-gray-100 px-2 py-0.5 rounded-full text-xs font-medium">
+                {items?.length || 0} ilan
+              </span>
+            </>
+          )}
+        </h2>
+
+        {/* Visible SEO Text */}
+        <p className="text-xs text-gray-400 mt-2 max-w-2xl hidden md:block">
+          SatKolay; telefon, elektronik, ev eşyası ve araba aksesuarları kategorilerinde güvenli ödeme ile ikinci el alışveriş imkanı sunar.
+        </p>
       </div>
 
       {/* İLANLAR */}

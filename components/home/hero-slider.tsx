@@ -5,6 +5,7 @@ import Slider from "react-slick";
 import { Button } from "@/components/ui/button";
 import { TreePine, Shirt, Laptop } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image"; // Image importu eklendi
 
 export function HeroSlider() {
     const settings = {
@@ -15,7 +16,10 @@ export function HeroSlider() {
         slidesToScroll: 1,
         autoplay: true,
         autoplaySpeed: 4000,
-        arrows: false
+        arrows: false,
+        accessibility: true, // A11y
+        focusOnSelect: false,
+        pauseOnFocus: true
     };
 
     const slides = [
@@ -53,11 +57,12 @@ export function HeroSlider() {
 
     return (
         <div className="w-full max-w-[1280px] mx-auto px-4 mb-4 mt-2">
-            <div className="rounded-xl overflow-hidden shadow-sm relative group">
+            {/* CLS FIX: Fixed Height Container */}
+            <div className="rounded-xl overflow-hidden shadow-sm relative group bg-gray-100 min-h-[160px] md:min-h-[300px]" role="region" aria-label="Kampanya Slider">
 
                 {/* KAR EFEKTİ (CSS Animation) */}
-                <div className="absolute inset-0 pointer-events-none z-20 opacity-80">
-                    <div className="snowflakes" aria-hidden="true">
+                <div className="absolute inset-0 pointer-events-none z-20 opacity-80" aria-hidden="true">
+                    <div className="snowflakes">
                         {[...Array(10)].map((_, i) => (
                             <div key={i} className="snowflake text-white/50 text-xs">●</div>
                         ))}
@@ -66,7 +71,7 @@ export function HeroSlider() {
 
                 <Slider {...settings}>
                     {slides.map((slide) => (
-                        <div key={slide.id} className="outline-none">
+                        <div key={slide.id} className="outline-none" tabIndex={-1}>
                             <div className={`${slide.bg} h-[160px] md:h-[300px] flex items-center relative overflow-hidden px-4 md:px-12`}>
 
                                 <div className="flex flex-row items-center justify-between w-full relative z-10 gap-4">
@@ -79,7 +84,7 @@ export function HeroSlider() {
                                         <h2 className="text-sm md:text-3xl font-black mb-1 leading-tight tracking-tight max-w-[200px] md:max-w-none">
                                             {slide.title}
                                         </h2>
-                                        <Link href={slide.buttonLink} className="hidden md:inline-block mt-4">
+                                        <Link href={slide.buttonLink} className="hidden md:inline-block mt-4" tabIndex={0}>
                                             <Button size="sm" className="bg-white text-black hover:bg-gray-100 font-bold rounded-full text-xs px-4">
                                                 {slide.buttonText}
                                             </Button>
@@ -87,7 +92,7 @@ export function HeroSlider() {
                                     </div>
 
                                     {/* Sağ: İkon Alanı */}
-                                    <div className="flex-none flex justify-end animate-bounce-slow">
+                                    <div className="flex-none flex justify-end animate-bounce-slow" aria-hidden="true">
                                         {slide.icon}
                                     </div>
                                 </div>

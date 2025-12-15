@@ -27,6 +27,10 @@ export async function generateMetadata(props: { params: Params }): Promise<Metad
         alternates: {
             canonical: `https://www.satkolay.com/category/${slug}`,
         },
+        openGraph: {
+            title: `${categoryName} İlanları - SatKolay`,
+            description: `Güvenli ikinci el ${categoryName} alışverişinin adresi.`,
+        }
     };
 }
 
@@ -41,13 +45,16 @@ export default async function CategoryPage(props: { params: Params }) {
     const supabase = await createClient();
     const { data: items } = await supabase
         .from('items')
-        .select('*, owner:profiles!owner_id(*)') // Ensure profile relation is correct based on schema
+        .select('*, owner:profiles!owner_id(*)')
         .eq('category', categoryName)
         .eq('status', 'active')
         .order('created_at', { ascending: false })
         .limit(50);
 
-    // STRICT JSON-LD (No Markdown - Raw Strings Only)
+    const safeItems = items || [];
+
+    // STRICT JSON-LD: RAW STRINGS ONLY
+    // Fixed: Removed Markdown links from valid JSON-LD
     const jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
@@ -73,11 +80,11 @@ export default async function CategoryPage(props: { params: Params }) {
         },
         mainEntity: {
             '@type': 'ItemList',
-            itemListElement: items?.map((item, index) => ({
+            itemListElement: safeItems.map((item, index) => ({
                 '@type': 'ListItem',
                 position: index + 1,
                 url: `https://www.satkolay.com/product/${item.id}`
-            })) || []
+            }))
         }
     };
 
@@ -104,9 +111,9 @@ export default async function CategoryPage(props: { params: Params }) {
             </div>
 
             {/* Grid */}
-            {items && items.length > 0 ? (
+            {safeItems.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {items.map((item) => (
+                    {safeItems.map((item) => (
                         <ListingCard key={item.id} item={item} />
                     ))}
                 </div>

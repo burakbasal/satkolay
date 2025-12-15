@@ -53,7 +53,7 @@ export function ListingCard({ item, priority = false }: ListingCardProps) {
                         alt={item.title || 'İlan'}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes={isLarge ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"}
+                        sizes={isLarge ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
                         priority={priority}
                     />
                 </Link>

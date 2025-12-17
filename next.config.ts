@@ -52,7 +52,7 @@ const nextConfig: any = {
             key: 'Content-Security-Policy',
             // Note: 'unsafe-inline' and 'unsafe-eval' for scripts allows Next.js functionalitity and 3rd party scripts.
             // In a stricter environment, we would use nonces or hashes.
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.googletagmanager.com https://*.google-analytics.com https://*.clarity.ms https://*.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https: http:; font-src 'self' data:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.googletagmanager.com https://*.google-analytics.com https://*.clarity.ms https://*.google.com https://www.clarity.ms; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https: http: https://xnfuuazgbytejbutffnh.supabase.co; font-src 'self' data:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms https://www.clarity.ms https://xnfuuazgbytejbutffnh.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
               .replace(/\s{2,}/g, ' ').trim()
           },
           {

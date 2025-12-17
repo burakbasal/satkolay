@@ -63,20 +63,20 @@ export function SearchSection() {
                                     {category.icon && (
                                         <category.icon className="w-6 h-6 opacity-70 group-hover:opacity-100 transition-opacity" />
                                     )}
-                                    <span className="group-hover:font-bold transition-all">{category.title}</span>
+                                    <span className="group-hover:font-bold transition-all">{category.label}</span>
                                 </Link>
 
                                 {/* Mega Menu Dropdown */}
                                 <div className="absolute left-0 right-0 top-full bg-white border-t border-gray-100 shadow-2xl rounded-b-xl p-8 hidden group-hover:block z-50 min-h-[300px]">
                                     <div className="grid grid-cols-4 gap-8">
-                                        {category.subcategories && category.subcategories.length > 0 ? (
-                                            category.subcategories.map((sub, idx) => (
+                                        {category.subs && category.subs.length > 0 ? (
+                                            category.subs.map((sub, idx) => (
                                                 <div key={idx} className="space-y-4">
                                                     <h3 className="font-bold text-gray-900 text-lg border-b border-gray-100 pb-2">
-                                                        {sub.title}
+                                                        {sub.label}
                                                     </h3>
                                                     <ul className="space-y-2">
-                                                        {sub.links.map((link, linkIdx) => (
+                                                        {sub.subs && sub.subs.map((link, linkIdx) => (
                                                             <li key={linkIdx}>
                                                                 <Link
                                                                     href={link.href}
@@ -100,7 +100,7 @@ export function SearchSection() {
                                         <div className="col-span-1 bg-gray-50 rounded-lg p-4 flex items-center justify-center text-center">
                                             <div className="space-y-2">
                                                 <p className="text-sm text-gray-500">
-                                                    {category.title} kategorisindeki en popüler ilanları keşfet.
+                                                    {category.label} kategorisindeki en popüler ilanları keşfet.
                                                 </p>
                                                 <Button variant="outline" size="sm" className="text-orange-600 border-orange-200 hover:bg-orange-50">
                                                     Tümünü Gör

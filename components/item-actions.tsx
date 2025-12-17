@@ -98,7 +98,7 @@ export function ItemActions({ itemId, ownerId, userId, price }: { itemId: string
                     handleAction('chat');
                 }}
                 disabled={loading}
-                className="w-full bg-[#001e93] hover:bg-[#e63548] text-white font-bold h-12 text-lg"
+                className="w-full bg-[#2196F3] hover:bg-[#1976D2] text-white font-bold h-12 text-lg"
             >
                 {loading ? <Loader2 className="animate-spin" /> : <><MessageCircle className="mr-2 w-5 h-5" /> Sohbet</>}
             </Button>
@@ -109,7 +109,7 @@ export function ItemActions({ itemId, ownerId, userId, price }: { itemId: string
                 }}
                 disabled={loading}
                 variant="outline"
-                className="w-full border-[#001e93] text-[#001e93] hover:bg-red-50 font-bold h-12 text-lg"
+                className="w-full border-[#2196F3] text-[#2196F3] hover:bg-blue-50 font-bold h-12 text-lg"
             >
                 <Tag className="mr-2 w-5 h-5" /> Teklif Ver
             </Button>

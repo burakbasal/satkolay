@@ -28,12 +28,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
     const isOwner = user?.id === profile.id;
     const currentUserId = user?.id;
 
-    // 3. İLANLARI ÇEK (KESİNLİKLE PROFILE.ID İLE)
+    // 3. İLANLARI ÇEK (KESİNLİKLE SELLER_ID İLE)
 
     let itemsQuery = supabase
         .from('items')
         .select('*')
-        .eq('owner_id', profile.id)
+        .eq('seller_id', profile.id)
         .order('created_at', { ascending: false });
 
     // Ziyaretçi ise sadece active olanları görsün. Sahibi ise her şeyi (filtre yok).
@@ -42,7 +42,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
     }
 
     // Verify query params
-    console.log(`Fetching items for owner: ${profile.id} | IsOwner: ${isOwner}`);
+    console.log(`Fetching items for seller: ${profile.id} | IsOwner: ${isOwner}`);
     const { data: rawItems, error: itemsError } = await itemsQuery;
     if (itemsError) console.error("Item Fetch Error:", itemsError);
 

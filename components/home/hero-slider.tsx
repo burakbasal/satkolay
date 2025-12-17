@@ -71,7 +71,7 @@ export function HeroSlider() {
     return (
         <div className="w-full max-w-[1280px] mx-auto px-4 mb-4 mt-2">
             {/* CLS FIX: Fixed Height Container with relative positioning */}
-            <div className="w-full relative min-h-[250px] sm:min-h-[350px] md:min-h-[450px] bg-gray-100 rounded-xl overflow-hidden shadow-sm group" role="region" aria-label="Kampanya Slider">
+            <div className="w-full relative h-[250px] md:h-[400px] bg-gray-100 rounded-xl overflow-hidden shadow-sm group" role="region" aria-label="Kampanya Slider">
 
                 {/* KAR EFEKTİ (CSS Animation) */}
                 <div className="absolute inset-0 pointer-events-none z-20 opacity-80" aria-hidden="true">
@@ -85,7 +85,7 @@ export function HeroSlider() {
                 <Slider {...settings}>
                     {slides.map((slide, index) => (
                         <div key={slide.id} className="outline-none" tabIndex={-1}>
-                            <div className={`${slide.bg} h-[160px] md:h-[300px] flex items-center relative overflow-hidden px-4 md:px-12`}>
+                            <div className={`${slide.bg} h-full flex items-center relative overflow-hidden px-4 md:px-12`}>
 
                                 <div className="flex flex-row items-center justify-between w-full relative z-10 gap-4">
 

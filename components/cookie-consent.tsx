@@ -3,9 +3,11 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { usePathname } from "next/navigation"
 
 export function CookieConsent() {
     const [show, setShow] = useState(false)
+    const pathname = usePathname()
 
     useEffect(() => {
         // Check localStorage on mount
@@ -27,7 +29,8 @@ export function CookieConsent() {
         setShow(false)
     }
 
-    if (!show) return null
+    // Don't show on maintenance page or if not needed
+    if (!show || pathname === '/maintenance') return null
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6 bg-white border-t shadow-lg animate-in slide-in-from-bottom duration-500">

@@ -71,7 +71,7 @@ export function HeroSlider() {
     return (
         <div className="w-full max-w-[1280px] mx-auto px-4 mb-4 mt-2">
             {/* STRICT HEIGHT WRAPPER */}
-            <div className="w-full relative h-[250px] md:h-[400px] bg-gray-100 rounded-xl overflow-hidden shadow-sm group">
+            <div className="w-full relative h-[180px] md:h-[260px] bg-gray-100 rounded-xl overflow-hidden shadow-sm group">
 
                 {/* KAR EFEKTİ (CSS Animation) */}
                 <div className="absolute inset-0 pointer-events-none z-20 opacity-80" aria-hidden="true">
@@ -90,14 +90,14 @@ export function HeroSlider() {
                                 <div className="flex flex-row items-center justify-between w-full h-full relative z-10 gap-4">
 
                                     {/* Sol: Yazı Alanı */}
-                                    <div className="flex-1 text-left text-white z-20">
+                                    <div className="flex-1 text-left text-white z-20 flex flex-col justify-center">
                                         <div className="inline-block px-1.5 py-0.5 bg-white/20 backdrop-blur-sm rounded text-[10px] font-bold mb-1 tracking-wider">
                                             {slide.badge}
                                         </div>
-                                        <h2 className="text-sm md:text-3xl font-black mb-1 leading-tight tracking-tight max-w-[200px] md:max-w-none">
+                                        <h2 className="text-lg md:text-2xl font-black mb-1 leading-tight tracking-tight max-w-[200px] md:max-w-none">
                                             {slide.title}
                                         </h2>
-                                        <p className="text-white/90 text-xs md:text-lg mb-4 hidden md:block">
+                                        <p className="text-white/90 text-xs md:text-sm mb-2 hidden md:block">
                                             {slide.desc}
                                         </p>
                                         <Link href={slide.buttonLink} className="hidden md:inline-block mt-2" tabIndex={0}>
@@ -110,8 +110,8 @@ export function HeroSlider() {
                                     {/* Sağ: İkon Alanı - Strictly Constrained */}
                                     <div className="flex-none flex justify-end animate-bounce-slow relative z-10" aria-hidden="true">
                                         {/* Constraint Wrapper for Icon */}
-                                        <div className="w-24 h-24 md:w-48 md:h-48 flex items-center justify-center">
-                                            {slide.icon}
+                                        <div className="w-20 h-20 md:w-32 md:h-32 flex items-center justify-center">
+                                            {React.cloneElement(slide.icon as any, { className: "w-full h-full text-white drop-shadow-md" })}
                                         </div>
                                     </div>
                                 </div>

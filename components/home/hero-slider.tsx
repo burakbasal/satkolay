@@ -70,8 +70,8 @@ export function HeroSlider() {
 
     return (
         <div className="w-full max-w-[1280px] mx-auto px-4 mb-4 mt-2">
-            {/* CLS FIX: Fixed Height Container with relative positioning */}
-            <div className="w-full relative h-[250px] md:h-[400px] bg-gray-100 rounded-xl overflow-hidden shadow-sm group" role="region" aria-label="Kampanya Slider">
+            {/* STRICT HEIGHT WRAPPER */}
+            <div className="w-full relative h-[250px] md:h-[400px] bg-gray-100 rounded-xl overflow-hidden shadow-sm group">
 
                 {/* KAR EFEKTİ (CSS Animation) */}
                 <div className="absolute inset-0 pointer-events-none z-20 opacity-80" aria-hidden="true">
@@ -82,31 +82,37 @@ export function HeroSlider() {
                     </div>
                 </div>
 
-                <Slider {...settings}>
+                <Slider {...settings} className="h-full">
                     {slides.map((slide, index) => (
-                        <div key={slide.id} className="outline-none" tabIndex={-1}>
-                            <div className={`${slide.bg} h-full flex items-center relative overflow-hidden px-4 md:px-12`}>
+                        <div key={slide.id} className="outline-none h-full" tabIndex={-1}>
+                            <div className={`${slide.bg} w-full h-full flex items-center relative overflow-hidden px-4 md:px-12`}>
 
-                                <div className="flex flex-row items-center justify-between w-full relative z-10 gap-4">
+                                <div className="flex flex-row items-center justify-between w-full h-full relative z-10 gap-4">
 
-                                    {/* Sol: Yazı Alanı - LCP Text Optimization is inherently fast with fonts */}
-                                    <div className="flex-1 text-left text-white">
+                                    {/* Sol: Yazı Alanı */}
+                                    <div className="flex-1 text-left text-white z-20">
                                         <div className="inline-block px-1.5 py-0.5 bg-white/20 backdrop-blur-sm rounded text-[10px] font-bold mb-1 tracking-wider">
                                             {slide.badge}
                                         </div>
                                         <h2 className="text-sm md:text-3xl font-black mb-1 leading-tight tracking-tight max-w-[200px] md:max-w-none">
                                             {slide.title}
                                         </h2>
-                                        <Link href={slide.buttonLink} className="hidden md:inline-block mt-4" tabIndex={0}>
+                                        <p className="text-white/90 text-xs md:text-lg mb-4 hidden md:block">
+                                            {slide.desc}
+                                        </p>
+                                        <Link href={slide.buttonLink} className="hidden md:inline-block mt-2" tabIndex={0}>
                                             <Button size="sm" className="bg-white text-black hover:bg-gray-100 font-bold rounded-full text-xs px-4">
                                                 {slide.buttonText}
                                             </Button>
                                         </Link>
                                     </div>
 
-                                    {/* Sağ: İkon Alanı */}
-                                    <div className="flex-none flex justify-end animate-bounce-slow" aria-hidden="true">
-                                        {slide.icon}
+                                    {/* Sağ: İkon Alanı - Strictly Constrained */}
+                                    <div className="flex-none flex justify-end animate-bounce-slow relative z-10" aria-hidden="true">
+                                        {/* Constraint Wrapper for Icon */}
+                                        <div className="w-24 h-24 md:w-48 md:h-48 flex items-center justify-center">
+                                            {slide.icon}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -116,8 +122,12 @@ export function HeroSlider() {
             </div>
 
             <style jsx global>{`
+                .slick-slider, .slick-list, .slick-track, .slick-slide, .slick-slide > div {
+                    height: 100%;
+                }
                 .slick-dots {
                     bottom: 8px;
+                    z-index: 30;
                 }
                 .slick-dots li button:before {
                     color: white;

@@ -127,7 +127,7 @@ export default async function Home() {
               {items?.length || 0}
             </span>
           </h2>
-          <Link href="/search" className="text-blue-600 text-sm font-medium hover:underline flex items-center">
+          <Link href="/search" className="text-[#001e93] text-sm font-medium hover:underline flex items-center">
             Tümünü Gör →
           </Link>
         </div>
@@ -165,15 +165,15 @@ export default async function Home() {
 
             {/* INTERNAL LINK GRAPH (Categories) */}
             <div className="flex flex-wrap gap-4 text-xs md:text-sm text-gray-600 font-medium">
-              <Link href="/category/telefon" className="hover:text-blue-600 transition-colors">İkinci El Telefon</Link>
+              <Link href="/category/telefon" className="hover:text-[#001e93] transition-colors">İkinci El Telefon</Link>
               <span className="text-gray-300">|</span>
-              <Link href="/category/araba" className="hover:text-blue-600 transition-colors">Sahibinden Araba</Link>
+              <Link href="/category/araba" className="hover:text-[#001e93] transition-colors">Sahibinden Araba</Link>
               <span className="text-gray-300">|</span>
-              <Link href="/category/elektronik" className="hover:text-blue-600 transition-colors">Elektronik Eşya</Link>
+              <Link href="/category/elektronik" className="hover:text-[#001e93] transition-colors">Elektronik Eşya</Link>
               <span className="text-gray-300">|</span>
-              <Link href="/category/ev-yasam" className="hover:text-blue-600 transition-colors">Ev & Mobilya</Link>
+              <Link href="/category/ev-yasam" className="hover:text-[#001e93] transition-colors">Ev & Mobilya</Link>
               <span className="text-gray-300">|</span>
-              <Link href="/category/giyim" className="hover:text-blue-600 transition-colors">Giyim</Link>
+              <Link href="/category/giyim" className="hover:text-[#001e93] transition-colors">Giyim</Link>
             </div>
           </div>
         </div>

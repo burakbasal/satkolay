@@ -38,7 +38,7 @@ export function HeroSlider() {
     const slides = [
         {
             id: 1,
-            bg: "bg-[#D91E2B]",
+            bg: "bg-[#001e93]",
             title: "İkinci Elin Yeni Adresi.",
             desc: "Binlerce liran cebinde kalsın.",
             icon: <TreePine className="w-24 h-24 md:w-48 md:h-48 text-white drop-shadow-md" />,
@@ -58,7 +58,7 @@ export function HeroSlider() {
         },
         {
             id: 3,
-            bg: "bg-[#2196F3]",
+            bg: "bg-[#001e93]",
             title: "Sıfır kadar hızlı, çok daha hesaplı!",
             desc: "En yeni teknoloji ürünleri.",
             icon: <Laptop className="w-24 h-24 md:w-48 md:h-48 text-white drop-shadow-md" />,

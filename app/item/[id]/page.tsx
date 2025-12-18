@@ -218,7 +218,7 @@ export default async function ItemPage(props: { params: Params }) {
                         <>
                             <Link
                                 href={`/category/${CATEGORY_SLUG_MAP[item.category]}`}
-                                className="hover:underline hover:text-blue-600 transition-colors"
+                                className="hover:underline hover:text-[#001e93] transition-colors"
                             >
                                 {item.category}
                             </Link>

@@ -219,12 +219,12 @@ export function Navbar() {
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                                 <PwaInstallButton />
-                                <Link href="/sell" className="ml-2 flex items-center gap-2 bg-[#001e93] text-white px-5 py-2.5 rounded-full font-bold hover:bg-[#001e93]/90 transition-all shadow-sm text-sm h-11"><Camera className="w-5 h-5" /> <span>SAT</span></Link>
+                                <Link href="/sell" className="ml-2 flex items-center gap-2 bg-[#001e93] text-white px-5 py-2.5 rounded-full font-bold hover:bg-[#002bb3] transition-all shadow-sm text-sm h-11"><Camera className="w-5 h-5" /> <span>SAT</span></Link>
                             </div>
                         ) : (
                             <div className="flex items-center gap-4">
                                 <Link href="/login" className="font-bold text-gray-700 hover:text-[#001e93] px-3 text-base">Giriş</Link>
-                                <Link href="/sell" className="flex items-center gap-2 bg-[#001e93] text-white px-6 py-2.5 rounded-full font-bold hover:bg-[#001e93]/90 transition-all shadow-md h-11 text-sm"><Camera className="w-5 h-5" /> <span>Sat</span></Link>
+                                <Link href="/sell" className="flex items-center gap-2 bg-[#001e93] text-white px-6 py-2.5 rounded-full font-bold hover:bg-[#002bb3] transition-all shadow-md h-11 text-sm"><Camera className="w-5 h-5" /> <span>Sat</span></Link>
                             </div>
                         )}
                     </div>

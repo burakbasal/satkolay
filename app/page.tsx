@@ -149,35 +149,7 @@ export default async function Home() {
         )}
       </div>
 
-      {/* SEO FOOTER BLOCK (Google Friendly & Visual Hierarchy Solved) */}
-      <section className="bg-gray-50 border-t border-gray-200 mt-16 py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl">
-            {/* THE SEO H1 MOVED HERE */}
-            <h1 className="text-xl font-bold text-gray-900 mb-3">
-              Türkiye'nin Güvenli İkinci El Pazar Yeri
-            </h1>
-            <p className="text-sm text-gray-500 leading-relaxed mb-6">
-              SatKolay; telefon, elektronik, ev eşyası ve araba aksesuarları kategorilerinde
-              güvenli ödeme ile ikinci el alışveriş imkanı sunar. İster {dbCity || 'İstanbul'},
-              ister Ankara, İzmir olsun, tüm Türkiye'de güvenli alışverişin adresidir.
-            </p>
 
-            {/* INTERNAL LINK GRAPH (Categories) */}
-            <div className="flex flex-wrap gap-4 text-xs md:text-sm text-gray-600 font-medium">
-              <Link href="/category/telefon" className="hover:text-[#001e93] transition-colors">İkinci El Telefon</Link>
-              <span className="text-gray-300">|</span>
-              <Link href="/category/araba" className="hover:text-[#001e93] transition-colors">Sahibinden Araba</Link>
-              <span className="text-gray-300">|</span>
-              <Link href="/category/elektronik" className="hover:text-[#001e93] transition-colors">Elektronik Eşya</Link>
-              <span className="text-gray-300">|</span>
-              <Link href="/category/ev-yasam" className="hover:text-[#001e93] transition-colors">Ev & Mobilya</Link>
-              <span className="text-gray-300">|</span>
-              <Link href="/category/giyim" className="hover:text-[#001e93] transition-colors">Giyim</Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
     </div>
   );

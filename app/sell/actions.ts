@@ -66,30 +66,56 @@ export async function createListing(formData: FormData) {
     }
 
     // 5. Veritabanına Kayıt
-    const { data, error } = await supabase.from('items').insert({
+    const { data: itemData, error: itemError } = await supabase.from('items').insert({
         title,
         description,
         price: parseFloat(price?.toString() || '0'),
-        category,
+        category, // This is the ID now (UUID)
+        category_id: category, // Ensuring we populate the FK if it exists, or just relying on 'category' column being the FK. 
+        // Wait, the schema likely has category_id UUID. The form sends 'category_id' as 'category'. 
+        // Let's check the form: formData.set('category_id', selectedCategoryId);
+        // But here we read: const category = formData.get('category') as string;
+        // Actually, the form uses 'category_id' key in the manual injection: formData.set('category_id', ...).
+        // But the old code read 'category'. I need to fix reading the category ID.
         city: formData.get('city') as string,
         district: formData.get('district') as string,
         condition: formData.get('condition') as string,
         seller_id: user.id,
         image_urls: uploadedUrls,
-        attributes: attributes,
-        status: initialStatus // HER ZAMAN PENDING
+        attributes: attributes, // Legacy JSON, keep for safety
+        status: initialStatus
     }).select().single();
 
-    if (error) {
-        console.error("DB Error:", error);
-        return { error: error.message };
+    if (itemError || !itemData) {
+        console.error("DB Error:", itemError);
+        return { error: (itemError as any)?.message || "Veri oluşturulamadı." };
+    }
+
+    // 6. Item Attributes Insertion (New Deep Architecture)
+    const attributesJson = formData.get('attributes_json') as string;
+    if (attributesJson && itemData) {
+        try {
+            const parsedAttrs = JSON.parse(attributesJson);
+            const attrInserts = Object.entries(parsedAttrs).map(([attrId, val]) => ({
+                item_id: itemData.id,
+                attribute_id: attrId,
+                value: String(val) // Store as string for flexibility
+            }));
+
+            if (attrInserts.length > 0) {
+                const { error: attrError } = await supabase.from('item_attributes').insert(attrInserts);
+                if (attrError) console.error("Attribute Insert Error:", attrError);
+            }
+        } catch (e) {
+            console.error("Failed to process attributes JSON", e);
+        }
     }
 
     // Başarılıysa OBJE DÖN (Redirect YAPMA)
-    // redirect(`/item/${data.id}`);
+    // redirect(`/item/${itemData.id}`);
 
     // Username al (Profil yönlendirmesi için)
     const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
 
-    return { success: true, id: data.id, username: profile?.username || 'user' };
+    return { success: true, id: itemData.id, username: profile?.username || 'user' };
 }

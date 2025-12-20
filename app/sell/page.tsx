@@ -12,6 +12,7 @@ import { TURKEY_CITIES } from '@/constants/cities';
 import { ImagePlus, Loader2, X } from 'lucide-react';
 import { createListing } from './actions';
 import { CategoryPicker } from '@/components/category-picker';
+import { AttributeForm } from '@/components/attribute-form';
 
 export default function SellPage() {
     const router = useRouter();
@@ -22,6 +23,7 @@ export default function SellPage() {
     const [selectedCity, setSelectedCity] = useState<string>("");
     const [selectedDistrict, setSelectedDistrict] = useState<string>("");
     const [districts, setDistricts] = useState<string[]>([]);
+    const [attributeValues, setAttributeValues] = useState<Record<string, any>>({});
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -71,6 +73,11 @@ export default function SellPage() {
                     // Inject the selected Category ID manually since it's state-based
                     if (selectedCategoryId) {
                         formData.set('category_id', selectedCategoryId);
+                    }
+
+                    // Inject Attributes JSON
+                    if (Object.keys(attributeValues).length > 0) {
+                        formData.set('attributes_json', JSON.stringify(attributeValues));
                     }
 
                     const result = await createListing(formData);
@@ -193,6 +200,15 @@ export default function SellPage() {
                             </Select>
                         </div>
                     </div>
+
+                    {/* ATTRIBUTE FORM */}
+                    {selectedCategoryId && (
+                        <AttributeForm
+                            categoryId={selectedCategoryId}
+                            onChange={(vals) => setAttributeValues(vals)}
+                        />
+                    )}
+
                 </div>
 
                 <div className="fixed bottom-28 left-4 right-4 z-50 md:static md:bottom-auto md:left-auto md:right-auto md:z-auto">

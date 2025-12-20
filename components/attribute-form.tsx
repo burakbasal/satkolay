@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Attribute, getCategoryAttributes } from "@/lib/category-client";
+import { Attribute, getCategoryAttributes } from "@/lib/services/categoryService";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

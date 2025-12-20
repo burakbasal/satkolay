@@ -16,7 +16,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getCategoryTree } from '@/lib/category-client';
+import { getCategoryTree } from '@/lib/services/categoryService';
 import { Category } from '@/types/category';
 import { LocationPicker } from '@/components/header/location-picker';
 import { PwaInstallButton } from '@/components/pwa-install-button';

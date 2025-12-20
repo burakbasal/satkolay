@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ListingCard } from '@/components/listing-card';
-import { findCategoryByPath, getCategoryFilters } from '@/lib/category-server';
+import { findCategoryByPath, getCategoryFilters } from '@/lib/services/serverCategoryService';
 import { Button } from '@/components/ui/button';
 
 type Params = Promise<{ slug: string[] }>;

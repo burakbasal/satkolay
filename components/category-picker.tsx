@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ChevronRight, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Category } from "@/types/category";
-import { getCategoryTree } from "@/lib/category-client";
+import { getCategoryTree } from "@/lib/services/categoryService";
 
 interface CategoryPickerProps {
     onSelect: (categoryId: string) => void;

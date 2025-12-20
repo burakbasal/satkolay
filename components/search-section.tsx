@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Search, ChevronRight, Menu } from 'lucide-react'
-import { getCategoryTree } from '@/lib/category-client'
+import { getCategoryTree } from '@/lib/services/categoryService'
 import { Category } from '@/types/category'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

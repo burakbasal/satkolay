@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { getCategoryTree } from '@/lib/category-client';
+import { getCategoryTree } from '@/lib/services/categoryService';
 import { Category } from '@/types/category';
 
 export default function CategoriesPage() {

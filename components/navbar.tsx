@@ -16,7 +16,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MASTER_DATA } from '@/lib/master-data';
+import { getCategoryTree } from '@/lib/category-client';
+import { Category } from '@/types/category';
 import { LocationPicker } from '@/components/header/location-picker';
 import { PwaInstallButton } from '@/components/pwa-install-button';
 
@@ -39,7 +40,7 @@ function DesktopSearchBar() {
     );
 }
 
-// --- MOBİL ARAMA (GÜNCELLENDİ: X BUTONU EKLENDİ) ---
+// --- MOBİL ARAMA ---
 function MobileSearchBar() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -62,7 +63,7 @@ function MobileSearchBar() {
 
     return (
         <form onSubmit={handleSearch} className="flex-1 min-w-0 mx-2">
-            <div className="relative flex items-center h-11"> {/* Yükseklik h-11 yapıldı */}
+            <div className="relative flex items-center h-11">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Search className="w-5 h-5 text-gray-600" />
                 </div>
@@ -99,13 +100,19 @@ export function Navbar() {
     }
 
     const [user, setUser] = useState<any>(null);
-    const [activeCategory, setActiveCategory] = useState<string | null>(MASTER_DATA[0]?.id || null);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
     const [isMounted, setIsMounted] = useState(false);
     const supabase = createClient();
     const router = useRouter();
 
     useEffect(() => {
         setIsMounted(true);
+        // Load Categories
+        getCategoryTree().then(data => {
+            setCategories(data);
+            if (data.length > 0) setActiveCategoryId(data[0].id);
+        });
     }, []);
 
     useEffect(() => {
@@ -124,7 +131,8 @@ export function Navbar() {
     }, []);
 
     const handleSignOut = async () => { await supabase.auth.signOut(); router.refresh(); setUser(null); };
-    const activeCategoryData = MASTER_DATA.find(c => c.id === activeCategory) || MASTER_DATA[0];
+
+    const activeCategory = categories.find(c => c.id === activeCategoryId) || categories[0];
 
     return (
         <header className="bg-white font-sans">
@@ -149,12 +157,12 @@ export function Navbar() {
                                     <div className="py-4">
                                         <h3 className="font-bold text-gray-900 mb-3 px-2">Kategoriler</h3>
                                         <div className="grid grid-cols-2 gap-2">
-                                            <Link href="/search?q=Araba" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">🚗 Araba</Link>
-                                            <Link href="/search?q=Telefon" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">📱 Telefon</Link>
-                                            <Link href="/search?q=Elektronik" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">💻 Elektronik</Link>
-                                            <Link href="/search?q=Ev" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">🏠 Ev & Yaşam</Link>
-                                            <Link href="/search?q=Motosiklet" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">🏍️ Motosiklet</Link>
-                                            <Link href="/search?q=Giyim" className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition">👕 Giyim</Link>
+                                            {categories.slice(0, 8).map((cat) => (
+                                                <Link key={cat.id} href={`/category/${cat.slug}`} className="p-2 text-sm bg-gray-50 rounded hover:bg-blue-50 hover:text-[#001e93] transition truncate">
+                                                    {cat.name}
+                                                </Link>
+                                            ))}
+                                            <Link href="/categories" className="p-2 text-sm bg-gray-100 rounded text-center font-bold col-span-2">Tüm Kategoriler</Link>
                                         </div>
                                     </div>
                                 </div>
@@ -168,12 +176,12 @@ export function Navbar() {
                     </Button>
                 )}
 
-                {/* 1. LOGO: Flex center ile dikey ortalandı (Daha BÜYÜK) */}
+                {/* 1. LOGO */}
                 <Link href="/" className="flex items-center h-11 shrink-0">
                     <span className="text-2xl font-black text-[#001e93] tracking-tighter leading-none">SatKolay</span>
                 </Link>
 
-                {/* 2. ARAMA: Suspense içine alındı */}
+                {/* 2. ARAMA */}
                 <Suspense fallback={<div className="flex-1 h-11 bg-gray-100 rounded-full mx-2" />}>
                     <MobileSearchBar />
                 </Suspense>
@@ -181,14 +189,14 @@ export function Navbar() {
                 <div className="shrink-0 mr-1">
                     <LocationPicker />
                 </div>
-                {/* 3. BİLDİRİM: h-11 ile diğerleriyle aynı yüksekliğe getirildi */}
+                {/* 3. BİLDİRİM */}
                 <Link href="/notifications" className="flex items-center justify-center h-11 w-11 text-gray-600 shrink-0 relative hover:bg-gray-50 rounded-full" aria-label="Bildirimler">
                     <Bell className="w-6 h-6" />
                     <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
                 </Link>
             </div>
 
-            {/* --- MASAÜSTÜ HEADER (Aynen Korundu) --- */}
+            {/* --- MASAÜSTÜ HEADER --- */}
             <div className="hidden md:block w-full">
                 <div className="h-16 flex items-center justify-between">
                     <Link href="/" className="text-3xl font-black text-[#001e93] tracking-tighter shrink-0">SatKolay</Link>
@@ -239,34 +247,30 @@ export function Navbar() {
                         <div className="absolute top-full left-0 right-0 pt-6 -mt-2 hidden group-hover:block z-[999]">
                             <div className="bg-white shadow-xl rounded-b-xl border border-t-0 border-gray-100 overflow-hidden flex min-h-[500px]">
                                 <div className="w-1/4 bg-gray-50 py-3 border-r border-gray-100 max-h-[600px] overflow-y-auto">
-                                    {MASTER_DATA.map((cat, idx) => (
-                                        <div key={idx} onMouseEnter={() => setActiveCategory(cat.id)} className={`flex items-center justify-between px-6 py-3 cursor-pointer transition-colors ${activeCategory === cat.id ? 'bg-white text-[#001e93] font-bold border-l-4 border-[#001e93]' : 'text-gray-600 hover:bg-gray-100'}`}>
-                                            <div className="flex items-center gap-3">{cat.icon && <cat.icon className="w-6 h-6" />}<span className="text-base">{cat.title}</span></div>
-                                            {activeCategory === cat.id && <ChevronRight className="w-4 h-4" />}
+                                    {categories.map((cat, idx) => (
+                                        <div key={idx} onMouseEnter={() => setActiveCategoryId(cat.id)} className={`flex items-center justify-between px-6 py-3 cursor-pointer transition-colors ${activeCategoryId === cat.id ? 'bg-white text-[#001e93] font-bold border-l-4 border-[#001e93]' : 'text-gray-600 hover:bg-gray-100'}`}>
+                                            <div className="flex items-center gap-3"><span className="text-base">{cat.name}</span></div>
+                                            {activeCategoryId === cat.id && <ChevronRight className="w-4 h-4" />}
                                         </div>
                                     ))}
                                 </div>
                                 <div className="w-3/4 p-8 bg-white overflow-y-auto max-h-[600px]">
-                                    {activeCategoryData ? (
-                                        <div className="grid grid-cols-3 gap-y-10 gap-x-8">
-                                            {activeCategoryData.subCategories?.map((sub, idx) => (
-                                                <div key={idx} className="break-inside-avoid">
-                                                    <Link href={sub.href || '#'} className="block font-bold text-[#001e93] mb-3 hover:underline text-lg">{sub.title}</Link>
-                                                    <ul className="space-y-2">
-                                                        {sub.items?.map((item, i) => (
-                                                            <li key={i}>
-                                                                <Link
-                                                                    href={`${sub.href}&query=${item}`}
-                                                                    className="text-sm text-gray-600 hover:text-black hover:underline block"
-                                                                >
-                                                                    {item}
-                                                                </Link>
-                                                            </li>
-                                                        ))}
-                                                        <li><Link href={sub.href || '#'} className="text-sm font-bold text-gray-900 hover:underline mt-1 inline-block">Tümünü Gör ›</Link></li>
-                                                    </ul>
-                                                </div>
-                                            ))}
+                                    {activeCategory ? (
+                                        <div>
+                                            <Link href={`/category/${activeCategory.slug}`} className="block text-2xl font-bold text-[#001e93] mb-6 hover:underline">
+                                                {activeCategory.name}
+                                            </Link>
+                                            <div className="grid grid-cols-3 gap-y-4 gap-x-8">
+                                                {activeCategory.children && activeCategory.children.map((sub, idx) => (
+                                                    <Link
+                                                        key={idx}
+                                                        href={`/category/${activeCategory.slug}/${sub.slug}`}
+                                                        className="text-gray-700 hover:text-[#001e93] hover:underline text-base"
+                                                    >
+                                                        {sub.name}
+                                                    </Link>
+                                                ))}
+                                            </div>
                                         </div>
                                     ) : null}
                                 </div>
@@ -274,7 +278,7 @@ export function Navbar() {
                         </div>
                     </div>
                     <div className="flex items-center gap-6 overflow-hidden mask-linear">
-                        {MASTER_DATA.slice(0, 8).map((cat, idx) => <Link key={idx} href={cat.href || '#'} className="text-gray-600 hover:text-[#001e93] text-sm font-medium whitespace-nowrap">{cat.title}</Link>)}
+                        {categories.slice(0, 8).map((cat, idx) => <Link key={idx} href={`/category/${cat.slug}`} className="text-gray-600 hover:text-[#001e93] text-sm font-medium whitespace-nowrap">{cat.name}</Link>)}
                     </div>
                 </div>
             </div>

@@ -1,15 +1,34 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Search, ChevronRight, Menu } from 'lucide-react'
-import { CATEGORIES } from '@/lib/categories'
+import { getCategoryTree } from '@/lib/category-client'
+import { Category } from '@/types/category'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 
 export function SearchSection() {
+    const router = useRouter()
+    const [categories, setCategories] = useState<Category[]>([])
     const [activeCategory, setActiveCategory] = useState<string | null>(null)
+    const [query, setQuery] = useState("")
+
+    useEffect(() => {
+        getCategoryTree().then(setCategories)
+    }, [])
+
+    const handleSearch = () => {
+        if (query.trim()) {
+            router.push(`/search?query=${encodeURIComponent(query)}`)
+        }
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') handleSearch()
+    }
 
     return (
         <div className="relative z-20">
@@ -25,9 +44,15 @@ export function SearchSection() {
                             <Input
                                 className="h-14 w-full rounded-full border-none bg-white pl-12 text-lg shadow-xl placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-orange-500"
                                 placeholder="Araba, telefon, bisiklet..."
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                onKeyDown={handleKeyDown}
                             />
                         </div>
-                        <Button className="h-14 rounded-full px-8 text-lg font-bold bg-gray-900 hover:bg-gray-800 shadow-xl">
+                        <Button
+                            onClick={handleSearch}
+                            className="h-14 rounded-full px-8 text-lg font-bold bg-gray-900 hover:bg-gray-800 shadow-xl"
+                        >
                             Ara
                         </Button>
                     </div>
@@ -38,14 +63,14 @@ export function SearchSection() {
             <div className="mx-auto max-w-6xl px-4 -mt-8">
                 <div className="bg-white rounded-xl shadow-xl border border-gray-100 overflow-visible relative">
                     <div className="flex divide-x divide-gray-100 overflow-x-auto scrollbar-hide">
-                        {/* All Categories Button (Optional, for mobile mainly or just as a header) */}
+                        {/* All Categories Button */}
                         <div className="hidden md:flex items-center px-6 py-4 bg-gray-50 font-bold text-gray-700 whitespace-nowrap">
                             <Menu className="mr-2 h-5 w-5" />
                             Kategoriler
                         </div>
 
                         {/* Category Items */}
-                        {CATEGORIES.map((category) => (
+                        {categories.slice(0, 7).map((category) => (
                             <div
                                 key={category.id}
                                 className="group static"
@@ -53,41 +78,47 @@ export function SearchSection() {
                                 onMouseLeave={() => setActiveCategory(null)}
                             >
                                 <Link
-                                    href={category.href}
+                                    href={`/category/${category.slug}`}
                                     className={cn(
-                                        "flex items-center gap-2 px-6 py-4 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors whitespace-nowrap relative",
+                                        "flex items-center gap-2 px-6 py-4 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors whitespace-nowrap relative h-full",
                                         activeCategory === category.id && "bg-orange-50 text-orange-600"
                                     )}
                                 >
-                                    {/* Icon */}
-                                    {category.icon && (
-                                        <category.icon className="w-6 h-6 opacity-70 group-hover:opacity-100 transition-opacity" />
-                                    )}
-                                    <span className="group-hover:font-bold transition-all">{category.label}</span>
+                                    {/* Icon if provided in DB, otherwise omit or use generic */}
+                                    <span className="group-hover:font-bold transition-all">{category.name}</span>
                                 </Link>
 
                                 {/* Mega Menu Dropdown */}
                                 <div className="absolute left-0 right-0 top-full bg-white border-t border-gray-100 shadow-2xl rounded-b-xl p-8 hidden group-hover:block z-50 min-h-[300px]">
                                     <div className="grid grid-cols-4 gap-8">
-                                        {category.subs && category.subs.length > 0 ? (
-                                            category.subs.map((sub, idx) => (
+                                        {category.children && category.children.length > 0 ? (
+                                            category.children.map((sub, idx) => (
                                                 <div key={idx} className="space-y-4">
-                                                    <h3 className="font-bold text-gray-900 text-lg border-b border-gray-100 pb-2">
-                                                        {sub.label}
-                                                    </h3>
-                                                    <ul className="space-y-2">
-                                                        {sub.subs && sub.subs.map((link, linkIdx) => (
-                                                            <li key={linkIdx}>
+                                                    <Link
+                                                        href={`/category/${category.slug}/${sub.slug}`} // Deep link
+                                                        className="font-bold text-gray-900 text-lg border-b border-gray-100 pb-2 block hover:text-orange-600"
+                                                    >
+                                                        {sub.name}
+                                                    </Link>
+                                                    {/* If 3rd level exists (Micro Categories) */}
+                                                    {sub.children && sub.children.length > 0 && (
+                                                        <div className="flex flex-col space-y-2 mt-2">
+                                                            {sub.children.slice(0, 5).map((micro, mIdx) => (
                                                                 <Link
-                                                                    href={link.href}
-                                                                    className="text-gray-500 hover:text-orange-600 hover:underline flex items-center text-sm"
+                                                                    key={mIdx}
+                                                                    href={`/category/${category.slug}/${sub.slug}/${micro.slug}`}
+                                                                    className="text-sm text-gray-600 hover:text-orange-600"
                                                                 >
-                                                                    <ChevronRight className="h-3 w-3 mr-1 text-gray-300" />
-                                                                    {link.label}
+                                                                    {micro.name}
                                                                 </Link>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
+                                                            ))}
+                                                            {sub.children.length > 5 && (
+                                                                <Link href={`/category/${category.slug}/${sub.slug}`} className="text-xs text-orange-500 font-medium hover:underline">
+                                                                    Tümü ({sub.children.length})
+                                                                </Link>
+                                                            )}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             ))
                                         ) : (
@@ -96,21 +127,29 @@ export function SearchSection() {
                                             </div>
                                         )}
 
-                                        {/* Placeholder for visual balance or featured items in category */}
+                                        {/* Placeholder for visual balance */}
                                         <div className="col-span-1 bg-gray-50 rounded-lg p-4 flex items-center justify-center text-center">
                                             <div className="space-y-2">
                                                 <p className="text-sm text-gray-500">
-                                                    {category.label} kategorisindeki en popüler ilanları keşfet.
+                                                    {category.name} kategorisindeki en popüler ilanları keşfet.
                                                 </p>
-                                                <Button variant="outline" size="sm" className="text-orange-600 border-orange-200 hover:bg-orange-50">
-                                                    Tümünü Gör
-                                                </Button>
+                                                <Link href={`/category/${category.slug}`}>
+                                                    <Button variant="outline" size="sm" className="text-orange-600 border-orange-200 hover:bg-orange-50">
+                                                        Tümünü Gör
+                                                    </Button>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         ))}
+                        <Link
+                            href="/categories"
+                            className="flex items-center px-6 py-4 text-sm font-medium text-gray-700 hover:bg-gray-50 whitespace-nowrap"
+                        >
+                            Tümü...
+                        </Link>
                     </div>
                 </div>
             </div>

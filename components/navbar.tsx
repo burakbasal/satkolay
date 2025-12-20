@@ -260,15 +260,37 @@ export function Navbar() {
                                             <Link href={`/category/${activeCategory.slug}`} className="block text-2xl font-bold text-[#001e93] mb-6 hover:underline">
                                                 {activeCategory.name}
                                             </Link>
-                                            <div className="grid grid-cols-3 gap-y-4 gap-x-8">
+                                            <div className="grid grid-cols-3 gap-y-8 gap-x-8">
                                                 {activeCategory.children && activeCategory.children.map((sub, idx) => (
-                                                    <Link
-                                                        key={idx}
-                                                        href={`/category/${activeCategory.slug}/${sub.slug}`}
-                                                        className="text-gray-700 hover:text-[#001e93] hover:underline text-base"
-                                                    >
-                                                        {sub.name}
-                                                    </Link>
+                                                    <div key={idx} className="flex flex-col gap-2">
+                                                        <Link
+                                                            href={`/category/${activeCategory.slug}/${sub.slug}`}
+                                                            className="font-bold text-gray-900 hover:text-[#001e93] hover:underline"
+                                                        >
+                                                            {sub.name}
+                                                        </Link>
+                                                        {sub.children && sub.children.length > 0 && (
+                                                            <div className="flex flex-col gap-1">
+                                                                {sub.children.slice(0, 5).map((micro, mIdx) => (
+                                                                    <Link
+                                                                        key={mIdx}
+                                                                        href={`/category/${activeCategory.slug}/${sub.slug}/${micro.slug}`}
+                                                                        className="text-sm text-gray-600 hover:text-[#001e93] hover:underline whitespace-nowrap overflow-hidden text-ellipsis"
+                                                                    >
+                                                                        {micro.name}
+                                                                    </Link>
+                                                                ))}
+                                                                {sub.children.length > 5 && (
+                                                                    <Link
+                                                                        href={`/category/${activeCategory.slug}/${sub.slug}`}
+                                                                        className="text-xs text-[#001e93] font-medium hover:underline mt-1"
+                                                                    >
+                                                                        Tümünü Gör ({sub.children.length})
+                                                                    </Link>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 ))}
                                             </div>
                                         </div>

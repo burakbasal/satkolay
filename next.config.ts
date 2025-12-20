@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'origin-when-cross-origin' },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.clarity.ms https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://xnfuuazgbytejbutffnh.supabase.co https://lh3.googleusercontent.com https://images.unsplash.com https://placehold.co; font-src 'self' data:; connect-src 'self' https://xnfuuazgbytejbutffnh.supabase.co wss://xnfuuazgbytejbutffnh.supabase.co https://www.clarity.ms https://*.google-analytics.com; frame-src 'self' https://www.clarity.ms;",
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.clarity.ms https://www.googletagmanager.com https://c.bing.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://xnfuuazgbytejbutffnh.supabase.co https://lh3.googleusercontent.com https://images.unsplash.com https://placehold.co https://www.clarity.ms https://c.bing.com; font-src 'self' data:; connect-src 'self' https://xnfuuazgbytejbutffnh.supabase.co wss://xnfuuazgbytejbutffnh.supabase.co https://www.clarity.ms https://*.google-analytics.com https://c.bing.com; frame-src 'self' https://www.clarity.ms;",
           },
         ],
       },

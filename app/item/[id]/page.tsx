@@ -70,6 +70,8 @@ export default async function ItemPage(props: { params: Params }) {
     const { id } = await props.params;
     const supabase = await createClient();
 
+    const { data: { user } } = await supabase.auth.getUser();
+
     const { data: item, error } = await supabase
         .from('items')
         .select('*, owner:profiles!owner_id(*)')
@@ -266,7 +268,7 @@ export default async function ItemPage(props: { params: Params }) {
                         <ItemActions
                             itemId={item.id}
                             ownerId={item.owner_id}
-                            userId={null}
+                            userId={user?.id || null}
                             price={item.price}
                         />
                     </div>

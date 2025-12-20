@@ -13,9 +13,21 @@ export function ItemActions({ itemId, ownerId, userId, price }: { itemId: string
     const [loading, setLoading] = useState(false);
 
     const handleAction = async (action: 'chat' | 'offer') => {
-        if (!userId) return router.push('/login');
         if (loading) return;
         setLoading(true);
+
+        let currentUserId = userId;
+
+        // If no userId prop, double check if user is logged in client-side
+        if (!currentUserId) {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                currentUserId = user.id;
+            } else {
+                setLoading(false);
+                return router.push('/login');
+            }
+        }
 
         try {
             if (!ownerId) {
@@ -28,7 +40,7 @@ export function ItemActions({ itemId, ownerId, userId, price }: { itemId: string
                 .from('conversations')
                 .select('id')
                 .eq('item_id', itemId)
-                .or(`and(user1_id.eq.${userId},user2_id.eq.${ownerId}),and(user1_id.eq.${ownerId},user2_id.eq.${userId})`)
+                .or(`and(user1_id.eq.${currentUserId},user2_id.eq.${ownerId}),and(user1_id.eq.${ownerId},user2_id.eq.${currentUserId})`)
                 .single();
 
             let conversationId = existingConv?.id;
@@ -38,7 +50,7 @@ export function ItemActions({ itemId, ownerId, userId, price }: { itemId: string
                 const { data: newConv, error } = await supabase
                     .from('conversations')
                     .insert({
-                        user1_id: userId,
+                        user1_id: currentUserId,
                         user2_id: ownerId,
                         item_id: itemId
                     })

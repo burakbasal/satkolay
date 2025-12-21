@@ -4,8 +4,8 @@ import { createServerClient } from '@supabase/ssr';
 
 export async function middleware(request: NextRequest) {
     // 0. DOMAIN REDIRECTION (VERCEL -> CUSTOM)
-    const hostname = request.headers.get('host');
-    if (hostname && hostname.includes('vercel.app')) {
+    const hostname = request.nextUrl.hostname;
+    if (hostname.includes('vercel.app')) {
         const newUrl = new URL(request.nextUrl.pathname, 'https://www.satkolay.com');
         newUrl.search = request.nextUrl.search;
         return NextResponse.redirect(newUrl, 301);

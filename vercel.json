@@ -1,0 +1,15 @@
+{
+    "redirects": [
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "satkolay.vercel.app"
+                }
+            ],
+            "destination": "https://www.satkolay.com/:path*",
+            "permanent": true
+        }
+    ]
+}

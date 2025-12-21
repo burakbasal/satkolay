@@ -3,6 +3,14 @@ import { updateSession } from '@/utils/supabase/middleware';
 import { createServerClient } from '@supabase/ssr';
 
 export async function middleware(request: NextRequest) {
+    // 0. DOMAIN REDIRECTION (VERCEL -> CUSTOM)
+    const hostname = request.headers.get('host');
+    if (hostname && hostname.includes('vercel.app')) {
+        const newUrl = new URL(request.nextUrl.pathname, 'https://www.satkolay.com');
+        newUrl.search = request.nextUrl.search;
+        return NextResponse.redirect(newUrl, 301);
+    }
+
     // 1. UPDATE SESSION (Supabase Magic)
     // We use the response from updateSession as the base
     const response = await updateSession(request);

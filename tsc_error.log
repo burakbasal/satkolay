@@ -1,0 +1,2 @@
+﻿.next/types/validator.ts(225,31): error TS2344: Type 'typeof import("C:/Users/devbu/OneDrive/Desktop/satkolay/app/category/[...slug]/page")' does not satisfy the constraint 'AppPageConfig<"/category/[...slug]">'.
+  Property 'default' is missing in type 'typeof import("C:/Users/devbu/OneDrive/Desktop/satkolay/app/category/[...slug]/page")' but required in type 'AppPageConfig<"/category/[...slug]">'.

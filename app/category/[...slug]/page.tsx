@@ -13,9 +13,10 @@ export async function generateMetadata(
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     const { slug } = await props.params;
-    const { category, breadcrumbs } = await findCategoryByPath(slug);
+    const result = await findCategoryByPath(slug);
 
-    if (!category) return { title: 'Sayfa Bulunamadı | SatKolay' };
+    if (!result) return { title: 'Sayfa Bulunamadı | SatKolay' };
+    const { category, breadcrumbs } = result;
 
     // Format: "iPhone 15 (Akıllı Telefonlar) İlanları..."
     const parentName = breadcrumbs.length > 1 ? breadcrumbs[breadcrumbs.length - 2].name : '';
@@ -38,11 +39,12 @@ export async function generateMetadata(
 
 export default async function CategoryPage(props: { params: Params }) {
     const { slug } = await props.params;
-    const { category, breadcrumbs } = await findCategoryByPath(slug);
+    const result = await findCategoryByPath(slug);
 
-    if (!category) {
+    if (!result) {
         notFound();
     }
+    const { category, breadcrumbs } = result;
 
     const supabase = await createClient();
     const filters = await getCategoryFilters(category.id);
@@ -91,7 +93,7 @@ export default async function CategoryPage(props: { params: Params }) {
                     '@type': 'ListItem',
                     position: i + 2,
                     name: b.name,
-                    item: `https://www.satkolay.com${b.path}`
+                    item: `https://www.satkolay.com/category/${breadcrumbs.slice(0, i + 1).map(x => x.slug).join('/')}`
                 }))
             ]
         }
@@ -107,18 +109,24 @@ export default async function CategoryPage(props: { params: Params }) {
             {/* Breadcrumbs */}
             <nav className="flex text-sm text-gray-500 mb-6 overflow-x-auto whitespace-nowrap pb-2">
                 <Link href="/" className="hover:underline">Anasayfa</Link>
-                {breadcrumbs.map((crumb, index) => (
-                    <span key={crumb.path} className="flex items-center">
-                        <span className="mx-2">›</span>
-                        {index === breadcrumbs.length - 1 ? (
-                            <span className="font-semibold text-gray-900">{crumb.name}</span>
-                        ) : (
-                            <Link href={crumb.path} className="hover:underline">
-                                {crumb.name}
-                            </Link>
-                        )}
-                    </span>
-                ))}
+                {breadcrumbs.map((crumb, index) => {
+                    // Path construction: /category/slug1/slug2...
+                    // Since breadcrumbs are ordered from root, we can slice the array up to current index + 1
+                    const path = `/category/${breadcrumbs.slice(0, index + 1).map(b => b.slug).join('/')}`;
+
+                    return (
+                        <span key={crumb.id} className="flex items-center">
+                            <span className="mx-2">›</span>
+                            {index === breadcrumbs.length - 1 ? (
+                                <span className="font-semibold text-gray-900">{crumb.name}</span>
+                            ) : (
+                                <Link href={path} className="hover:underline">
+                                    {crumb.name}
+                                </Link>
+                            )}
+                        </span>
+                    );
+                })}
             </nav>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
